@@ -62,7 +62,7 @@ jobs:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
       # Passwords or keys committed by mistake (whole history).
-      - uses: gitleaks/gitleaks-action@v2
+      - uses: gitleaks/gitleaks-action@v3
         env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
       # Known holes in the server's packages (high and critical fail).
       - uses: actions/setup-node@v4
