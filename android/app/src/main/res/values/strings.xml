@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The name under the app's icon (Arabic in values-ar). -->
+    <string name="app_name">Madrasa</string>
+    <string name="notification_channel">School notifications</string>
+</resources>

@@ -1,0 +1,8 @@
+node_modules/
+.env
+.data/
+stop.flag
+
+# Private files (Firebase service account…), never in git.
+secrets/*
+!secrets/README.txt

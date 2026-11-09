@@ -1,0 +1,80 @@
+# Every push and pull request: the tests, and the security scanners.
+# deploy.yml runs this first and only deploys when it passes.
+name: CI
+
+on:
+  push:
+    branches-ignore: [main] # main: deploy.yml runs these first
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  server:
+    name: Server tests (PGlite)
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: server } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: server/package-lock.json }
+      - run: npm ci
+      - run: npm test
+
+  server-postgres:
+    name: Server tests (real PostgreSQL)
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: server } }
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_PASSWORD: test }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://postgres:test@localhost:5432/school_test
+      PG_DUMP: pg_dump
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: server/package-lock.json }
+      - run: npm ci
+      - run: npm run test:pg
+
+  app:
+    name: App analyze and tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable, flutter-version: 3.44.4, cache: true }
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+
+  security:
+    name: Security scans
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      # Passwords or keys committed by mistake (whole history).
+      - uses: gitleaks/gitleaks-action@v2
+        env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+      # Known holes in the server's packages (high and critical fail).
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm audit --omit=dev --audit-level=high
+        working-directory: server
+      # Mistakes in the Dockerfile.
+      - uses: hadolint/hadolint-action@v3.1.0
+        with: { dockerfile: server/Dockerfile }
+      # Secrets and misconfigurations in the deploy files.
+      - uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: config
+          scan-ref: deploy
+          exit-code: "0"

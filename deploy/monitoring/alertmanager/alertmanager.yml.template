@@ -1,0 +1,19 @@
+# Alerts to Telegram. scripts/configure.sh fills in the bot from .env and
+# writes alertmanager.yml (not in git: it holds the bot's token).
+route:
+  receiver: telegram
+  group_by: [alertname]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+
+receivers:
+  - name: telegram
+    telegram_configs:
+      - bot_token: "${TELEGRAM_BOT_TOKEN}"
+        chat_id: ${TELEGRAM_CHAT_ID}
+        parse_mode: HTML
+        message: |
+          {{ range .Alerts }}{{ if eq .Status "firing" }}🔴{{ else }}✅{{ end }} <b>{{ .Annotations.summary }}</b>
+          {{ .Annotations.description }}
+          {{ end }}

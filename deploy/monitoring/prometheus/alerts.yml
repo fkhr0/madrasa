@@ -1,0 +1,60 @@
+# When to send a message (Alertmanager → Telegram).
+groups:
+  - name: madrasa
+    rules:
+      - alert: ApiDown
+        expr: up{job="api"} == 0
+        for: 2m
+        labels: { severity: critical }
+        annotations:
+          summary: "{{ $labels.instance }} is not answering"
+          description: "One copy of the API has been down for 2 minutes. The other keeps serving; check `docker compose logs`."
+
+      - alert: AllApiDown
+        expr: sum(up{job="api"}) == 0
+        for: 1m
+        labels: { severity: critical }
+        annotations:
+          summary: "The app is down"
+          description: "No API copy answers."
+
+      - alert: ManyErrors
+        expr: |
+          sum(rate(http_requests_total{status=~"5.."}[5m]))
+            / clamp_min(sum(rate(http_requests_total[5m])), 0.001) > 0.05
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "More than 5% of requests fail"
+          description: "Look at the errors in Grafana → Explore → Loki."
+
+      - alert: Slow
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m]))) > 1
+        for: 10m
+        labels: { severity: warning }
+        annotations:
+          summary: "Slow: 5% of requests take over a second"
+
+      - alert: DiskAlmostFull
+        expr: |
+          node_filesystem_avail_bytes{mountpoint="/", fstype!="tmpfs"}
+            / node_filesystem_size_bytes{mountpoint="/", fstype!="tmpfs"} < 0.15
+        for: 10m
+        labels: { severity: warning }
+        annotations:
+          summary: "Less than 15% disk left"
+
+      - alert: MemoryHigh
+        expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 0.9
+        for: 10m
+        labels: { severity: warning }
+        annotations:
+          summary: "Memory over 90%"
+
+      - alert: SignInGuessing
+        expr: sum(increase(sign_ins_total{result="wrong"}[10m])) > 100
+        labels: { severity: warning }
+        annotations:
+          summary: "Over 100 wrong passwords in 10 minutes"
+          description: "Someone may be guessing passwords (the app locks IDs after 5)."

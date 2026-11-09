@@ -1,0 +1,167 @@
+# Everything on the server: two copies of the API behind Nginx, the
+# background worker, Redis, and the monitoring stack (Prometheus, Grafana,
+# Loki, Alertmanager). The database is Neon (DATABASE_URL in .env).
+#
+#   docker compose up -d            start / update everything
+#   docker compose ps               what runs
+#   docker compose logs -f api1     follow one service
+#
+# Settings and secrets: .env next to this file (see .env.example).
+name: madrasa
+
+x-logging: &logging
+  driver: json-file
+  options: { max-size: "10m", max-file: "3" }
+
+x-app: &app
+  image: ${IMAGE:-ghcr.io/owner/madrasa-api:latest}
+  restart: unless-stopped
+  env_file: .env
+  logging: *logging
+  depends_on:
+    redis: { condition: service_healthy }
+
+services:
+  # ── The app: two copies, so one can restart (deploys) while the other serves ──
+  api1:
+    <<: *app
+    environment: &api-env
+      NODE_ENV: production
+      REDIS_URL: redis://redis:6379
+      RUN_WORKER: "false"
+      TRUST_PROXY: "1"
+      STORAGE: local
+    # secrets/: the Firebase key (read-only, never in the image).
+    volumes: [uploads:/data/uploads, ./secrets:/run/secrets:ro]
+
+  api2:
+    <<: *app
+    environment: *api-env
+    volumes: [uploads:/data/uploads, ./secrets:/run/secrets:ro]
+
+  # Reminders, summaries, pushes and the nightly backup: one copy only.
+  worker:
+    <<: *app
+    command: ["node", "src/worker.js"]
+    environment:
+      NODE_ENV: production
+      REDIS_URL: redis://redis:6379
+      STORAGE: local
+    volumes: [uploads:/data/uploads, backups:/data/backups, ./secrets:/run/secrets:ro]
+    healthcheck: { disable: true }
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # Jobs must never be dropped to make room: noeviction. Saved to disk.
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "512mb", "--maxmemory-policy", "noeviction"]
+    volumes: [redis-data:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      retries: 5
+    logging: *logging
+
+  # ── The front door: HTTPS, load balancing, limits ──
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - letsencrypt:/etc/letsencrypt:ro
+      - certbot-www:/var/www/certbot:ro
+    depends_on: [api1, api2]
+    logging: *logging
+
+  # HTTPS certificates (Let's Encrypt); run by scripts/certificate.sh.
+  certbot:
+    image: certbot/certbot:latest
+    profiles: [tools]
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
+
+  # ── Monitoring (reach Grafana over Tailscale: http://<server>:3001) ──
+  prometheus:
+    image: prom/prometheus:v3.1.0
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=15d
+    volumes:
+      - ./monitoring/prometheus:/etc/prometheus:ro
+      - prometheus-data:/prometheus
+    logging: *logging
+
+  alertmanager:
+    image: prom/alertmanager:v0.28.0
+    restart: unless-stopped
+    volumes: [./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro]
+    logging: *logging
+
+  grafana:
+    image: grafana/grafana-oss:11.4.0
+    restart: unless-stopped
+    ports: ["${TAILSCALE_IP:-127.0.0.1}:3001:3000"]
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    logging: *logging
+
+  loki:
+    image: grafana/loki:3.3.2
+    restart: unless-stopped
+    command: ["-config.file=/etc/loki/loki.yml"]
+    volumes:
+      - ./monitoring/loki/loki.yml:/etc/loki/loki.yml:ro
+      - loki-data:/loki
+    logging: *logging
+
+  promtail:
+    image: grafana/promtail:3.3.2
+    restart: unless-stopped
+    command: ["-config.file=/etc/promtail/promtail.yml"]
+    volumes:
+      - ./monitoring/promtail/promtail.yml:/etc/promtail/promtail.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    logging: *logging
+
+  node-exporter:
+    image: prom/node-exporter:v1.8.2
+    restart: unless-stopped
+    pid: host
+    command: ["--path.rootfs=/host"]
+    volumes: ["/:/host:ro,rslave"]
+    logging: *logging
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.51.0
+    restart: unless-stopped
+    privileged: true
+    devices: ["/dev/kmsg"]
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    logging: *logging
+
+volumes:
+  uploads:
+  backups:
+  redis-data:
+  letsencrypt:
+  certbot-www:
+  prometheus-data:
+  grafana-data:
+  loki-data:

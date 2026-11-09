@@ -1,0 +1,88 @@
+name: school
+description: "School ecosystem app for students, teachers, parents and administrators."
+publish_to: "none"
+
+# versionName+versionCode on Android. Bump the number after + for every Play Store upload.
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.6.1
+  # Navigation
+  go_router: ^17.5.0
+  # Typography
+  # Calendar
+  table_calendar: ^3.2.1
+  # Bus map (OpenStreetMap tiles, no API key or billing)
+  flutter_map: ^8.3.2
+  latlong2: ^0.10.1
+
+  cupertino_icons: ^1.0.8
+  http: ^1.6.0
+  geolocator: ^14.1.2
+  url_launcher: ^6.3.3
+  web: ^1.1.1
+  file_picker: ^13.3.2
+  web_socket_channel: ^3.0.3
+  flutter_localizations:
+    sdk: flutter
+  shared_preferences: ^2.5.6
+  firebase_core: ^5.1.0
+  firebase_messaging: ^17.0.1
+  flutter_secure_storage: ^11.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter:
+  uses-material-design: true
+
+  # Bundled (not downloaded at runtime): works offline, loads at once, and
+  # the server's security rules only allow fonts from the app itself.
+  assets:
+    - assets/fonts/OFL-Cairo.txt
+    - assets/fonts/OFL-PlusJakartaSans.txt
+  fonts:
+    - family: Cairo
+      fonts:
+        - asset: assets/fonts/Cairo-Regular.ttf
+        - asset: assets/fonts/Cairo-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Cairo-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Cairo-Bold.ttf
+          weight: 700
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/fonts/PlusJakartaSans-Regular.ttf
+        - asset: assets/fonts/PlusJakartaSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/PlusJakartaSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/PlusJakartaSans-Bold.ttf
+          weight: 700
+
+# App icons (from assets/icon, drawn from the sign-in page's book and
+# gradient). Remake after changing them: dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: assets/icon/icon.png
+  adaptive_icon_background: assets/icon/background.png
+  adaptive_icon_foreground: assets/icon/foreground.png
+  # Android 13 "themed icons": the phone colours the book itself.
+  adaptive_icon_monochrome: assets/icon/foreground.png
+  web:
+    generate: true
+    image_path: assets/icon/icon.png
+    background_color: "#4C5FD5"
+    theme_color: "#4C5FD5"

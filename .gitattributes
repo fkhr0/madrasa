@@ -1,0 +1,12 @@
+# Linux line endings everywhere (the server, Docker and scripts run on Linux);
+# Windows ones only for the Windows .bat scripts.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+# Never touched as text.
+*.png binary
+*.jpg binary
+*.ttf binary
+*.otf binary
+*.jar binary
+*.docx binary

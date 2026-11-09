@@ -1,0 +1,11 @@
+# Made on the server, holding secrets.
+.env
+secrets/*
+!secrets/README.txt
+monitoring/alertmanager/alertmanager.yml
+
+# Terraform: state (knows your server) and your account's settings.
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/terraform.tfvars

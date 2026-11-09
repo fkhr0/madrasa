@@ -1,0 +1,8 @@
+# Only what the server image needs (server/Dockerfile); everything else —
+# secrets, local data, the Flutter source — never reaches the image.
+*
+!server/package.json
+!server/package-lock.json
+!server/src
+!server/public
+!build/web
