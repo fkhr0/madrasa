@@ -18,7 +18,7 @@ dependencies:
   go_router: ^17.5.0
   # Typography
   # Calendar
-  table_calendar: ^3.2.1
+  table_calendar: ^3.3.0
   # Bus map (OpenStreetMap tiles, no API key or billing)
   flutter_map: ^8.3.2
   latlong2: ^0.10.1
