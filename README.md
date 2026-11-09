@@ -50,9 +50,6 @@ flowchart LR
   phone with ETags and a 304 for unchanged data.
 - **Background jobs:** BullMQ with Baghdad-time schedules (exam reminders,
   fee reminders, summaries, nightly backup with an off-site copy).
-- **Arabic:** every text translated, Arabic number forms (يومان، 3 أيام،
-  11 يوماً), mixed Arabic/English text in the right direction; server texts
-  in each reader's language.
 - **Security:** see [docs/SECURITY_AUDIT.md](docs/SECURITY_AUDIT.md): token
   purposes, rate limits and lockout, upload checks (type sniffing, EXIF/GPS
   removal), CSP, IDOR tests, constant-time sign-in.
