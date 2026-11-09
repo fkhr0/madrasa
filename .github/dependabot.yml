@@ -1,17 +1,36 @@
-# Pull requests when a package has a fix (security first), every week.
+# Package updates: one grouped pull request per area each month, minor and
+# patch versions only. Major versions (breaking changes) are upgraded by hand.
+# Security fixes still come at once (Dependabot security updates).
 version: 2
+
 updates:
   - package-ecosystem: npm
     directory: /server
-    schedule: { interval: weekly }
-    open-pull-requests-limit: 5
+    schedule: { interval: monthly }
+    groups:
+      server: { patterns: ["*"] }
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
   - package-ecosystem: pub
     directory: /
-    schedule: { interval: weekly }
-    open-pull-requests-limit: 5
+    schedule: { interval: monthly }
+    groups:
+      app: { patterns: ["*"] }
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
   - package-ecosystem: docker
     directory: /server
-    schedule: { interval: weekly }
+    schedule: { interval: monthly }
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
   - package-ecosystem: github-actions
     directory: /
-    schedule: { interval: weekly }
+    schedule: { interval: monthly }
+    groups:
+      actions: { patterns: ["*"] }
