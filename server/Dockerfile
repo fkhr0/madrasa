@@ -4,13 +4,13 @@
 # The web app (build/web) is built first: flutter build web.
 
 # ── 1. Packages, without the test tools ──
-FROM node:22-bookworm-slim AS deps
+FROM node:26-bookworm-slim AS deps
 WORKDIR /app
 COPY server/package.json server/package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
 # ── 2. What runs ──
-FROM node:22-bookworm-slim
+FROM node:26-bookworm-slim
 
 # pg_dump for the nightly backup (PostgreSQL 18's: newer works with older
 # servers), and tini so Ctrl+C / docker stop reach Node and it closes cleanly.
