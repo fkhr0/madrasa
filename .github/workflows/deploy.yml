@@ -25,19 +25,29 @@ jobs:
   tests:
     uses: ./.github/workflows/ci.yml
 
-  image:
+  # The web app goes inside the image (the server shows it). Flutter runs on
+  # a normal machine; the image is built on an ARM one.
+  web:
     needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable, flutter-version: 3.44.4, cache: true }
+      - run: flutter build web --release --no-wasm-dry-run --no-web-resources-cdn --dart-define=API_URL=origin
+      - uses: actions/upload-artifact@v4
+        with: { name: web, path: build/web, retention-days: 1 }
+
+  image:
+    needs: web
     # Free ARM machines for public repositories: a native build for the server.
     runs-on: ubuntu-24.04-arm
     outputs:
       tag: ${{ steps.tag.outputs.tag }}
     steps:
       - uses: actions/checkout@v4
-
-      # The web app goes inside the image (the server shows it).
-      - uses: subosito/flutter-action@v2
-        with: { channel: stable, flutter-version: 3.44.4, cache: true }
-      - run: flutter build web --release --no-wasm-dry-run --no-web-resources-cdn --dart-define=API_URL=origin
+      - uses: actions/download-artifact@v4
+        with: { name: web, path: build/web }
 
       - id: tag
         run: echo "tag=${IMAGE,,}:${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
