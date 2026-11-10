@@ -1,7 +1,6 @@
 // Copies of the backups away from the server (a dead server must not take its
 // backups with it): the nightly database dump and uploaded files go to an
-// S3-compatible bucket, Oracle Object Storage (free 20 GB), Cloudflare R2, AWS
-// S3.
+// S3-compatible bucket: AWS S3, Oracle Object Storage, Cloudflare R2.
 const fs = require("fs");
 const path = require("path");
 const config = require("../config");
@@ -17,7 +16,10 @@ function s3() {
     client = new S3Client({
       endpoint: b.endpoint || undefined,
       region: b.region,
-      credentials: { accessKeyId: b.accessKeyId, secretAccessKey: b.secretAccessKey },
+      // No keys: the server's own AWS role.
+      credentials: b.accessKeyId
+        ? { accessKeyId: b.accessKeyId, secretAccessKey: b.secretAccessKey }
+        : undefined,
       forcePathStyle: b.pathStyle,
     });
   }

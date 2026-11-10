@@ -25,7 +25,7 @@ offline reading; a "Try the app" demo school that resets every night.
 |---|---|
 | App | Flutter, Riverpod, go_router, flutter_map (OpenStreetMap), Firebase Cloud Messaging, Web Push |
 | Server | Node.js, Express 5, PostgreSQL (PGlite locally, Neon online), Redis, BullMQ, WebSocket, Zod |
-| Infrastructure | Docker, Nginx (two API copies, load balancing, TLS), Terraform (Oracle Cloud), GitHub Actions |
+| Infrastructure | Docker, Nginx (two API copies, load balancing, TLS), Terraform (AWS, Oracle Cloud), GitHub Actions |
 | Monitoring | Prometheus, Grafana, Loki, Alertmanager (Telegram), node exporter, cAdvisor |
 
 ```mermaid
