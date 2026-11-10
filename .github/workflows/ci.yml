@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: server } }
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with: { node-version: 22, cache: npm, cache-dependency-path: server/package-lock.json }
       - run: npm ci
       - run: npm test
@@ -38,8 +38,8 @@ jobs:
       TEST_DATABASE_URL: postgres://postgres:test@localhost:5432/school_test
       PG_DUMP: pg_dump
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with: { node-version: 22, cache: npm, cache-dependency-path: server/package-lock.json }
       - run: npm ci
       - run: npm run test:pg
@@ -48,7 +48,7 @@ jobs:
     name: App analyze and tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: subosito/flutter-action@v2
         with: { channel: stable, flutter-version: 3.44.4, cache: true }
       - run: flutter pub get
@@ -59,18 +59,18 @@ jobs:
     name: Security scans
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
       # Passwords or keys committed by mistake (whole history).
-      - uses: gitleaks/gitleaks-action@v2
+      - uses: gitleaks/gitleaks-action@v3
         env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
       # Known holes in the server's packages (high and critical fail).
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with: { node-version: 22 }
       - run: npm audit --omit=dev --audit-level=high
         working-directory: server
       # Mistakes in the Dockerfile.
-      - uses: hadolint/hadolint-action@v3.1.0
+      - uses: hadolint/hadolint-action@v3.5.0
         with: { dockerfile: server/Dockerfile }
       # Secrets and misconfigurations in the deploy files.
       - uses: aquasecurity/trivy-action@v0.36.0
