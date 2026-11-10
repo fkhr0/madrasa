@@ -55,8 +55,9 @@ function errorHandler(err, req, res, _next) {
 
   // The method and address come from the caller: no line breaks (fake log
   // lines), never used as a format string.
-  const clean = (text) => String(text).replace(/[\r\n]/g, " ").slice(0, 300);
-  console.error("[%s %s]", clean(req.method), clean(req.originalUrl), err);
+  const url = String(req.originalUrl).slice(0, 300).replace(/\n|\r/g, "");
+  const method = String(req.method).slice(0, 20).replace(/\n|\r/g, "");
+  console.error("[%s %s]", method, url, err);
   res.status(500).json({ error: t("Something went wrong on the server.", [], language) });
 }
 
