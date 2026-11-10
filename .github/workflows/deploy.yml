@@ -75,6 +75,9 @@ jobs:
           severity: CRITICAL,HIGH
           ignore-unfixed: true
           exit-code: "1"
+        env:
+          # The image is ARM only.
+          TRIVY_PLATFORM: linux/arm64
 
   deploy:
     needs: image
