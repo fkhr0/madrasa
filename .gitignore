@@ -51,3 +51,6 @@ app.*.map.json
 # Private notes and documents (kept on this PC only)
 /docs/internal/
 /School_ecosystem.docx
+
+# Crash logs from Git Bash
+*.stackdump
