@@ -45,11 +45,11 @@ COPY build/web ./web
 
 # Not root: a hole in the app can't take over the container.
 RUN mkdir -p /data/uploads /data/backups && chown -R node:node /data
-USER node
+USER 1000
 
 EXPOSE 3000
 HEALTHCHECK --interval=15s --timeout=5s --start-period=40s --retries=3 \
-  CMD node -e "fetch('http://localhost:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+  CMD ["node", "-e", "fetch('http://localhost:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["node", "src/server.js"]
