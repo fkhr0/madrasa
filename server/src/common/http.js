@@ -53,7 +53,10 @@ function errorHandler(err, req, res, _next) {
     return res.status(413).json({ error: t("The file is too big.", [], language) });
   }
 
-  console.error(`[${req.method} ${req.originalUrl}]`, err);
+  // The address is the caller's: no line breaks (fake log lines), not used
+  // as a format string.
+  const url = String(req.originalUrl).replace(/[\r\n\t]/g, " ").slice(0, 300);
+  console.error("[%s %s]", req.method, url, err);
   res.status(500).json({ error: t("Something went wrong on the server.", [], language) });
 }
 

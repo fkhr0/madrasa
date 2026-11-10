@@ -51,6 +51,7 @@ function typeOf(name) {
 
 /** true when the bytes really are what the name says. */
 function matches(type, bytes) {
+  if (!Buffer.isBuffer(bytes)) return false;
   // Text can be a single letter; every other kind has a longer signature.
   return (type.check === is.text || bytes.length >= 4) && type.check(bytes);
 }

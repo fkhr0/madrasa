@@ -20,16 +20,33 @@ function pushKeys() {
   if (keys) return keys;
   if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
     keys = { publicKey: process.env.VAPID_PUBLIC_KEY, privateKey: process.env.VAPID_PRIVATE_KEY };
-  } else if (fs.existsSync(KEYS_FILE)) {
-    keys = JSON.parse(fs.readFileSync(KEYS_FILE, "utf8"));
   } else {
-    keys = webPush.generateVAPIDKeys();
-    fs.mkdirSync(path.dirname(KEYS_FILE), { recursive: true });
-    fs.writeFileSync(KEYS_FILE, JSON.stringify(keys));
+    keys = readOrMakeKeys();
   }
   // Push services ask for a contact for the sender.
   webPush.setVapidDetails("mailto:admin@school.local", keys.publicKey, keys.privateKey);
   return keys;
+}
+
+/**
+ * The saved keys, or new ones. Read directly (no "exists?" check first) and
+ * written only if no file is there ("wx"), so two starts can't race.
+ */
+function readOrMakeKeys() {
+  try {
+    return JSON.parse(fs.readFileSync(KEYS_FILE, "utf8"));
+  } catch (e) {
+    if (e.code !== "ENOENT") throw e;
+  }
+  const made = webPush.generateVAPIDKeys();
+  fs.mkdirSync(path.dirname(KEYS_FILE), { recursive: true });
+  try {
+    fs.writeFileSync(KEYS_FILE, JSON.stringify(made), { flag: "wx" });
+    return made;
+  } catch (e) {
+    if (e.code !== "EEXIST") throw e;
+    return JSON.parse(fs.readFileSync(KEYS_FILE, "utf8")); // the other one won
+  }
 }
 
 function saveSubscription(userId, { endpoint, keys: k, language = "ar" }) {

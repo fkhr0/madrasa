@@ -28,8 +28,9 @@ router.post(
   uploadLimit,
   express.raw({ type: () => true, limit: `${Math.max(config.maxUploadMb, config.maxVideoMb)}mb` }),
   async (req, res) => {
-    const bytes = req.body;
-    if (!Buffer.isBuffer(bytes) || bytes.length === 0) {
+    // express.raw gives bytes; anything else (no body) is an empty upload.
+    const bytes = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
+    if (bytes.length === 0) {
       throw new HttpError(400, "The file is empty.");
     }
     const name = cleanName(decodeURIComponent(req.get("X-File-Name") || "file"));

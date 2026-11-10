@@ -48,7 +48,7 @@ async function main() {
   );
   if (applied.length) console.log(`Migrations applied: ${applied.join(", ")}`);
   if (seeded) {
-    console.log(`Demo data added. Demo password: ${config.demoPassword}`);
+    console.log("Demo data added (password: DEMO_PASSWORD in .env).");
   }
 
   const server = createApp().listen(config.port, () => {
