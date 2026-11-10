@@ -14,6 +14,7 @@ FROM node:22-bookworm-slim
 
 # pg_dump for the nightly backup (PostgreSQL 18's: newer works with older
 # servers), and tini so Ctrl+C / docker stop reach Node and it closes cleanly.
+# npm is gone: only stage 1 needs it, and its own packages had known holes.
 # hadolint ignore=DL3008
 RUN apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates curl gnupg tini \
@@ -25,7 +26,8 @@ RUN apt-get update \
  && apt-get update \
  && apt-get install -y --no-install-recommends postgresql-client-18 \
  && apt-get purge -y gnupg curl && apt-get autoremove -y \
- && rm -rf /var/lib/apt/lists/*
+ && rm -rf /var/lib/apt/lists/* \
+ && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 
 ENV NODE_ENV=production \
     PORT=3000 \
