@@ -5,20 +5,23 @@ Phones / browsers ──https──► Nginx (Let's Encrypt, rate limits, load b
                                  ├─► api1 ┐  Node, two copies: one restarts
                                  └─► api2 ┘  while the other serves
                      worker (jobs, nightly backup) ── Redis (cache, live updates, queue)
-                     Neon PostgreSQL (managed)      Oracle Object Storage (off-site backups)
+                     Neon PostgreSQL (managed)      S3 bucket (off-site backups)
  Monitoring: Prometheus ─ Grafana ─ Loki/Promtail ─ Alertmanager → Telegram
  Access:     SSH and Grafana only over Tailscale
 ```
 
-Everything is free: Oracle Cloud Always Free (ARM, 4 CPUs, 24 GB), Neon free,
-DuckDNS, Let's Encrypt, GitHub Actions, Tailscale.
+The server is one ARM machine on AWS (t4g.small, 2 GB, on the free plan's
+credits); Oracle Cloud's Always Free tier works too, with the same scripts.
+Everything else is free: Neon, DuckDNS, Let's Encrypt, GitHub Actions,
+Tailscale.
 
 ## Files
 
 | Path | What |
 |---|---|
-| `terraform/` | Oracle: network, cloud firewall, the server, the backup bucket |
-| `scripts/server-setup.sh` | Once: updates, SSH hardening, fail2ban, firewall, Docker, Tailscale |
+| `terraform/aws/` | AWS: the server with a fixed IP, cloud firewall, backup bucket (keyless, a role), budget alert |
+| `terraform/oracle/` | The same on Oracle Cloud Always Free |
+| `scripts/server-setup.sh` | Once: updates, SSH hardening, fail2ban, firewall, swap, Docker, Tailscale |
 | `scripts/lock-ssh.sh` | After Tailscale works: SSH closed to the internet |
 | `scripts/configure.sh` | Checks `.env`, writes Alertmanager's config |
 | `scripts/certificate.sh` | First HTTPS certificate, then a daily renewal timer |
@@ -31,7 +34,7 @@ DuckDNS, Let's Encrypt, GitHub Actions, Tailscale.
 
 ## First time
 
-1. `terraform apply` (in `terraform/`, with `terraform.tfvars`).
+1. `tofu apply` or `terraform apply` (in `terraform/aws/`, with `terraform.tfvars`).
 2. Point the DuckDNS name at the server's IP.
 3. On the server: `bash server-setup.sh`, then connect Tailscale and run `lock-ssh.sh`.
 4. `git clone` the repository to `/opt/madrasa`, `cp deploy/.env.example deploy/.env`, fill it in.

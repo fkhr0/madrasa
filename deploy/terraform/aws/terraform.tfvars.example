@@ -1,0 +1,8 @@
+# Copy to terraform.tfvars (never in git). Your AWS keys are not here:
+# run "aws configure" once and the profile is used.
+alert_email = "you@example.com"
+
+# region              = "eu-central-1"
+# instance_type       = "t4g.small"
+# ssh_public_key_path = "~/.ssh/id_ed25519.pub"
+# ssh_allowed_cidr    = "0.0.0.0/0"

@@ -5,7 +5,7 @@ secrets/*
 monitoring/alertmanager/alertmanager.yml
 
 # Terraform: state (knows your server) and your account's settings.
-terraform/.terraform/
-terraform/*.tfstate
-terraform/*.tfstate.*
-terraform/terraform.tfvars
+terraform/**/.terraform/
+terraform/**/*.tfstate
+terraform/**/*.tfstate.*
+terraform/**/terraform.tfvars

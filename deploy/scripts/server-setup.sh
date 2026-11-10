@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# One-time setup of a fresh Ubuntu 24.04 server (Oracle Cloud). Run as the
+# One-time setup of a fresh Ubuntu 24.04 server (AWS or Oracle). Run as the
 # default "ubuntu" user, over SSH:
 #   curl -fsSL <raw url of this file> | bash      (or copy it and: bash server-setup.sh)
 #
@@ -52,15 +52,29 @@ findtime = 10m
 EOF
 sudo systemctl enable --now fail2ban
 
-echo "== 3. Firewall (the server's own; Oracle's cloud firewall is the other layer)"
-# Oracle's Ubuntu images come with iptables rules that reject everything but
-# SSH: add the web ports before that REJECT rule, and the Tailscale network.
-for port in 80 443; do
-  sudo iptables -C INPUT -p tcp --dport "$port" -m state --state NEW -j ACCEPT 2>/dev/null \
-    || sudo iptables -I INPUT 5 -p tcp --dport "$port" -m state --state NEW -j ACCEPT
-done
-sudo iptables -C INPUT -i tailscale0 -j ACCEPT 2>/dev/null || sudo iptables -I INPUT 5 -i tailscale0 -j ACCEPT
+echo "== 3. Firewall (the server's own; the cloud firewall is the other layer)"
+allow() { sudo iptables -C INPUT "$@" -j ACCEPT 2>/dev/null || sudo iptables -I INPUT 1 "$@" -j ACCEPT; }
+# Oracle's images reject everything but SSH; AWS's allow everything. Same
+# result on both: web, Tailscale, SSH (until lock-ssh.sh), the rest dropped.
+allow -p tcp -m state --state NEW -m tcp --dport 22
+allow -p tcp --dport 443 -m state --state NEW
+allow -p tcp --dport 80 -m state --state NEW
+allow -p udp --dport 41641
+allow -i tailscale0
+allow -i lo
+allow -m state --state RELATED,ESTABLISHED
+sudo iptables -P INPUT DROP
 sudo netfilter-persistent save
+
+echo "== 3b. Swap (small servers: a full memory slows down instead of crashing)"
+if ! swapon --show | grep -q /swapfile; then
+  sudo fallocate -l 2G /swapfile
+  sudo chmod 600 /swapfile
+  sudo mkswap /swapfile >/dev/null
+  sudo swapon /swapfile
+  echo "/swapfile none swap sw 0 0" | sudo tee -a /etc/fstab >/dev/null
+fi
+echo "vm.swappiness = 10" | sudo tee /etc/sysctl.d/90-swap.conf >/dev/null
 
 echo "== 4. Docker"
 if ! command -v docker >/dev/null; then

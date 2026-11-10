@@ -20,5 +20,5 @@ while sudo iptables -C INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j AC
   sudo iptables -D INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
 done
 sudo netfilter-persistent save
-echo "SSH now only over Tailscale. Also remove port 22 from Oracle's security list"
-echo "(Terraform: ssh_allowed_cidr = \"\"), so both layers agree."
+echo "SSH now only over Tailscale. Also close port 22 in the cloud firewall"
+echo "(terraform.tfvars: ssh_allowed_cidr = \"\", then apply), so both layers agree."
