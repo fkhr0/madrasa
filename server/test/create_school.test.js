@@ -1,4 +1,4 @@
-// The command that makes a real school with one account per role.
+// The command that makes a real school: its admin, or one account per role.
 const { test, before, after } = require("node:test");
 const assert = require("node:assert/strict");
 const { startTestApp, signIn, close, request } = require("./helpers");
@@ -7,7 +7,7 @@ const { createSchool } = require("../src/db/create-school");
 let app, made;
 before(async () => {
   app = await startTestApp();
-  made = await createSchool("مدرسة التجربة");
+  made = await createSchool("مدرسة التجربة", { sample: true });
 });
 after(close);
 
@@ -37,4 +37,13 @@ test("the school is ready to use: class, subject, teacher, child", async () => {
 
 test("the same name twice is refused", async () => {
   await assert.rejects(createSchool("مدرسة التجربة"), /exists already/);
+});
+
+test("normally only the school and its admin: the office adds the rest", async () => {
+  const school = await createSchool("مدرسة الرافدين", { adminName: "علي حسن" });
+  assert.deepEqual(school.people.map((p) => [p.role, p.name]), [["admin", "علي حسن"]]);
+  const [admin] = school.people;
+  const as = { Authorization: `Bearer ${(await signIn(app, admin.id, admin.password)).accessToken}` };
+  assert.deepEqual((await request(app).get("/academics/classes").set(as).expect(200)).body, []);
+  assert.deepEqual((await request(app).get("/people?role=student").set(as).expect(200)).body, []);
 });

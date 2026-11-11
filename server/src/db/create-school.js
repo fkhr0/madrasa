@@ -1,6 +1,7 @@
-// A real school with one account for each role, for trying the app with
-// normal sign-in (the demo has no passwords online). On the server:
-//   docker compose exec api1 node src/db/create-school.js "School name"
+// A new school and its office (admin) account: the office then adds its
+// classes and people in the app. On the server:
+//   docker compose exec api1 node src/db/create-school.js "School name" ["Admin name"]
+//   ... --sample   also a class, a subject and one account per role (testing)
 // Prints each ID and a temporary password once; everyone chooses their own
 // password at first sign-in.
 const crypto = require("crypto");
@@ -31,7 +32,7 @@ function currentYear(today = new Date()) {
 }
 
 /** Makes the school and its accounts; returns them with their passwords. */
-async function createSchool(name) {
+async function createSchool(name, { adminName = "مدير المدرسة", sample = false } = {}) {
   if (await queryOne("SELECT id FROM institutions WHERE name = $1", [name])) {
     throw new Error(`A school called "${name}" exists already.`);
   }
@@ -39,13 +40,13 @@ async function createSchool(name) {
   const institutionId = `inst-${crypto.randomUUID().slice(0, 8)}`;
   const year = currentYear();
   const calendarYear = new Date().getFullYear();
-  const people = [
-    { role: "admin", name: "مدير المدرسة" },
+  const people = [{ role: "admin", name: adminName }];
+  if (sample) people.push(
     { role: "teacher", name: "مدرس الرياضيات", subjectName: "الرياضيات" },
     { role: "student", name: "طالب التجربة", className: "الأول المتوسط - أ" },
     { role: "parent", name: "ولي أمر الطالب" },
     { role: "driver", name: "سائق الحافلة", phone: "+964 770 000 0000" },
-  ];
+  );
 
   await transaction(async (tx) => {
     await tx.query(
@@ -75,6 +76,7 @@ async function createSchool(name) {
         passwordHash: await bcrypt.hash(person.password, config.bcryptCost),
       });
     }
+    if (!sample) return;
     const byRole = Object.fromEntries(people.map((p) => [p.role, p]));
     await repo.setChildren(tx, byRole.parent.id, [byRole.student.id]);
 
@@ -99,13 +101,15 @@ async function createSchool(name) {
 }
 
 async function main() {
-  const name = process.argv[2]?.trim();
+  const args = process.argv.slice(2);
+  const sample = args.includes("--sample");
+  const [name, adminName] = args.filter((a) => a !== "--sample").map((a) => a.trim());
   if (!name) {
-    console.error('Usage: node src/db/create-school.js "School name"');
+    console.error('Usage: node src/db/create-school.js "School name" ["Admin name"] [--sample]');
     process.exit(1);
   }
   await connect();
-  const { institutionId, people } = await createSchool(name);
+  const { institutionId, people } = await createSchool(name, { adminName: adminName || undefined, sample });
   console.log(`\n${name} (${institutionId}): sign in with these, then choose a new password.\n`);
   for (const p of people) console.log(`  ${p.role.padEnd(8)} ${p.id}   ${p.password}`);
   console.log("");
