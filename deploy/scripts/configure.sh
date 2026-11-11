@@ -5,7 +5,10 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 [[ -f .env ]] || { echo "No .env: copy .env.example to .env and fill it in." >&2; exit 1; }
-set -a; source .env; set +a
+# Read as plain text, not run: values may hold & or $ (database addresses).
+while IFS='=' read -r key value; do
+  if [[ $key =~ ^[A-Z_][A-Z0-9_]*$ ]]; then export "$key=$value"; fi
+done < .env
 
 missing=()
 for name in DOMAIN IMAGE DATABASE_URL JWT_ACCESS_SECRET JWT_REFRESH_SECRET \
