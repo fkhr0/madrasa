@@ -1,11 +1,11 @@
 // Files in an S3 bucket (Cloudflare R2, MinIO...), as with several servers.
-// s3rver is a small S3 server for tests.
+// A small S3 server in memory stands in for the bucket.
 const { test, before, after } = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
-const S3rver = require("s3rver");
+const { startFakeS3 } = require("./fake-s3");
 const { startTestApp, signIn, close, request } = require("./helpers");
 const config = require("../src/config");
 const { query } = require("../src/db/database");
@@ -14,21 +14,15 @@ const { cleanUp } = require("../src/jobs/upkeep");
 let app, bucketServer;
 const as = {};
 before(async () => {
-  bucketServer = new S3rver({
-    port: 0,
-    address: "127.0.0.1",
-    silent: true,
-    directory: fs.mkdtempSync(path.join(os.tmpdir(), "school-s3-")),
-    configureBuckets: [{ name: "school" }],
-  });
-  const { port } = await bucketServer.run();
+  bucketServer = await startFakeS3();
+  const { port } = bucketServer;
   Object.assign(config, { storage: "s3" });
   Object.assign(config.s3, {
     endpoint: `http://127.0.0.1:${port}`,
     region: "us-east-1",
     bucket: "school",
-    accessKeyId: "S3RVER",
-    secretAccessKey: "S3RVER",
+    accessKeyId: "test",
+    secretAccessKey: "test",
     pathStyle: true,
   });
 
@@ -88,7 +82,7 @@ test("files nobody uses are removed from the bucket too", async () => {
   const s3 = new S3Client({
     endpoint: config.s3.endpoint,
     region: config.s3.region,
-    credentials: { accessKeyId: "S3RVER", secretAccessKey: "S3RVER" },
+    credentials: { accessKeyId: "test", secretAccessKey: "test" },
     forcePathStyle: true,
   });
   await assert.rejects(s3.send(new HeadObjectCommand({ Bucket: "school", Key: `uploads/${file.id}` })));
