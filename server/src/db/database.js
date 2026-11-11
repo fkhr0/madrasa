@@ -34,13 +34,19 @@ async function connect({ dataDir } = {}) {
       exec: (text) => pool.query(text),
       async withLock(name, work) {
         // A PostgreSQL "advisory lock": a named lock that other servers
-        // wait on. Held by this connection until it unlocks.
+        // wait on. Held by an open transaction, so it also works through a
+        // pooler (Neon's), which moves plain connections between statements.
         const client = await pool.connect();
         try {
-          await client.query("SELECT pg_advisory_lock(hashtext($1))", [name]);
-          return await work();
+          await client.query("BEGIN");
+          await client.query("SELECT pg_advisory_xact_lock(hashtext($1))", [name]);
+          const result = await work();
+          await client.query("COMMIT");
+          return result;
+        } catch (err) {
+          await client.query("ROLLBACK").catch(() => {});
+          throw err;
         } finally {
-          await client.query("SELECT pg_advisory_unlock(hashtext($1))", [name]).catch(() => {});
           client.release();
         }
       },

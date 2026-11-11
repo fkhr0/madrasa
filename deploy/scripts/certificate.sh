@@ -4,7 +4,10 @@
 #   bash scripts/certificate.sh renew    what the daily timer runs
 set -euo pipefail
 cd "$(dirname "$0")/.."
-set -a; source .env; set +a
+# Read as plain text, not run: values may hold & or $ (database addresses).
+while IFS='=' read -r key value; do
+  if [[ $key =~ ^[A-Z_][A-Z0-9_]*$ ]]; then export "$key=$value"; fi
+done < .env
 
 if [[ "${1:-}" == "renew" ]]; then
   # Nginx serves the check files from certbot-www; then it reloads the new one.
