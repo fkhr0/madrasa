@@ -71,7 +71,9 @@ function headersMiddleware() {
       : false,
     // Maps tiles and fonts are loaded from other sites.
     crossOriginEmbedderPolicy: false,
-    referrerPolicy: { policy: "no-referrer" },
+    // Other sites get only our origin, never a path. OpenStreetMap refuses
+    // map tiles with no Referer at all (its usage policy).
+    referrerPolicy: { policy: "strict-origin-when-cross-origin" },
   });
 }
 
