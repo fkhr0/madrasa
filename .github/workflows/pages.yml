@@ -1,0 +1,44 @@
+# The web app on GitHub Pages: a CDN close to every visitor, so the first
+# load (about 4 MB) is quick from Iraq too. It talks to the API on the server.
+#   https://fkhr0.github.io/madrasa
+name: pages
+
+on:
+  push:
+    branches: [main]
+    paths: ["lib/**", "web/**", "assets/**", "pubspec.*", ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable, flutter-version: 3.44.4, cache: true }
+      # The engine files come from Google's CDN (gstatic), also close to everyone.
+      - run: >
+          flutter build web --release --no-wasm-dry-run
+          --base-href /madrasa/
+          --dart-define=API_URL=https://madrasa-iq.duckdns.org
+      - uses: actions/upload-pages-artifact@v5
+        with: { path: build/web }
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
+    steps:
+      - id: pages
+        uses: actions/deploy-pages@v5
