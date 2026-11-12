@@ -1,5 +1,7 @@
 # مدرسة · Madrasa
 
+**Live demo:** [fkhr0.github.io/madrasa](https://fkhr0.github.io/madrasa) (tap «جرّب التطبيق» to try any role)
+
 ![Madrasa](docs/play-store/feature-graphic-1024x500.png)
 
 A school app for Iraqi schools: one calm place for **students, parents,
