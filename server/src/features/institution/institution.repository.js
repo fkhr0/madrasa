@@ -2,7 +2,7 @@
 // text (::text), so no time zone can move a holiday to the day before.
 const { query, queryOne } = require("../../db/database");
 
-const INSTITUTION = "id, name, city, address, phone, latitude, longitude";
+const INSTITUTION = "id, name, city, address, phone, email, whatsapp, latitude, longitude";
 
 function findInstitution(id) {
   return queryOne(`SELECT ${INSTITUTION} FROM institutions WHERE id = $1`, [id]);
@@ -11,10 +11,11 @@ function findInstitution(id) {
 function updateInstitution(id, i) {
   return queryOne(
     `UPDATE institutions
-     SET name = $2, city = $3, address = $4, phone = $5, latitude = $6, longitude = $7
+     SET name = $2, city = $3, address = $4, phone = $5, latitude = $6, longitude = $7,
+         email = $8, whatsapp = $9
      WHERE id = $1
      RETURNING ${INSTITUTION}`,
-    [id, i.name, i.city, i.address, i.phone, i.latitude ?? null, i.longitude ?? null],
+    [id, i.name, i.city, i.address, i.phone, i.latitude ?? null, i.longitude ?? null, i.email, i.whatsapp],
   );
 }
 

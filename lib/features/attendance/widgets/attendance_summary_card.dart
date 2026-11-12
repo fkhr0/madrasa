@@ -28,7 +28,9 @@ class AttendanceSummaryCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '${summary.rate.toStringAsFixed(1)}%',
+                summary.rate == null
+                    ? '–'
+                    : '${summary.rate!.toStringAsFixed(1)}%',
                 style: context.text.headlineMedium,
               ),
               const SizedBox(width: AppSpacing.sm),

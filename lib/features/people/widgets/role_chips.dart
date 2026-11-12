@@ -36,7 +36,7 @@ class RoleChips extends StatelessWidget {
             Padding(
               padding: const EdgeInsetsDirectional.only(end: AppSpacing.sm),
               child: ChoiceChip(
-                label: Text(plural ? '${role.label}s' : role.label),
+                label: Text(plural ? role.pluralLabel : role.label),
                 selected: role == selected,
                 onSelected: (_) => onSelected(role),
               ),

@@ -23,7 +23,9 @@ List<Highlight> highlightsFor(InsightsModel data) {
   final highlights = <Highlight>[];
 
   // Attendance trend.
-  if (data.attendanceChange >= 1) {
+  if (!data.hasAttendance) {
+    // Nothing to compare yet.
+  } else if (data.attendanceChange >= 1) {
     highlights.add(
       Highlight(
         tr('Attendance is up {0} points from the previous period.', [
@@ -43,8 +45,10 @@ List<Highlight> highlightsFor(InsightsModel data) {
   }
 
   // The weakest class, when it is clearly below the school.
-  final weakClass = lowest(data.attendanceByClass);
-  if (data.attendanceRate - weakClass.value >= 0.04) {
+  final weakClass = data.attendanceByClass.isEmpty
+      ? null
+      : lowest(data.attendanceByClass);
+  if (weakClass != null && data.attendanceRate - weakClass.value >= 0.04) {
     highlights.add(
       Highlight(
         tr(
@@ -56,9 +60,12 @@ List<Highlight> highlightsFor(InsightsModel data) {
   }
 
   // A day students skip more than others (often Thursday).
-  final weakDay = lowest(data.attendanceByDay);
-  final bestDay = highest(data.attendanceByDay);
-  if (bestDay.value - weakDay.value >= 0.05) {
+  final days = data.attendanceByDay;
+  final weakDay = days.isEmpty ? null : lowest(days);
+  final bestDay = days.isEmpty ? null : highest(days);
+  if (weakDay != null &&
+      bestDay != null &&
+      bestDay.value - weakDay.value >= 0.05) {
     highlights.add(
       Highlight(
         tr('{0} attendance is {1} — {2} points below {3}.', [
@@ -72,8 +79,8 @@ List<Highlight> highlightsFor(InsightsModel data) {
   }
 
   // The hardest subject.
-  final weakSubject = lowest(data.gradeBySubject);
-  if (weakSubject.value < GradeScale.passMark + 15) {
+  final weakSubject = data.hasGrades ? lowest(data.gradeBySubject) : null;
+  if (weakSubject != null && weakSubject.value < GradeScale.passMark + 15) {
     highlights.add(
       Highlight(
         tr(
@@ -85,7 +92,7 @@ List<Highlight> highlightsFor(InsightsModel data) {
   }
 
   // Homework.
-  if (data.submissionRate < 0.8) {
+  if (data.hasHomework && data.submissionRate < 0.8) {
     highlights.add(
       Highlight(
         tr('Only {0} of homework was handed in.', [pct(data.submissionRate)]),
@@ -94,7 +101,9 @@ List<Highlight> highlightsFor(InsightsModel data) {
   }
 
   // Buses.
-  if (data.onTimeRate < 0.85) {
+  if (!data.hasTrips) {
+    // No trips yet: nothing to say about buses.
+  } else if (data.onTimeRate < 0.85) {
     highlights.add(
       Highlight(
         tr('{0} of bus trips were late ({1} min on average).', [

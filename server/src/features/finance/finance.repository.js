@@ -3,8 +3,9 @@ const { query, queryOne } = require("../../db/database");
 const institution = require("../institution/institution.repository");
 
 /**
- * The school's fee settings, created with defaults the first time. With no
- * installment dates yet, everything is due at the start of the study year.
+ * The school's fee settings, created empty the first time. "configured" stays
+ * false until the office saves them; with no installment dates yet,
+ * everything is due at the start of the study year.
  */
 async function settings(institutionId) {
   await query(
@@ -12,7 +13,7 @@ async function settings(institutionId) {
     [institutionId],
   );
   const row = await queryOne(
-    `SELECT tuition, bus_fee AS "busFee",
+    `SELECT tuition, bus_fee AS "busFee", configured,
             ARRAY(SELECT d::text FROM unnest(due_dates) d ORDER BY d) AS "dueDates"
      FROM finance_settings WHERE institution_id = $1`,
     [institutionId],
@@ -32,10 +33,10 @@ async function settings(institutionId) {
 
 async function saveSettings(tx, institutionId, { tuition, busFee, dueDates, classTuition }) {
   await tx.query(
-    `INSERT INTO finance_settings (institution_id, tuition, bus_fee, due_dates)
-     VALUES ($1, $2, $3, $4::date[])
+    `INSERT INTO finance_settings (institution_id, tuition, bus_fee, due_dates, configured)
+     VALUES ($1, $2, $3, $4::date[], true)
      ON CONFLICT (institution_id) DO UPDATE
-     SET tuition = $2, bus_fee = $3, due_dates = $4::date[]`,
+     SET tuition = $2, bus_fee = $3, due_dates = $4::date[], configured = true`,
     [institutionId, tuition, busFee, dueDates],
   );
   for (const [classId, amount] of Object.entries(classTuition)) {
@@ -60,7 +61,7 @@ async function accounts(institutionId, studentId = null) {
   const students = await query(
     `SELECT u.id AS "studentId", u.name AS "studentName",
             COALESCE(u.class_name, '') AS "className",
-            COALESCE(ct.tuition, $3) AS tuition,
+            CASE WHEN $4 THEN COALESCE(ct.tuition, $3) ELSE 0 END AS tuition,
             EXISTS (SELECT 1 FROM route_students rs WHERE rs.student_id = u.id) AS "ridesBus",
             COALESCE(d.percent, 0) AS "discountPercent", COALESCE(d.reason, '') AS "discountReason",
             p.id AS "parentId", p.name AS "parentName"
@@ -75,7 +76,7 @@ async function accounts(institutionId, studentId = null) {
      WHERE u.institution_id = $1 AND u.role = 'student'
        AND ($2::text IS NULL OR u.id = $2) AND (u.is_active OR u.id = $2)
      ORDER BY u.name`,
-    [institutionId, studentId, fees.tuition],
+    [institutionId, studentId, fees.tuition, fees.configured],
   );
   if (students.length === 0) return [];
 
@@ -91,7 +92,8 @@ async function accounts(institutionId, studentId = null) {
     ...s,
     parentId: s.parentId ?? "",
     parentName: s.parentName ?? "",
-    busFee: ridesBus ? fees.busFee : 0,
+    busFee: ridesBus && fees.configured ? fees.busFee : 0,
+    feesSet: fees.configured,
     dueDates: fees.dueDates,
     payments: payments.filter((p) => p.studentId === s.studentId),
   }));

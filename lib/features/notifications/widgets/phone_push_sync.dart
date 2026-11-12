@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/router/app_routes.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/config/app_config.dart';
@@ -105,8 +107,19 @@ class _PhonePushSyncState extends ConsumerState<PhonePushSync> {
     } catch (_) {}
   }
 
+  /// A tab (or a chat inside Messages) is opened in place; any other page
+  /// on top of the app, so back returns to it instead of closing the app.
   void _open(String route) {
-    if (mounted && route.startsWith('/')) context.go(route);
+    if (!mounted || !route.startsWith('/')) return;
+    const tabs = [
+      AppRoutes.home,
+      AppRoutes.schedule,
+      AppRoutes.work,
+      AppRoutes.messages,
+      AppRoutes.more,
+    ];
+    final inTab = tabs.any((t) => route == t || route.startsWith('$t/'));
+    inTab ? context.go(route) : context.push(route);
   }
 
   @override

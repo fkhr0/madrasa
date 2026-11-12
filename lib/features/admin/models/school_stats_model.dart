@@ -35,8 +35,12 @@ class SchoolStatsModel {
         ],
       );
 
+  /// Has any class taken attendance today?
+  bool get attendanceTakenToday => presentToday + absentToday > 0;
+
+  /// 0 until attendance is taken (the card says "not taken yet" then).
   double get attendanceRateToday {
     final total = presentToday + absentToday;
-    return total == 0 ? 100 : presentToday / total * 100;
+    return total == 0 ? 0 : presentToday / total * 100;
   }
 }

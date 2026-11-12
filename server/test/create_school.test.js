@@ -47,3 +47,24 @@ test("normally only the school and its admin: the office adds the rest", async (
   assert.deepEqual((await request(app).get("/academics/classes").set(as).expect(200)).body, []);
   assert.deepEqual((await request(app).get("/people?role=student").set(as).expect(200)).body, []);
 });
+
+test("a new school has no fees until the office sets them: nothing is late", async () => {
+  const [admin, , student, parent] = made.people;
+  const asParent = { Authorization: `Bearer ${(await signIn(app, parent.id, parent.password)).accessToken}` };
+  const before = (await request(app).get(`/finance/accounts/${student.id}`).set(asParent).expect(200)).body;
+  assert.equal(before.feesSet, false);
+  assert.equal(before.tuition, 0);
+  assert.equal(before.busFee, 0);
+
+  const asAdmin = { Authorization: `Bearer ${(await signIn(app, admin.id, admin.password)).accessToken}` };
+  // With no dates saved, the first one offered is the start of the study year.
+  const { dueDates } = (await request(app).get("/finance/settings").set(asAdmin).expect(200)).body;
+  await request(app)
+    .put("/finance/settings")
+    .set(asAdmin)
+    .send({ tuition: 1500000, busFee: 0, dueDates, classTuition: {} })
+    .expect(200);
+  const after = (await request(app).get(`/finance/accounts/${student.id}`).set(asParent).expect(200)).body;
+  assert.equal(after.feesSet, true);
+  assert.equal(after.tuition, 1500000);
+});

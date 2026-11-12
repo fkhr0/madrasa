@@ -47,10 +47,12 @@ final myTransportProvider = FutureProvider<StudentTransportModel?>(
       .getStudentTransport(ref.watch(activeStudentIdProvider)),
 );
 
-/// Live trip of a route.
-final tripProvider = StreamProvider.family<TripModel, String>(
-  (ref, routeId) => ref.watch(transportRepositoryProvider).watchTrip(routeId),
-);
+/// Live trip of a route. A new one for each signed-in user: signing out ends
+/// the old one's live updates and checks.
+final tripProvider = StreamProvider.family<TripModel, String>((ref, routeId) {
+  ref.watch(authProvider.select((user) => user?.id));
+  return ref.watch(transportRepositoryProvider).watchTrip(routeId);
+});
 
 final busRoutesProvider = FutureProvider<List<BusRouteModel>>(
   (ref) => ref.watch(transportRepositoryProvider).getRoutes(),

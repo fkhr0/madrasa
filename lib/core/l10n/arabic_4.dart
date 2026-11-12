@@ -347,4 +347,58 @@ const Map<String, String> arabic4 = {
   'Trips, stops and who is on board': 'الرحلات والمواقف ومن في الباص',
   'Demo school · it goes back to how it was every night':
       'مدرسة تجريبية · تعود كما كانت كل ليلة',
+  // Second phone test: empty schools, help contacts, location.
+  'Attendance not taken yet': 'لم يُسجَّل الحضور بعد',
+  'It fills in as teachers take each lesson.':
+      'يكتمل كلما سجّل المدرسون حضور كل حصة.',
+  'Administrators': 'الإداريون',
+  'Bus drivers': 'سائقو الباصات',
+  'Turn on location': 'تشغيل الموقع',
+  'Open settings': 'فتح الإعدادات',
+  'Location is needed': 'الموقع مطلوب',
+  'OK': 'حسناً',
+  'Fees not set yet': 'لم تُحدَّد الأقساط بعد',
+  'The school hasn\'t entered this year\'s fees. They appear here when it does.':
+      'لم تُدخل المدرسة أقساط هذه السنة بعد. ستظهر هنا عند إدخالها.',
+  'No marks yet': 'لا توجد درجات بعد',
+  'Marks appear here when teachers publish them.':
+      'تظهر الدرجات هنا عندما ينشرها المدرسون.',
+  'A problem with the app?': 'مشكلة في التطبيق؟',
+  'Email the app team': 'راسل فريق التطبيق',
+  'Madrasa app: a problem': 'تطبيق مدرسة: مشكلة',
+  'Call the school': 'اتصل بالمدرسة',
+  'WhatsApp the school': 'واتساب المدرسة',
+  'Email the school': 'راسل المدرسة بالبريد',
+  'Your school hasn\'t added its phone or email yet. Ask at the school office.':
+      'لم تُضف مدرستك رقم هاتفها أو بريدها بعد. اسأل في إدارة المدرسة.',
+  'Contact {0}': 'التواصل مع {0}',
+  'Write to {0} from your email app': 'راسل {0} من تطبيق البريد',
+  'WhatsApp {0} from your phone': 'راسل {0} على واتساب من هاتفك',
+  'Nothing to show yet': 'لا شيء لعرضه بعد',
+  'Numbers appear here once classes take attendance, teachers publish marks and buses run.':
+      'تظهر الأرقام هنا بعد تسجيل الحضور ونشر الدرجات وتشغيل الباصات.',
+  'No attendance taken in this period yet.':
+      'لم يُسجَّل حضور في هذه الفترة بعد.',
+  'No marks published in this period yet.': 'لم تُنشر درجات في هذه الفترة بعد.',
+  'WhatsApp (optional)': 'واتساب (اختياري)',
+  '+964 7XX XXX XXXX': '+964 7XX XXX XXXX',
+  '+964 7xx xxx xxxx': '+964 7XX XXX XXXX',
+  'School email (optional)': 'بريد المدرسة (اختياري)',
+  'Families see these on the Help page to reach the school.':
+      'تظهر هذه في صفحة المساعدة ليتواصل الأهالي مع المدرسة.',
+  'I forgot my password. What do I do?': 'نسيت كلمة المرور. ماذا أفعل؟',
+  'On the sign-in page tap "Forgot password?" and enter the email or phone linked to your account. If that doesn\'t work, ask the school office to reset it for you.':
+      'في صفحة تسجيل الدخول اضغط "نسيت كلمة المرور؟" وأدخل البريد أو الهاتف المرتبط بحسابك. إن لم ينجح ذلك، اطلب من إدارة المدرسة إعادة تعيينها لك.',
+  'Where do I find my school ID?': 'أين أجد رقمي المدرسي؟',
+  'Your school gives every student, teacher and parent an ID. It is printed on your student card and shown on your Profile page.':
+      'تعطي المدرسة كل طالب ومدرّس ووليّ أمر رقماً خاصاً. تجده مطبوعاً على بطاقة الطالب وفي صفحتك الشخصية.',
+  'How do I hand in an assignment?': 'كيف أسلّم الواجب؟',
+  'Open the assignment, add your files under "Your work", then tap "Hand in". If the due date has passed, you can still hand in when your teacher allows late work.':
+      'افتح الواجب، وأضف ملفاتك تحت "عملك"، ثم اضغط "تسليم". إن فات الموعد، يمكنك التسليم إذا سمح مدرّسك بالتسليم المتأخر.',
+  'My grade or attendance looks wrong.': 'درجتي أو حضوري يبدو خاطئاً.',
+  'Send a message to your teacher from the Messages tab, or contact the school from this page. Only the school can correct records.':
+      'أرسل رسالة إلى مدرّسك من تبويب الرسائل، أو تواصل مع المدرسة من هذه الصفحة. المدرسة وحدها تستطيع تصحيح السجلات.',
+  'How do I stop some notifications?': 'كيف أوقف بعض الإشعارات؟',
+  'Go to More → Settings → Notifications and turn off the kinds you don\'t need.':
+      'اذهب إلى المزيد ← الإعدادات ← الإشعارات وأوقف الأنواع التي لا تحتاجها.',
 };

@@ -39,7 +39,9 @@ class TodayAtSchoolCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              tr('{0}% present', [stats.attendanceRateToday.round()]),
+              stats.attendanceTakenToday
+                  ? tr('{0}% present', [stats.attendanceRateToday.round()])
+                  : tr('Attendance not taken yet'),
               style: context.text.headlineSmall?.copyWith(color: Colors.white),
             ),
             const SizedBox(height: AppSpacing.md),
@@ -54,10 +56,12 @@ class TodayAtSchoolCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              tr('{0} present · {1} absent', [
-                stats.presentToday,
-                stats.absentToday,
-              ]),
+              stats.attendanceTakenToday
+                  ? tr('{0} present · {1} absent', [
+                      stats.presentToday,
+                      stats.absentToday,
+                    ])
+                  : tr('It fills in as teachers take each lesson.'),
               style: context.text.bodySmall?.copyWith(color: soft),
             ),
           ],

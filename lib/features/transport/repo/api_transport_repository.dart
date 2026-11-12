@@ -175,6 +175,9 @@ class ApiTransportRepository implements TransportRepository {
         loaded = true;
         emit();
       } on ApiException catch (e) {
+        // Signed out (session ended): stop asking. The app goes back to the
+        // sign-in page; the next user opens a new map.
+        if (e.status == 401) refresh?.cancel();
         // Keep showing the last trip; report only if nothing came yet.
         if (!loaded && !controller.isClosed) controller.addError(e);
       }

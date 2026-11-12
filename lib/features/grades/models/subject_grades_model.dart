@@ -11,6 +11,8 @@ class SubjectGradesModel {
 
   const SubjectGradesModel({required this.subject, required this.items});
 
+  bool get hasMarks => items.isNotEmpty;
+
   /// Average percentage (0–100) weighted by each item's max score.
   double get average {
     if (items.isEmpty) return 0;

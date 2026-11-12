@@ -38,7 +38,8 @@ class GpsReporter extends ConsumerStatefulWidget {
   ConsumerState<GpsReporter> createState() => _GpsReporterState();
 }
 
-class _GpsReporterState extends ConsumerState<GpsReporter> {
+class _GpsReporterState extends ConsumerState<GpsReporter>
+    with WidgetsBindingObserver {
   StreamSubscription<GpsFix>? _subscription;
   Timer? _keepAlive;
   GpsFix? _last;
@@ -49,25 +50,45 @@ class _GpsReporterState extends ConsumerState<GpsReporter> {
   GpsFix? _movedFrom;
   DateTime? _movedAt;
   String? _problem;
+
+  /// The phone setting that fixes [_problem], if one does.
+  LocationFix _fix = LocationFix.none;
   bool _sending = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _start();
+  }
+
+  /// Back from the phone settings: try again by itself.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _fix != LocationFix.none) {
+      _start();
+    }
   }
 
   Future<void> _start() async {
     _subscription?.cancel();
     _keepAlive?.cancel();
-    setState(() => _problem = null);
+    setState(() {
+      _problem = null;
+      _fix = LocationFix.none;
+    });
 
     // One reading straight away: it also makes the browser ask for
     // permission, and shows a problem at once instead of never.
     try {
       _read(await DeviceLocation.currentFix());
     } on LocationException catch (e) {
-      if (mounted) setState(() => _problem = e.message);
+      if (mounted) {
+        setState(() {
+          _problem = e.message;
+          _fix = e.fix;
+        });
+      }
       return;
     }
     if (!mounted) return;
@@ -77,8 +98,13 @@ class _GpsReporterState extends ConsumerState<GpsReporter> {
     _subscription = DeviceLocation.watch(distanceFilter: 0, keepRunning: true)
         .listen(
           _read,
-          onError: (Object e) =>
-              setState(() => _problem = DeviceLocation.explain(e).message),
+          onError: (Object e) {
+            final problem = DeviceLocation.explain(e);
+            setState(() {
+              _problem = problem.message;
+              _fix = problem.fix;
+            });
+          },
         );
     // A bus waiting at a light doesn't move, so the phone reports nothing
     // new: repeat the last point so families still see it live, but only
@@ -153,6 +179,7 @@ class _GpsReporterState extends ConsumerState<GpsReporter> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _subscription?.cancel();
     _keepAlive?.cancel();
     super.dispose();
@@ -187,7 +214,20 @@ class _GpsReporterState extends ConsumerState<GpsReporter> {
           ),
         ),
         if (problem != null)
-          TextButton(onPressed: _start, child: Text(tr('Try again'))),
+          switch (_fix) {
+            LocationFix.turnOn => TextButton(
+              onPressed: () => DeviceLocation.openSettingsFor(_fix),
+              child: Text(tr('Turn on location')),
+            ),
+            LocationFix.allow => TextButton(
+              onPressed: () => DeviceLocation.openSettingsFor(_fix),
+              child: Text(tr('Open settings')),
+            ),
+            LocationFix.none => TextButton(
+              onPressed: _start,
+              child: Text(tr('Try again')),
+            ),
+          },
       ],
     );
   }

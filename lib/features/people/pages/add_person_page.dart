@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/network/api_exception.dart';
 import '../../../core/utils/context_extensions.dart';
@@ -201,6 +202,12 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
             // ---------- Role-specific fields ----------
             if (_role == UserRole.student)
               DropdownButtonFormField<String>(
+                // The app's card look, not the default grey strip.
+                dropdownColor: context.palette.card,
+
+                borderRadius: BorderRadius.circular(AppRadius.md),
+
+                menuMaxHeight: 360,
                 isExpanded: true,
                 initialValue: _className,
                 validator: (v) => v == null ? tr('Choose a class') : null,
@@ -220,6 +227,12 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
 
             if (_role == UserRole.teacher)
               DropdownButtonFormField<String>(
+                // The app's card look, not the default grey strip.
+                dropdownColor: context.palette.card,
+
+                borderRadius: BorderRadius.circular(AppRadius.md),
+
+                menuMaxHeight: 360,
                 isExpanded: true,
                 initialValue: _subjectName,
                 validator: (v) => v == null ? tr('Choose a subject') : null,

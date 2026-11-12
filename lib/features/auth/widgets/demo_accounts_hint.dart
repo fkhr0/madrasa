@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/config/app_config.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/utils/context_extensions.dart';
 import '../../../core/widgets/app_card.dart';
 import '../data/mock_users.dart';
 import '../../../core/l10n/language.dart';
 
-/// DEMO BUILD ONLY, remove when the real backend is connected.
-/// Lists the test accounts; tapping one fills the ID field.
+/// Mock mode only (no server). Lists the test accounts; tapping one fills the ID field.
 class DemoAccountsHint extends StatelessWidget {
   final ValueChanged<String> onPick;
 
@@ -24,9 +22,7 @@ class DemoAccountsHint extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppConfig.useApi
-                ? tr('Demo accounts (password: demo1234)')
-                : tr('Demo accounts (any password, 4+ characters)'),
+            tr('Demo accounts (any password, 4+ characters)'),
             style: context.text.labelMedium,
           ),
           const SizedBox(height: AppSpacing.sm),

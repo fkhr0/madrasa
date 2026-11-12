@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import '../constants/app_radius.dart';
 import '../constants/app_spacing.dart';
 import '../location/device_location.dart';
+import 'location_problem_dialog.dart';
 import '../providers/map_provider.dart';
 import '../utils/location_link.dart';
 import '../utils/context_extensions.dart';
@@ -40,6 +41,13 @@ class _LocationPickerState extends ConsumerState<LocationPicker> {
   final _map = MapController();
   bool _locating = false;
 
+  @override
+  void initState() {
+    super.initState();
+    // Ask now, not on the first tap of "I'm here".
+    if (widget.point == null) DeviceLocation.askEarly();
+  }
+
   Future<void> _useMyLocation() async {
     setState(() => _locating = true);
     try {
@@ -56,7 +64,7 @@ class _LocationPickerState extends ConsumerState<LocationPicker> {
         );
       }
     } on LocationException catch (e) {
-      if (mounted) context.showMessage(e.message);
+      if (mounted) await showLocationProblem(context, e);
     } finally {
       if (mounted) setState(() => _locating = false);
     }

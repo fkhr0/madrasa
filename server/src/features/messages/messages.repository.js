@@ -110,6 +110,8 @@ async function classConversation(institutionId, classId) {
 
 /** The private chat of two people, created if needed. */
 async function directConversation(tx, institutionId, a, b) {
+  // Two taps at once (a slow network) wait for each other: one chat, not two.
+  await tx.query("SELECT pg_advisory_xact_lock(hashtext($1))", [`direct:${[a, b].sort().join(":")}`]);
   const found = await tx.queryOne(
     `SELECT c.id FROM conversations c
      JOIN conversation_members m1 ON m1.conversation_id = c.id AND m1.user_id = $1

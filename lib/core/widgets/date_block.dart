@@ -14,8 +14,8 @@ class DateBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 52,
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      width: 56,
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(AppRadius.md),
@@ -26,9 +26,16 @@ class DateBlock extends StatelessWidget {
             '${date.day}',
             style: context.text.titleLarge?.copyWith(color: color, height: 1.1),
           ),
+          // Centred: Arabic months like "تشرين الثاني" take two lines.
           Text(
             DateFormatter.monthShort(date).toUpperCase(),
-            style: context.text.labelSmall?.copyWith(color: color),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: context.text.labelSmall?.copyWith(
+              color: color,
+              height: 1.15,
+            ),
           ),
         ],
       ),

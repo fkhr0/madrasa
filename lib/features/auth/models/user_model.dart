@@ -23,6 +23,15 @@ enum UserRole {
     }
   }
 
+  /// "Students", "Teachers"... (Arabic plurals aren't label + "s").
+  String get pluralLabel => switch (this) {
+    UserRole.student => tr('Students'),
+    UserRole.teacher => tr('Teachers'),
+    UserRole.parent => tr('Parents'),
+    UserRole.admin => tr('Administrators'),
+    UserRole.driver => tr('Bus drivers'),
+  };
+
   /// "student" → UserRole.student (the server's spelling).
   static UserRole fromName(String name) =>
       values.firstWhere((r) => r.name == name, orElse: () => student);

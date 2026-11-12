@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/context_extensions.dart';
 import '../../../core/utils/grade_scale.dart';
 import '../../../core/widgets/app_card.dart';
+import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/async_value_view.dart';
 import '../../../core/widgets/progress_bar_row.dart';
 import '../../../core/widgets/section_header.dart';
@@ -77,6 +78,24 @@ class _StatisticsBody extends ConsumerWidget {
     int count(UserRole role) =>
         ref.watch(peopleByRoleProvider(role)).valueOrNull?.length ?? 0;
     final change = data.attendanceChange;
+    final highlights = highlightsFor(data);
+
+    // A new school: say what will appear, not a page of zeros.
+    if (data.isEmpty) {
+      return ListView(
+        padding: const EdgeInsets.all(AppSpacing.page),
+        children: [
+          EmptyState(
+            icon: Icons.insights_outlined,
+            title: tr('Nothing to show yet'),
+            message: tr(
+              'Numbers appear here once classes take attendance, teachers '
+              'publish marks and buses run.',
+            ),
+          ),
+        ],
+      );
+    }
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(
@@ -86,52 +105,59 @@ class _StatisticsBody extends ConsumerWidget {
         AppSpacing.xl,
       ),
       children: [
-        _Highlights(highlights: highlightsFor(data)),
-        const SizedBox(height: AppSpacing.xl),
+        if (highlights.isNotEmpty) ...[
+          _Highlights(highlights: highlights),
+          const SizedBox(height: AppSpacing.xl),
+        ],
 
         SectionHeader(title: tr('Attendance')),
-        AppCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    pct(data.attendanceRate),
-                    style: context.text.headlineMedium,
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Text(
-                      tr('{0} {1} pts', [
-                        change >= 0 ? '▲' : '▼',
-                        change.abs().toStringAsFixed(1),
-                      ]),
-                      style: context.text.labelMedium?.copyWith(
-                        color: change >= 0
-                            ? AppColors.success
-                            : AppColors.danger,
+        if (!data.hasAttendance)
+          _NothingYet(tr('No attendance taken in this period yet.'))
+        else
+          AppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      pct(data.attendanceRate),
+                      style: context.text.headlineMedium,
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Text(
+                        tr('{0} {1} pts', [
+                          change >= 0 ? '▲' : '▼',
+                          change.abs().toStringAsFixed(1),
+                        ]),
+                        style: context.text.labelMedium?.copyWith(
+                          color: change >= 0
+                              ? AppColors.success
+                              : AppColors.danger,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Text(tr('present on average'), style: context.text.bodySmall),
-              const SizedBox(height: AppSpacing.lg),
-              DayColumnsChart(days: data.attendanceByDay),
-              const Divider(height: AppSpacing.xl),
-              for (final c in data.attendanceByClass)
-                ProgressBarRow(
-                  label: c.label,
-                  value: pct(c.value),
-                  fraction: c.value,
-                  color: c.value < 0.88 ? AppColors.warning : AppColors.success,
+                  ],
                 ),
-            ],
+                Text(tr('present on average'), style: context.text.bodySmall),
+                const SizedBox(height: AppSpacing.lg),
+                DayColumnsChart(days: data.attendanceByDay),
+                const Divider(height: AppSpacing.xl),
+                for (final c in data.attendanceByClass)
+                  ProgressBarRow(
+                    label: c.label,
+                    value: pct(c.value),
+                    fraction: c.value,
+                    color: c.value < 0.88
+                        ? AppColors.warning
+                        : AppColors.success,
+                  ),
+              ],
+            ),
           ),
-        ),
         const SizedBox(height: AppSpacing.xl),
 
         SectionHeader(title: tr('Learning')),
@@ -141,7 +167,9 @@ class _StatisticsBody extends ConsumerWidget {
               child: StatTile(
                 icon: Icons.grade_outlined,
                 color: GradeScale.colorFor(data.averageGrade),
-                value: data.averageGrade.toStringAsFixed(1),
+                value: data.hasGrades
+                    ? data.averageGrade.toStringAsFixed(1)
+                    : '–',
                 label: tr('Average /100'),
               ),
             ),
@@ -150,7 +178,7 @@ class _StatisticsBody extends ConsumerWidget {
               child: StatTile(
                 icon: Icons.verified_outlined,
                 color: AppColors.success,
-                value: pct(data.passRate),
+                value: data.hasGrades ? pct(data.passRate) : '–',
                 label: tr('Passing'),
               ),
             ),
@@ -159,26 +187,29 @@ class _StatisticsBody extends ConsumerWidget {
               child: StatTile(
                 icon: Icons.assignment_turned_in_outlined,
                 color: AppColors.info,
-                value: pct(data.submissionRate),
+                value: data.hasHomework ? pct(data.submissionRate) : '–',
                 label: tr('Homework in'),
               ),
             ),
           ],
         ),
         const SizedBox(height: AppSpacing.md),
-        AppCard(
-          child: Column(
-            children: [
-              for (final s in data.gradeBySubject)
-                ProgressBarRow(
-                  label: s.label,
-                  value: '${s.value.round()}',
-                  fraction: s.value / 100,
-                  color: GradeScale.colorFor(s.value),
-                ),
-            ],
+        if (!data.hasGrades)
+          _NothingYet(tr('No marks published in this period yet.'))
+        else
+          AppCard(
+            child: Column(
+              children: [
+                for (final s in data.gradeBySubject)
+                  ProgressBarRow(
+                    label: s.label,
+                    value: '${s.value.round()}',
+                    fraction: s.value / 100,
+                    color: GradeScale.colorFor(s.value),
+                  ),
+              ],
+            ),
           ),
-        ),
         const SizedBox(height: AppSpacing.xl),
 
         SectionHeader(title: tr('Buses')),
@@ -197,7 +228,7 @@ class _StatisticsBody extends ConsumerWidget {
               child: StatTile(
                 icon: Icons.timer_outlined,
                 color: AppColors.success,
-                value: pct(data.onTimeRate),
+                value: data.hasTrips ? pct(data.onTimeRate) : '–',
                 label: tr('On time'),
               ),
             ),
@@ -206,7 +237,9 @@ class _StatisticsBody extends ConsumerWidget {
               child: StatTile(
                 icon: Icons.hourglass_bottom,
                 color: AppColors.warning,
-                value: tr('{0} min', [data.averageDelayMinutes]),
+                value: data.hasTrips
+                    ? tr('{0} min', [data.averageDelayMinutes])
+                    : '–',
                 label: tr('Avg. delay'),
               ),
             ),
@@ -230,7 +263,7 @@ class _StatisticsBody extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          '${role.label}s',
+                          role.pluralLabel,
                           style: context.text.bodyMedium,
                         ),
                       ),
@@ -242,6 +275,25 @@ class _StatisticsBody extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// A section with no data in the period yet.
+class _NothingYet extends StatelessWidget {
+  final String text;
+
+  const _NothingYet(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Text(
+        text,
+        style: context.text.bodyMedium?.copyWith(
+          color: context.palette.textMuted,
+        ),
+      ),
     );
   }
 }

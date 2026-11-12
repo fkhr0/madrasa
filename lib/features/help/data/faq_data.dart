@@ -29,7 +29,7 @@ class FaqData {
       question: 'My grade or attendance looks wrong.',
       answer:
           'Send a message to your teacher from the Messages tab, or contact '
-          'Student Affairs. Only the school can correct records.',
+          'the school from this page. Only the school can correct records.',
     ),
     FaqModel(
       question: 'How do I stop some notifications?',

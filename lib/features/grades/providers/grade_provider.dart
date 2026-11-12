@@ -23,14 +23,17 @@ final gradesProvider = FutureProvider<List<SubjectGradesModel>>(
       .getCurrentTerm(ref.watch(activeStudentIdProvider)),
 );
 
-/// Mean of the subject averages (each subject counts the same).
-final overallAverageProvider = FutureProvider<double>((ref) async {
-  final subjects = await ref.watch(gradesProvider.future);
-  if (subjects.isEmpty) return 0;
+/// Mean of the subject averages (each subject counts the same), over the
+/// subjects that have marks. Null before any mark: not a 0% "fail".
+final overallAverageProvider = FutureProvider<double?>((ref) async {
+  final graded = (await ref.watch(
+    gradesProvider.future,
+  )).where((s) => s.hasMarks).toList();
+  if (graded.isEmpty) return null;
 
-  final total = subjects.fold<double>(0, (sum, s) => sum + s.average);
+  final total = graded.fold<double>(0, (sum, s) => sum + s.average);
 
-  return total / subjects.length;
+  return total / graded.length;
 });
 
 /// Each subject's year result (السعي السنوي and the final mark), from the

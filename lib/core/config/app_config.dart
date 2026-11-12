@@ -9,10 +9,9 @@ class AppConfig {
   /// the study year; the rest still use mock data.
   static bool get useApi => apiUrl.isNotEmpty;
 
-  /// The demo accounts list on the sign-in page (they share one password):
-  /// mock mode and test builds (--dart-define=DEMO=true), never the store.
-  static bool get showDemoAccounts =>
-      !useApi || const bool.fromEnvironment('DEMO');
+  /// The demo accounts list on the sign-in page: mock mode only. Online the
+  /// demo has no password ("Try the demo" signs in).
+  static bool get showDemoAccounts => !useApi;
 
   /// Test builds: the sign-in page asks for the server's address.
   static bool get asksForServer => apiUrl == 'ask';

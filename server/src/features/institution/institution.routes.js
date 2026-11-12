@@ -6,18 +6,22 @@ const { requireAuth, requireRole } = require("../../common/auth-middleware");
 const repo = require("./institution.repository");
 const { t } = require("../../i18n");
 const { cachedForSchool } = require("../../common/cache");
+const config = require("../../config");
 
 const router = express.Router();
 // Only these paths: the router is mounted at "/", next to the app's files.
 router.use(["/institution", "/academic-year"], requireAuth);
 
-// GET /institution -> { id, name, city, address, phone, latitude, longitude }
+// GET /institution -> { id, name, city, address, phone, email, whatsapp,
+//   latitude, longitude, appSupportEmail }
+// appSupportEmail: whoever runs the app, for problems with the app itself.
 router.get("/institution", async (req, res) => {
   const id = req.user.institutionId;
-  res.json(await cachedForSchool(id, "institution", () => repo.findInstitution(id)));
+  const school = await cachedForSchool(id, "institution", () => repo.findInstitution(id));
+  res.json({ ...school, appSupportEmail: config.contactEmail });
 });
 
-// PATCH /institution { name, city, address, phone, latitude, longitude }
+// PATCH /institution { name, city, address, phone, email, whatsapp, latitude, longitude }
 //   -> institution  (admin)
 router.patch("/institution", requireRole("admin"), async (req, res) => {
   const body = validate(
@@ -27,6 +31,12 @@ router.patch("/institution", requireRole("admin"), async (req, res) => {
         city: z.string().trim().max(60).default(""),
         address: z.string().trim().max(200).default(""),
         phone: z.string().trim().max(30).default(""),
+        email: z.union([z.literal(""), z.email("not a valid email")]).default(""),
+        whatsapp: z
+          .string()
+          .trim()
+          .regex(/^[+0-9 ]{0,20}$/, "only digits, spaces and +")
+          .default(""),
         // The school's gate on the map; both or neither.
         latitude: z.number().min(-90).max(90).nullish(),
         longitude: z.number().min(-180).max(180).nullish(),
@@ -42,7 +52,7 @@ router.patch("/institution", requireRole("admin"), async (req, res) => {
   if (before.latitude !== updated.latitude || before.longitude !== updated.longitude) {
     require("../transport/roads").updateSchoolRoads(req.user.institutionId);
   }
-  res.json(updated);
+  res.json({ ...updated, appSupportEmail: config.contactEmail });
 });
 
 // GET /academic-year -> { id, name, start, end, workingDays, terms, holidays }
