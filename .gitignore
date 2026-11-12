@@ -54,3 +54,6 @@ app.*.map.json
 
 # Crash logs from Git Bash
 *.stackdump
+
+# Uploaded bundles and their symbols, one folder per version.
+/release/

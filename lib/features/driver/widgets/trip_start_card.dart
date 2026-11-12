@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/app_spacing.dart';
+import '../../../core/location/location_disclosure.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/context_extensions.dart';
 import '../../../core/utils/date_formatter.dart';
@@ -40,6 +41,8 @@ class TripStartCard extends ConsumerWidget {
     WidgetRef ref,
     TripDirection direction,
   ) async {
+    // Before the phone asks for location (Google Play requires it).
+    if (!await confirmBusLocationSharing(context)) return;
     try {
       await ref.read(transportActionsProvider).startTrip(route.id, direction);
     } on TransportException catch (e) {

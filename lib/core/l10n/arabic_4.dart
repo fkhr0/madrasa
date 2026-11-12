@@ -401,4 +401,7 @@ const Map<String, String> arabic4 = {
   'How do I stop some notifications?': 'كيف أوقف بعض الإشعارات؟',
   'Go to More → Settings → Notifications and turn off the kinds you don\'t need.':
       'اذهب إلى المزيد ← الإعدادات ← الإشعارات وأوقف الأنواع التي لا تحتاجها.',
+  'Continue': 'متابعة',
+  'Madrasa collects this phone\'s location to show the school bus to students\' families on a map during a trip, even when the app is closed or not in use. Sharing stops when you end the trip. The location is not used for anything else and is not sold.':
+      'يجمع تطبيق مدرسة موقع هذا الهاتف ليُظهر الباص المدرسي لعوائل الطلاب على الخريطة أثناء الرحلة، حتى عندما يكون التطبيق مغلقاً أو غير مستخدم. تتوقف المشاركة عند إنهاء الرحلة. لا يُستخدم الموقع لأي غرض آخر ولا يُباع.',
 };
