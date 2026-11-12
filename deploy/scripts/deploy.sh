@@ -47,6 +47,9 @@ for service in api1 api2; do
   docker compose up -d --no-deps "$service"
   healthy "$service" || rollback
   echo "$service is healthy"
+  # Nginx skips a copy for 10 s after it failed (fail_timeout): let it take
+  # this one back before the other restarts, or both look down at once.
+  sleep 12
 done
 docker compose up -d --no-deps worker
 
