@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/app_radius.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
@@ -250,6 +251,12 @@ class _RouteEditPageState extends ConsumerState<RouteEditPage> {
             const SizedBox(height: AppSpacing.xl),
             SectionHeader(title: tr('Driver')),
             DropdownButtonFormField<String>(
+              // The app's card look, not the default grey strip.
+              dropdownColor: context.palette.card,
+
+              borderRadius: BorderRadius.circular(AppRadius.md),
+
+              menuMaxHeight: 360,
               initialValue: _driverId,
               isExpanded: true,
               decoration: InputDecoration(labelText: tr('Driver')),

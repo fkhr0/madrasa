@@ -7,11 +7,22 @@ import 'package:latlong2/latlong.dart';
 
 import '../l10n/language.dart';
 
+/// What the person can do about a location problem, from a button.
+enum LocationFix {
+  /// Location is off on the phone: open the phone's location settings.
+  turnOn,
+
+  /// The app may not use location: open this app's settings.
+  allow,
+  none,
+}
+
 /// Why the phone's location can't be read, ready to show to the user.
 class LocationException implements Exception {
   final String message;
+  final LocationFix fix;
 
-  const LocationException(this.message);
+  const LocationException(this.message, {this.fix = LocationFix.none});
 
   @override
   String toString() => message;
@@ -56,7 +67,10 @@ class DeviceLocation {
     }
     try {
       if (!await Geolocator.isLocationServiceEnabled()) {
-        throw LocationException(tr('Turn on location on this phone.'));
+        throw LocationException(
+          tr('Turn on location on this phone.'),
+          fix: LocationFix.turnOn,
+        );
       }
       var permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
@@ -64,7 +78,7 @@ class DeviceLocation {
       }
       if (permission == LocationPermission.denied ||
           permission == LocationPermission.deniedForever) {
-        throw LocationException(_blockedMessage);
+        throw LocationException(_blockedMessage, fix: _allowFix);
       }
       // Android 12+ lets people share only a rough area (up to ~2 km off):
       // a bus or a home pin would be in the wrong street.
@@ -75,6 +89,7 @@ class DeviceLocation {
             'Precise location is off. In the phone settings, open Apps, '
             'Madrasa, Location, and turn on "Use precise location".',
           ),
+          fix: LocationFix.allow,
         );
       }
     } on LocationException {
@@ -83,6 +98,9 @@ class DeviceLocation {
       throw explain(e);
     }
   }
+
+  static LocationFix get _allowFix =>
+      kIsWeb ? LocationFix.none : LocationFix.allow;
 
   static String get _blockedMessage => kIsWeb
       ? tr(
@@ -103,7 +121,7 @@ class DeviceLocation {
       );
     }
     if (lower.contains('denied') || lower.contains('permission')) {
-      return LocationException(_blockedMessage);
+      return LocationException(_blockedMessage, fix: _allowFix);
     }
     if (lower.contains('timeout') || lower.contains('unavailable')) {
       return LocationException(
@@ -113,11 +131,37 @@ class DeviceLocation {
       );
     }
     if (lower.contains('disabled') || lower.contains('service')) {
-      return LocationException(tr('Turn on location on this phone.'));
+      return LocationException(
+        tr('Turn on location on this phone.'),
+        fix: kIsWeb ? LocationFix.none : LocationFix.turnOn,
+      );
     }
     return LocationException(
       tr('The location could not be read ({0}).', [text]),
     );
+  }
+
+  /// Asks for permission as soon as a map opens, so "I'm here" works on the
+  /// first tap. Says nothing if refused: the tap explains then.
+  static Future<void> askEarly() async {
+    if (kIsWeb) return;
+    try {
+      if (await Geolocator.checkPermission() == LocationPermission.denied) {
+        await Geolocator.requestPermission();
+      }
+    } catch (_) {}
+  }
+
+  /// Opens the phone setting that fixes [fix].
+  static Future<void> openSettingsFor(LocationFix fix) async {
+    switch (fix) {
+      case LocationFix.turnOn:
+        await Geolocator.openLocationSettings();
+      case LocationFix.allow:
+        await Geolocator.openAppSettings();
+      case LocationFix.none:
+        break;
+    }
   }
 
   /// The phone's position now. Tries precise GPS first; indoors, where

@@ -57,6 +57,15 @@ class InsightsModel {
   final double onTimeRate;
   final int averageDelayMinutes;
 
+  // What there is to show yet. A new school has none of it: no made-up
+  // 0% or 100% figures.
+  bool get hasAttendance =>
+      attendanceByClass.isNotEmpty || attendanceByDay.isNotEmpty;
+  bool get hasGrades => gradeBySubject.isNotEmpty;
+  bool get hasHomework => assignmentsGiven > 0;
+  bool get hasTrips => tripsDone > 0;
+  bool get isEmpty => !hasAttendance && !hasGrades && !hasHomework && !hasTrips;
+
   const InsightsModel({
     required this.period,
     required this.attendanceRate,

@@ -107,6 +107,10 @@ class StudentAccountModel {
   final List<DateTime> dueDates;
   final List<PaymentModel> payments;
 
+  /// False until the office enters this year's fees: nothing is owed or
+  /// late, and the family sees "not set yet".
+  final bool feesSet;
+
   const StudentAccountModel({
     required this.studentId,
     required this.studentName,
@@ -119,6 +123,7 @@ class StudentAccountModel {
     required this.payments,
     this.discountPercent = 0,
     this.discountReason = '',
+    this.feesSet = true,
   });
 
   int get discount => (tuition * discountPercent / 100).round();
@@ -215,6 +220,7 @@ class StudentAccountModel {
           for (final p in json['payments'] as List? ?? const [])
             PaymentModel.fromJson(p as Map<String, dynamic>),
         ],
+        feesSet: json['feesSet'] as bool? ?? true,
       );
 
   StudentAccountModel withPayment(PaymentModel payment) {
@@ -230,6 +236,7 @@ class StudentAccountModel {
       payments: [...payments, payment],
       discountPercent: discountPercent,
       discountReason: discountReason,
+      feesSet: feesSet,
     );
   }
 }

@@ -34,8 +34,8 @@ void main() {
       expect(summary.rate, 50);
     });
 
-    test('no records means 100%', () {
-      expect(AttendanceSummaryModel.from([]).rate, 100);
+    test('no records means no rate yet', () {
+      expect(AttendanceSummaryModel.from([]).rate, isNull);
     });
   });
 

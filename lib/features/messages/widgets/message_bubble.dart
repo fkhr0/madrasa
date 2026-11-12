@@ -64,33 +64,33 @@ class MessageBubble extends StatelessWidget {
               bottomEnd: isMine ? tail : radius,
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (showSenderName && !isMine)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 2),
-                  child: Text(
-                    message.senderName,
-                    style: context.text.labelMedium?.copyWith(
-                      color: palette.primary,
+          // As wide as the longest line: a one-letter message is a small bubble.
+          child: IntrinsicWidth(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (showSenderName && !isMine)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 2),
+                    child: Text(
+                      message.senderName,
+                      style: context.text.labelMedium?.copyWith(
+                        color: palette.primary,
+                      ),
                     ),
                   ),
-                ),
-              if (message.deleted)
-                Text(
-                  tr('This message was deleted'),
-                  style: context.text.bodyMedium?.copyWith(
-                    color: palette.textMuted,
-                    fontStyle: FontStyle.italic,
-                  ),
-                )
-              else
-                // Arabic reads right to left, English left to right,
-                // whatever the app's language (mixed words stay in order).
-                SizedBox(
-                  width: double.infinity,
-                  child: Text(
+                if (message.deleted)
+                  Text(
+                    tr('This message was deleted'),
+                    style: context.text.bodyMedium?.copyWith(
+                      color: palette.textMuted,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  )
+                else
+                  // Arabic reads right to left, English left to right,
+                  // whatever the app's language (mixed words stay in order).
+                  Text(
                     message.text,
                     textDirection: directionOf(message.text),
                     style: context.text.bodyLarge?.copyWith(
@@ -99,52 +99,52 @@ class MessageBubble extends StatelessWidget {
                           : palette.textPrimary,
                     ),
                   ),
-                ),
-              const SizedBox(height: 2),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (message.edited && !message.deleted) ...[
+                const SizedBox(height: 2),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (message.edited && !message.deleted) ...[
+                      Text(
+                        tr('edited'),
+                        style: context.text.labelSmall?.copyWith(
+                          color: palette.textMuted,
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.xs),
+                    ],
                     Text(
-                      tr('edited'),
+                      DateFormatter.time(message.sentAt),
                       style: context.text.labelSmall?.copyWith(
                         color: palette.textMuted,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.xs),
-                  ],
-                  Text(
-                    DateFormatter.time(message.sentAt),
-                    style: context.text.labelSmall?.copyWith(
-                      color: palette.textMuted,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  if (isMine && !message.deleted) ...[
-                    const SizedBox(width: AppSpacing.xs),
-                    Icon(
-                      message.status.icon,
-                      size: 14,
-                      // ✓✓ in the app's colour once seen, like WhatsApp.
-                      color: switch (message.status) {
-                        MessageStatus.failed => AppColors.danger,
-                        MessageStatus.read => palette.primary,
-                        _ => palette.textMuted,
-                      },
-                    ),
-                  ],
-                  if (onRetry != null) ...[
-                    const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      tr('Not sent · tap to try again'),
-                      style: context.text.labelSmall?.copyWith(
-                        color: AppColors.danger,
+                    if (isMine && !message.deleted) ...[
+                      const SizedBox(width: AppSpacing.xs),
+                      Icon(
+                        message.status.icon,
+                        size: 14,
+                        // ✓✓ in the app's colour once seen, like WhatsApp.
+                        color: switch (message.status) {
+                          MessageStatus.failed => AppColors.danger,
+                          MessageStatus.read => palette.primary,
+                          _ => palette.textMuted,
+                        },
                       ),
-                    ),
+                    ],
+                    if (onRetry != null) ...[
+                      const SizedBox(width: AppSpacing.xs),
+                      Text(
+                        tr('Not sent · tap to try again'),
+                        style: context.text.labelSmall?.copyWith(
+                          color: AppColors.danger,
+                        ),
+                      ),
+                    ],
                   ],
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

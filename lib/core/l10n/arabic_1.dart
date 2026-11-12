@@ -172,8 +172,6 @@ const Map<String, String> arabic1 = {
   'Delete {0}\'s account?': 'حذف حساب {0}؟',
   'Demo accounts (any password, 4+ characters)':
       'حسابات تجريبية (أي كلمة مرور من 4 أحرف فأكثر)',
-  'Demo accounts (password: demo1234)':
-      'حسابات تجريبية (كلمة المرور: demo1234)',
   'Details (optional)': 'التفاصيل (اختياري)',
   'Discount on tuition': 'خصم على القسط الدراسي',
   'Does not repeat': 'لا يتكرر',

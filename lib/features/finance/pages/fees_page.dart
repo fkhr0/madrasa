@@ -28,6 +28,15 @@ class FeesPage extends ConsumerWidget {
                 icon: Icons.receipt_long_outlined,
                 title: tr('No fees on file'),
               )
+            : !account.feesSet
+            ? EmptyState(
+                icon: Icons.receipt_long_outlined,
+                title: tr('Fees not set yet'),
+                message: tr(
+                  "The school hasn't entered this year's fees. They appear "
+                  'here when it does.',
+                ),
+              )
             : StudentAccountView(
                 account: account,
                 isAdmin: false,

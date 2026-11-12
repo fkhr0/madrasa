@@ -16,6 +16,7 @@ class DayColumnsChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (days.isEmpty) return const SizedBox.shrink();
     final palette = context.palette;
     final lowest = days.reduce((a, b) => a.value <= b.value ? a : b);
     const height = 96.0;

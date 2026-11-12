@@ -26,7 +26,7 @@ class ProgressPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final child = ref.watch(activeStudentProvider);
     final grades = ref.watch(gradesProvider);
-    final average = ref.watch(overallAverageProvider).valueOrNull ?? 0;
+    final average = ref.watch(overallAverageProvider).valueOrNull;
     final attendance = ref.watch(attendanceSummaryProvider).valueOrNull;
     final pending = ref.watch(pendingAssignmentsProvider).valueOrNull ?? [];
 
@@ -51,7 +51,10 @@ class ProgressPage extends ConsumerWidget {
           children: [
             const ChildSwitcher(),
             const SizedBox(height: AppSpacing.lg),
-            OverallAverageCard(average: average, subjectCount: subjects.length),
+            OverallAverageCard(
+              average: average,
+              subjectCount: subjects.where((s) => s.hasMarks).length,
+            ),
             const SizedBox(height: AppSpacing.xl),
 
             if (attendance != null) ...[

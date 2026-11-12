@@ -6,9 +6,10 @@ import '../../../core/widgets/app_card.dart';
 import '../../../core/utils/grade_scale.dart';
 import '../../../core/l10n/language.dart';
 
-/// Big number at the top of the Grades page.
+/// Big number at the top of the Grades page. [average] is null before the
+/// first mark: "no marks yet", never a 0% fail.
 class OverallAverageCard extends StatelessWidget {
-  final double average;
+  final double? average;
   final int subjectCount;
 
   const OverallAverageCard({
@@ -20,7 +21,10 @@ class OverallAverageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
-    final color = GradeScale.colorFor(average);
+    final average = this.average;
+    final color = average == null
+        ? palette.textMuted
+        : GradeScale.colorFor(average);
 
     return AppCard(
       color: palette.primarySoft,
@@ -34,7 +38,7 @@ class OverallAverageCard extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 CircularProgressIndicator(
-                  value: average / 100,
+                  value: average == null ? 0 : average / 100,
                   strokeWidth: 6,
                   color: color,
                   backgroundColor: palette.card,
@@ -42,7 +46,7 @@ class OverallAverageCard extends StatelessWidget {
                 ),
                 Center(
                   child: Text(
-                    '${average.round()}%',
+                    average == null ? '–' : '${average.round()}%',
                     style: context.text.titleMedium?.copyWith(
                       color: palette.onPrimarySoft,
                     ),
@@ -57,14 +61,20 @@ class OverallAverageCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  tr('Term average · {0}', [GradeScale.labelFor(average)]),
+                  average == null
+                      ? tr('No marks yet')
+                      : tr('Term average · {0}', [
+                          GradeScale.labelFor(average),
+                        ]),
                   style: context.text.titleMedium?.copyWith(
                     color: palette.onPrimarySoft,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  tr('Across {0} subjects this term', [subjectCount]),
+                  average == null
+                      ? tr('Marks appear here when teachers publish them.')
+                      : tr('Across {0} subjects this term', [subjectCount]),
                   style: context.text.bodySmall?.copyWith(
                     color: palette.onPrimarySoft.withValues(alpha: 0.75),
                   ),

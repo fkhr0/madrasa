@@ -28,9 +28,10 @@ class AttendanceSummaryModel {
 
   int get totalDays => present + late + absent + excused;
 
-  /// Days the student was at school (late still counts), as 0–100.
-  double get rate {
-    if (totalDays == 0) return 100;
+  /// Days the student was at school (late still counts), as 0–100; null
+  /// before the first day is recorded.
+  double? get rate {
+    if (totalDays == 0) return null;
     return (present + late) / totalDays * 100;
   }
 }

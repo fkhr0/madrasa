@@ -8,6 +8,7 @@ import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/icon_box.dart';
 import '../models/grade_item_model.dart';
 import '../models/subject_grades_model.dart';
+import '../../../core/l10n/language.dart';
 
 /// Subject average with a bar. Tap to show every mark in that subject.
 class SubjectGradesCard extends StatefulWidget {
@@ -41,12 +42,15 @@ class _SubjectGradesCardState extends State<SubjectGradesCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(subject.name, style: context.text.titleSmall),
-                    Text(grades.label, style: context.text.bodySmall),
+                    Text(
+                      grades.hasMarks ? grades.label : tr('No marks yet'),
+                      style: context.text.bodySmall,
+                    ),
                     const SizedBox(height: AppSpacing.sm),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(4),
                       child: LinearProgressIndicator(
-                        value: grades.average / 100,
+                        value: grades.hasMarks ? grades.average / 100 : 0,
                         minHeight: 5,
                         color: grades.color,
                       ),
@@ -56,8 +60,10 @@ class _SubjectGradesCardState extends State<SubjectGradesCard> {
               ),
               const SizedBox(width: AppSpacing.lg),
               Text(
-                '${grades.average.round()}%',
-                style: context.text.titleMedium?.copyWith(color: grades.color),
+                grades.hasMarks ? '${grades.average.round()}%' : '–',
+                style: context.text.titleMedium?.copyWith(
+                  color: grades.hasMarks ? grades.color : palette.textMuted,
+                ),
               ),
               AnimatedRotation(
                 turns: _expanded ? 0.5 : 0,

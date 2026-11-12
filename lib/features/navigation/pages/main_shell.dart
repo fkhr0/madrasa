@@ -83,16 +83,12 @@ class MainShell extends ConsumerWidget {
     final tabs = _tabsFor(role);
     final selected = tabs.indexOf(navigationShell.currentIndex);
 
-    // Android's back button: other tabs go home first; on home it asks
-    // before leaving the app.
+    // Android's back button on any main tab asks before leaving the app
+    // (pages opened on top close normally first).
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
-        if (navigationShell.currentIndex != 0) {
-          navigationShell.goBranch(0);
-          return;
-        }
         final leave = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(

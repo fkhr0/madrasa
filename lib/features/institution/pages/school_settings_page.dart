@@ -46,6 +46,10 @@ class _FormState extends ConsumerState<_Form> {
   late final _city = TextEditingController(text: widget.institution.city);
   late final _address = TextEditingController(text: widget.institution.address);
   late final _phone = TextEditingController(text: widget.institution.phone);
+  late final _email = TextEditingController(text: widget.institution.email);
+  late final _whatsapp = TextEditingController(
+    text: widget.institution.whatsapp,
+  );
   late LatLng? _location = widget.institution.hasLocation
       ? LatLng(widget.institution.latitude!, widget.institution.longitude!)
       : null;
@@ -60,6 +64,8 @@ class _FormState extends ConsumerState<_Form> {
     _city.dispose();
     _address.dispose();
     _phone.dispose();
+    _email.dispose();
+    _whatsapp.dispose();
     super.dispose();
   }
 
@@ -79,6 +85,8 @@ class _FormState extends ConsumerState<_Form> {
           city: _city.text.trim(),
           address: _address.text.trim(),
           phone: _phone.text.trim(),
+          email: _email.text.trim(),
+          whatsapp: _whatsapp.text.trim(),
           latitude: _location?.latitude,
           longitude: _location?.longitude,
         ),
@@ -150,6 +158,30 @@ class _FormState extends ConsumerState<_Form> {
             labelText: tr('School phone'),
             prefixIcon: Icon(Icons.phone_outlined),
           ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        TextField(
+          controller: _whatsapp,
+          keyboardType: TextInputType.phone,
+          decoration: InputDecoration(
+            labelText: tr('WhatsApp (optional)'),
+            hintText: tr('+964 7XX XXX XXXX'),
+            prefixIcon: const Icon(Icons.chat_outlined),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        TextField(
+          controller: _email,
+          keyboardType: TextInputType.emailAddress,
+          decoration: InputDecoration(
+            labelText: tr('School email (optional)'),
+            prefixIcon: const Icon(Icons.alternate_email),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          tr('Families see these on the Help page to reach the school.'),
+          style: context.text.bodySmall,
         ),
         const SizedBox(height: AppSpacing.xl),
 

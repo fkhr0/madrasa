@@ -16,7 +16,7 @@ class GradesPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final grades = ref.watch(gradesProvider);
-    final average = ref.watch(overallAverageProvider).valueOrNull ?? 0;
+    final average = ref.watch(overallAverageProvider).valueOrNull;
 
     return Scaffold(
       appBar: AppBar(title: Text(tr('Grades'))),
@@ -31,7 +31,10 @@ class GradesPage extends ConsumerWidget {
             AppSpacing.xl,
           ),
           children: [
-            OverallAverageCard(average: average, subjectCount: subjects.length),
+            OverallAverageCard(
+              average: average,
+              subjectCount: subjects.where((s) => s.hasMarks).length,
+            ),
             const SizedBox(height: AppSpacing.xl),
             SectionHeader(title: tr('Year result')),
             YearResultCard(
