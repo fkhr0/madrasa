@@ -1,11 +1,11 @@
 {
-    "name": "school",
-    "short_name": "school",
+    "name": "مدرسة · Madrasa",
+    "short_name": "Madrasa",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#4C5FD5",
+    "background_color": "#12141F",
     "theme_color": "#4C5FD5",
-    "description": "A new Flutter project.",
+    "description": "The school app for students, parents, teachers, school offices and bus drivers.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
