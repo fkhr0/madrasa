@@ -39,8 +39,23 @@ echo "Deploying $NEW_IMAGE"
 set_image "$NEW_IMAGE"
 docker compose pull api1 api2 worker
 
-# The rest of the stack (Redis, Nginx, monitoring) when its config changed.
-docker compose up -d redis nginx prometheus alertmanager grafana loki promtail node-exporter cadvisor
+# The rest of the stack (Redis, monitoring) when its config changed.
+docker compose up -d redis prometheus alertmanager grafana loki promtail node-exporter cadvisor
+
+# Nginx: check the new config in a throwaway copy (same certificates) and
+# only then restart; a bad config (e.g. a missing certificate) keeps the old one.
+NGINX_SUM="$(cat nginx/nginx.conf nginx/templates/* | sha256sum | cut -d' ' -f1)"
+if [[ "$NGINX_SUM" != "$(cat .nginx-config-sum 2>/dev/null || true)" ]]; then
+  if docker compose run --rm --no-deps nginx nginx -t >/dev/null 2>&1; then
+    docker compose up -d --force-recreate nginx
+    echo "$NGINX_SUM" > .nginx-config-sum
+  else
+    echo "nginx config check failed, nginx keeps the old config:" >&2
+    docker compose run --rm --no-deps nginx nginx -t >&2 || true
+  fi
+else
+  docker compose up -d nginx
+fi
 
 # One copy at a time: Nginx sends everyone to the other meanwhile.
 for service in api1 api2; do
