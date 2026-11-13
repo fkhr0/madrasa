@@ -3,8 +3,6 @@ import '../models/payment_model.dart';
 import '../models/student_account_model.dart';
 
 /// Tuition and bus fees (administrator) and a family's own fees (parent).
-/// MockFinanceRepository or ApiFinanceRepository, receipts are numbered by
-/// the server, never by the phone. Failures throw [FinanceException].
 abstract class FinanceRepository {
   /// Every student's account for the current study year.
   Future<List<StudentAccountModel>> getAccounts();

@@ -7,9 +7,8 @@ import '../../../core/widgets/status_badge.dart';
 import '../models/trip_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// The stops of the current trip as a vertical line:
-/// passed stops are filled, the bus sits after the last reached stop,
-/// and the student's stop is marked.
+/// The stops of the current trip as a vertical line: passed stops are filled,
+/// the bus sits after the last reached stop, and the student's stop is marked.
 class RouteTimeline extends StatelessWidget {
   final TripModel trip;
   final String? myStopId;

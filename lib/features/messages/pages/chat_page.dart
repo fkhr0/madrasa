@@ -31,9 +31,7 @@ class ChatPage extends ConsumerStatefulWidget {
 }
 
 class _ChatPageState extends ConsumerState<ChatPage> {
-  /// How often an open chat asks for newer messages when the live
-  /// connection is down. While it is up, messages arrive at once and the
-  /// chat only asks every sixth time (30 s), just in case.
+  /// How often an open chat asks for newer messages when the live connection is down.
   static const _checkEvery = Duration(seconds: 5);
 
   Timer? _check;

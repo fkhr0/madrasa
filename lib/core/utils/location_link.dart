@@ -16,9 +16,8 @@ class IraqMap {
       p.longitude <= east;
 }
 
-/// Finds a place in what a family sent: a WhatsApp / Google Maps link with
-/// the coordinates inside, "geo:33.3,44.3", or "33.3121, 44.3612".
-/// Short links (maps.app.goo.gl) need the server to follow them.
+/// Finds a place in what a family sent: a WhatsApp / Google Maps link with the
+/// coordinates inside, "geo:33.3,44.3", or "33.3121, 44.3612".
 LatLng? coordinatesIn(String text) {
   final decoded = Uri.decodeFull(text).replaceAll('+', ' ');
   const number = r'(-?\d+\.\d+)';

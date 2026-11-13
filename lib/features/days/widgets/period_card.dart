@@ -9,9 +9,7 @@ import '../../../core/widgets/status_badge.dart';
 import '../models/day_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// One period of the day with its lessons. For the office and teachers each
-/// lesson says whether attendance was taken, by whom and when; for a
-/// student, their own mark.
+/// One period of the day with its lessons.
 class PeriodCard extends StatelessWidget {
   final DayPeriodModel period;
 

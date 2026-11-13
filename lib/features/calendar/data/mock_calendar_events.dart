@@ -2,8 +2,6 @@ import '../models/calendar_event_model.dart';
 import '../models/school_event_model.dart';
 
 /// School events, close to today so the calendar always has something.
-/// Holidays come from the academic year; homework, exams and reminders are
-/// added by the calendar provider.
 class MockCalendarEvents {
   MockCalendarEvents._();
 

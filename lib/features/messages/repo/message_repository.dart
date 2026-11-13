@@ -1,9 +1,7 @@
 import '../models/conversation_model.dart';
 import '../models/message_model.dart';
 
-/// MockMessageRepository or ApiMessageRepository. New messages arrive
-/// through the live connection; ChatController keeps each chat in memory.
-/// Failures throw ApiException with a message to show.
+/// MockMessageRepository or ApiMessageRepository.
 abstract class MessageRepository {
   /// Conversations of [userId], newest first.
   Future<List<ConversationModel>> getConversations(String userId);

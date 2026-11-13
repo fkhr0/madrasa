@@ -19,9 +19,7 @@ import '../widgets/attendance_record_tile.dart';
 import '../widgets/attendance_summary_card.dart';
 import '../../../core/l10n/language.dart';
 
-/// A student's attendance this term. Without [studentId]: the signed-in
-/// student or the parent's selected child. The administrator (opening it
-/// from People) can tap a day to excuse it or take the excuse back.
+/// A student's attendance this term.
 class AttendancePage extends ConsumerWidget {
   final String? studentId;
 

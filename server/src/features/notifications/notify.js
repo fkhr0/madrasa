@@ -20,9 +20,8 @@ async function notify(institutionId, userIds, { type, title, body = "", route = 
        SELECT $1, id, $3, $4, $5, $6, $7, $8 FROM unnest($2::text[]) AS id`,
       [institutionId, ids, type, texts.en.title, texts.en.body, texts.ar.title, texts.ar.body, route],
     );
-    // Phones get it too (each in its app's language), from background jobs
-    // so a message to the whole school doesn't slow this request down. 500
-    // people per job: if one fails and is retried, only those can get it twice.
+    // Phones get it too (each in its app's language), from background jobs so a
+    // message to the whole school doesn't slow this request down.
     for (const part of chunks(ids, PEOPLE_PER_PUSH_JOB)) {
       require("../../jobs/queue")
         .enqueue("push.send", { userIds: part, texts, route })

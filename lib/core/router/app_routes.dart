@@ -55,9 +55,7 @@ class AppRoutes {
   static String examScores(String examId) => '/exams/$examId/scores';
   static String chat(String conversationId) => '$messages/$conversationId';
 
-  /// True for the bottom tabs and the pages inside them (e.g. a chat).
-  /// Those are opened with `go` (switch tab); pushing them on top of a
-  /// full-screen page would put a second copy of the tabs on the stack.
+  /// True for the bottom tabs and the pages inside them (e.g.
   static bool isInTabs(String location) {
     const tabs = [home, schedule, work, messages, more];
     return tabs.any((tab) => location == tab || location.startsWith('$tab/'));

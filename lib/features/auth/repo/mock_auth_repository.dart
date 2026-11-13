@@ -3,8 +3,6 @@ import '../models/user_model.dart';
 import 'auth_repository.dart';
 
 /// Accepts any password of 4+ characters.
-/// The ID prefix picks the account: TCH- teacher, PAR- parent,
-/// ADM- administrator, DRV- driver, anything else the student.
 class MockAuthRepository implements AuthRepository {
   const MockAuthRepository();
 

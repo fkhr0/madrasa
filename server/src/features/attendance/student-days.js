@@ -1,13 +1,12 @@
 const { t } = require("../../i18n");
-// A student's school day from the marks of its lessons: excused by the office
-// → excused (with the office's note) absent from every marked lesson → absent
+// A student's school day from the marks of its lessons: excused by the office →
+// excused (with the office's note) absent from every marked lesson → absent
 // (the only absent day) late to a lesson               → late, naming it
 // otherwise                      → present Missed lessons on a day the student
 // came are named in the note (the day still counts as attended).
 
 /**
- * [marks]: [{ date, period, status, subjectName }]
- * [excuses]: [{ date, note }]
+ * [marks]: [{ date, period, status, subjectName }] [excuses]: [{ date, note }]
  * Returns [{ date, status, note, lessons }], newest day first.
  */
 function studentDays(marks, excuses) {

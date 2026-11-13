@@ -1,9 +1,6 @@
-// A new school and its office (admin) account: the office then adds its
-// classes and people in the app. On the server:
-//   docker compose exec api1 node src/db/create-school.js "School name" ["Admin name"]
-//   ... --sample   also a class, a subject and one account per role (testing)
-// Prints each ID and a temporary password once; everyone chooses their own
-// password at first sign-in.
+// A new school and its office (admin) account: the office then adds its classes
+// and people in the app.
+//  docker compose exec api1 node src/db/create-school.js "School name" ["Admin name"]
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const config = require("../config");

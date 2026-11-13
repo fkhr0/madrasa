@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 
 /// The colours a screen needs, with readable names.
-/// Read it with `context.palette` (see context_extensions.dart); the right
-/// set is picked automatically for light or dark mode.
 @immutable
 class AppPalette extends ThemeExtension<AppPalette> {
   final Color primary;

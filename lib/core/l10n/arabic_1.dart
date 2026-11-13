@@ -138,8 +138,8 @@ const Map<String, String> arabic1 = {
   'Common questions': 'أسئلة شائعة',
   'Consider a word with {0}': 'جرّب كلمة فيها {0}',
   'Copied': 'تم النسخ',
-  'Copied — paste it in WhatsApp or SMS':
-      'تم النسخ — الصقه في واتساب أو رسالة نصية',
+  'Copied. Paste it in WhatsApp or SMS':
+      'تم النسخ. الصقه في واتساب أو رسالة نصية',
   'Copy': 'نسخ',
   'Copy both as a message': 'نسخ الاثنين كرسالة',
   'Create account': 'إنشاء الحساب',
@@ -324,8 +324,8 @@ const Map<String, String> arabic1 = {
   'Last 7 days': 'آخر 7 أيام',
   'Last stop at {0}': 'آخر موقف الساعة {0}',
   'Late': 'متأخر',
-  'Late work isn\'t accepted — talk to your teacher':
-      'لا يُقبل التسليم المتأخر — كلّم مدرّسك',
+  'Late work isn\'t accepted. Talk to your teacher':
+      'لا يُقبل التسليم المتأخر. كلّم مدرّسك',
   'Learning': 'التعلّم',
   'Learning resources': 'المصادر التعليمية',
   'Leave': 'مغادرة',
@@ -347,8 +347,8 @@ const Map<String, String> arabic1 = {
   'Line not found': 'الخط غير موجود',
   'Lines': 'الخطوط',
   'Link': 'رابط',
-  'Live — the driver is reporting this trip.':
-      'مباشر — السائق يرسل موقع هذه الرحلة.',
+  'Live: the driver is reporting this trip.':
+      'مباشر: السائق يرسل موقع هذه الرحلة.',
   'Loading…': 'جارٍ التحميل…',
   'Low': 'منخفضة',
   'Madrasa': 'مدرسة',

@@ -1,6 +1,4 @@
-// School fees. The office sets the fees, records payments (the server
-// numbers the receipts), gives discounts, voids mistakes and reminds
-// families; parents and students see their own account.
+// School fees.
 const express = require("express");
 const { HttpError, validate, isoDate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");

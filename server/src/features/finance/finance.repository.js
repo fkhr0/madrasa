@@ -2,11 +2,7 @@
 const { query, queryOne } = require("../../db/database");
 const institution = require("../institution/institution.repository");
 
-/**
- * The school's fee settings, created empty the first time. "configured" stays
- * false until the office saves them; with no installment dates yet,
- * everything is due at the start of the study year.
- */
+/** The school's fee settings, created empty the first time. */
 async function settings(institutionId) {
   await query(
     "INSERT INTO finance_settings (institution_id) VALUES ($1) ON CONFLICT DO NOTHING",

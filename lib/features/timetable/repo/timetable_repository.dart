@@ -6,9 +6,7 @@ import '../models/period_model.dart';
 abstract class TimetableRepository {
   Future<List<PeriodModel>> getPeriods();
 
-  /// Replaces the bell times (numbered in list order). Throws ApiException
-  /// with status 409 when lessons sit in periods being cut; call again with
-  /// [removeLessons] after the user agrees.
+  /// Replaces the bell times (numbered in list order).
   Future<void> savePeriods(
     List<PeriodModel> periods, {
     bool removeLessons = false,

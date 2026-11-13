@@ -11,9 +11,8 @@ import '../../messages/providers/message_provider.dart';
 import '../../notifications/providers/notification_provider.dart';
 import '../providers/realtime_provider.dart';
 
-/// Keeps the live connection open while the app's tabs are shown, and
-/// reloads exactly what the server says changed. (Bus trips listen to the
-/// connection themselves, in ApiTransportRepository.)
+/// Keeps the live connection open while the app's tabs are shown, and reloads
+/// exactly what the server says changed.
 class RealtimeSync extends ConsumerWidget {
   final Widget child;
 

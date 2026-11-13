@@ -121,9 +121,7 @@ class ApiTransportRepository implements TransportRepository {
     Map<String, dynamic>? running;
     var loaded = false;
     var loads = 0;
-    // How far the server's clock is from this phone's. A phone a few
-    // minutes off would otherwise see a live bus as "last seen", or move it
-    // along the line at the wrong place.
+    // How far the server's clock is from this phone's.
     var clockOffset = Duration.zero;
 
     void emit() {

@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../l10n/language.dart';
 
-/// Asks before anything is deleted or removed. Every delete in the app
-/// goes through this, so nothing disappears by one wrong tap.
-/// Returns true only when the user pressed the red button.
+/// Asks before anything is deleted or removed.
 Future<bool> confirmDelete(
   BuildContext context, {
   required String title,

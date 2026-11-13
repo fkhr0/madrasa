@@ -1,6 +1,4 @@
 // Administrator: the school's accounts.
-// The server makes the ID (PREFIX-YEAR-NUMBER) and a temporary password; the
-// person must choose their own password at first sign-in.
 const crypto = require("crypto");
 const express = require("express");
 const bcrypt = require("bcryptjs");

@@ -87,7 +87,7 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
             if (firstTime) ...[
               Text(
                 tr(
-                  'You signed in with a temporary password from the school. Choose your own password to continue — one only you know.',
+                  'You signed in with a temporary password from the school. Choose your own password to continue, one only you know.',
                 ),
                 style: context.text.bodyMedium,
               ),

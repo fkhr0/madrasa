@@ -23,9 +23,9 @@ function notOnDemoAccount(userId) {
  */
 async function resetDemoSchool() {
   if (!config.demoMode) return null;
-  // People and study years first (they aren't deleted with a school by
-  // design, so a real school can't vanish with one mistake), then
-  // the schools and everything else that belongs to them.
+  // People and study years first (they aren't deleted with a school by design,
+  // so a real school can't vanish with one mistake), then the schools and
+  // everything else that belongs to them.
   await query("DELETE FROM users WHERE institution_id = ANY($1)", [DEMO_SCHOOLS]);
   await query("DELETE FROM academic_years WHERE institution_id = ANY($1)", [DEMO_SCHOOLS]);
   await query("DELETE FROM institutions WHERE id = ANY($1)", [DEMO_SCHOOLS]);

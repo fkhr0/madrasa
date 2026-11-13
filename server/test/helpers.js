@@ -62,9 +62,8 @@ async function startTestApp() {
   return createApp();
 }
 
-// `npm run test:pg` runs the same tests on a real PostgreSQL server (the
-// same engine as Neon or a VPS). TEST_DATABASE_URL in .env, e.g.
-// postgres://postgres:PASSWORD@localhost:5432/school_test
+// `npm run test:pg` runs the same tests on a real PostgreSQL server (the same
+// engine as Neon or a VPS).
 const onRealPostgres = process.env.npm_lifecycle_event === "test:pg";
 
 /** Connects to TEST_DATABASE_URL and wipes it (made the first time). */

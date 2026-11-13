@@ -1,6 +1,4 @@
-// Homework. The subject's teacher (or the office) sets work for a class and
-// grades it; students hand it in, with files when the work asks for them;
-// parents follow along.
+// Homework.
 const express = require("express");
 const { HttpError, validate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");

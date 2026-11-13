@@ -199,8 +199,8 @@ async function ridingChanged(institutionId, studentId, notRiding) {
 
 /**
  * Tells everyone what changed between [before] and [after] (the same trip
- * before and after an action), whoever moved it: GPS, the driver's
- * buttons, or test mode.
+ * before and after an action), whoever moved it: GPS, the driver's buttons, or
+ * test mode.
  */
 async function tripChanged(institutionId, route, before, after) {
   for (let i = before.reachedIndex + 1; i <= after.reachedIndex; i++) {

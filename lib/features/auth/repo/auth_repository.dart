@@ -1,8 +1,6 @@
 import '../models/user_model.dart';
 
 /// What the app needs from the authentication backend.
-/// Pages never talk to the server directly, only through this contract.
-/// Today: MockAuthRepository. Backend stage: ApiAuthRepository.
 abstract class AuthRepository {
   /// [schoolId] is the ID the school generated for the student,
   /// teacher or parent. Throws [AuthException] on wrong credentials.

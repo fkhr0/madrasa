@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import '../constants/app_sizes.dart';
 import '../theme/app_colors.dart';
 
-/// Circle with the person's initials. Each name always gets the same
-/// muted colour, so people are easy to recognise in lists.
-/// (Profile pictures replace the initials once the backend is connected.)
+/// Circle with the person's initials.
 class UserAvatar extends StatelessWidget {
   final String name;
   final double size;

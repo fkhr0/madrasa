@@ -6,9 +6,7 @@ import '../models/assignment_model.dart';
 import '../models/attachment_model.dart';
 import 'assignment_repository.dart';
 
-/// Keeps assignments in memory so submitting and grading work during the
-/// session. Students see MockAssignments; staff get a list per class that
-/// starts with the maths work.
+/// Keeps assignments in memory so submitting and grading work during the session.
 class MockAssignmentRepository implements AssignmentRepository {
   final List<AssignmentModel> _items = MockAssignments.items;
   final _byClass = <String, List<AssignmentModel>>{};

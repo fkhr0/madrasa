@@ -1,6 +1,5 @@
-// Exams: a teacher schedules them for the subjects they teach and publishes
-// the scores; the administrator can do it for any subject. Students and
-// parents see the class's exams and, once published, their own score.
+// Exams: a teacher schedules them for the subjects they teach and publishes the
+// scores; the administrator can do it for any subject.
 const express = require("express");
 const { HttpError, validate, isoDate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");

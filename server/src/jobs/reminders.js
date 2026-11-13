@@ -73,12 +73,12 @@ async function remindExams(date, when) {
 
 // Each job takes an optional { date, time } (tests); the scheduler uses now.
 
-/** 7:00 — exams today. */
+/** 7:00: exams today. */
 function examsToday({ date = today() } = {}) {
   return remindExams(date, "today");
 }
 
-/** 18:00 — exams and homework due tomorrow. */
+/** 18:00: exams and homework due tomorrow. */
 async function eveningReminders({ date = today() } = {}) {
   const tomorrow = addDays(date, 1);
   const exams = await remindExams(tomorrow, "tomorrow");
@@ -116,11 +116,7 @@ async function eveningReminders({ date = today() } = {}) {
 
 const REPEAT = { daily: "1 day", weekly: "7 days", monthly: "1 month" };
 
-/**
- * Every minute - personal reminders that are due. A repeating one moves on
- * to its next time; the others stay as they are (the app shows them done
- * or late).
- */
+/** Every minute - personal reminders that are due. */
 async function taskReminders() {
   const due = await query(
     `SELECT t.user_id AS "userId", t.id, t.title, t.due_at AS "dueAt", t.repeat, t.route,
@@ -150,7 +146,7 @@ async function taskReminders() {
 /** How long after a lesson starts its teacher is reminded to take attendance. */
 const ATTENDANCE_GRACE_MIN = 10;
 
-/** Every 5 minutes — lessons under way without attendance. */
+/** Every 5 minutes: lessons under way without attendance. */
 async function attendanceReminders({ date = today(), time = timeNow() } = {}) {
   const now = time;
   let sent = 0;

@@ -14,9 +14,7 @@ import '../widgets/demo_banner.dart';
 import '../widgets/offline_banner.dart';
 import '../../../core/l10n/language.dart';
 
-/// Holds the bottom navigation bar. Each tab keeps its own page stack
-/// (StatefulShellRoute), so switching tabs never loses your place.
-/// The second and third tabs change with the role (see AppRoutes.work).
+/// Holds the bottom navigation bar.
 class MainShell extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
 

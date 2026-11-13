@@ -38,9 +38,7 @@ const allowedExtensions = [
   'docx', 'xlsx', 'pptx', 'doc', 'xls', 'ppt', 'txt', 'csv',
 ];
 
-/// Lets the user pick files ([extensions]: only these kinds) and uploads
-/// them. Returns the uploaded files (empty when cancelled). Problems are
-/// shown as a message.
+/// Lets the user pick files ([extensions]: only these kinds) and uploads them.
 Future<List<AttachmentModel>> pickAndUpload(
   BuildContext context,
   WidgetRef ref, {

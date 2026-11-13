@@ -1,6 +1,5 @@
-// Brings the database up to date: runs every file in migrations/ that hasn't run
-// yet, in name order (001_, 002_, ...). Never edit a migration that already ran
-// online; add a new file instead.
+// Brings the database up to date: runs every file in migrations/ that hasn't
+// run yet, in name order (001_, 002_, ...).
 const fs = require("fs");
 const path = require("path");
 const { db, query } = require("./database");

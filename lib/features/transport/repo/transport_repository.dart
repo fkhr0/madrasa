@@ -48,9 +48,7 @@ abstract class TransportRepository {
   /// The driver says the bus reached the next stop (when GPS is off).
   Future<void> arriveAtStop(String routeId);
 
-  /// The driver's phone, every few seconds during a trip. The server moves
-  /// the bus on by itself when it leaves or reaches a stop. [accuracy] is
-  /// in metres (rough readings don't decide arrivals).
+  /// The driver's phone, every few seconds during a trip.
   Future<void> sendLocation(
     String routeId,
     double latitude,

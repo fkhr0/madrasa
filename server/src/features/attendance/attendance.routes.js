@@ -1,6 +1,4 @@
-// Attendance. Teachers mark the lessons they teach (up to a week back); the
-// administrator can mark any lesson and excuse a student's day. Students and
-// parents read the student's days.
+// Attendance.
 const express = require("express");
 const { HttpError, validate, isoDate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");

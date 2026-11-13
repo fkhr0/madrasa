@@ -13,8 +13,6 @@ import '../repo/finance_repository.dart';
 import '../../../core/l10n/language.dart';
 
 /// Administrator: record money the office received.
-/// Offers the amounts that usually make sense (overdue, next installment,
-/// everything) so the clerk rarely types a number.
 Future<void> showPaymentSheet(
   BuildContext context,
   StudentAccountModel account,

@@ -18,8 +18,8 @@ const Map<String, String> arabic3 = {
   'Test mode': 'وضع التجربة',
   'Test mode is on: trips can start outside their times. The administrator turns it off in Transport › Trip rules.':
       'وضع التجربة مفعّل: يمكن بدء الرحلات خارج أوقاتها. توقفه الإدارة من النقل › قواعد الرحلات.',
-  'Thank you — nothing more is due this year.':
-      'شكراً — لا شيء مستحق بعد الآن هذه السنة.',
+  'Thank you, nothing more is due this year.':
+      'شكراً، لا شيء مستحق بعد الآن هذه السنة.',
   'That was the last school day': 'كان ذلك آخر يوم دوام',
   'The bus is at your stop': 'الباص في موقفك',
   'The bus picks {0} up at the door. Stand at home and tap "I\'m here", or tap the map.':
@@ -124,8 +124,8 @@ const Map<String, String> arabic3 = {
   'You choose the teachers on the class page.': 'تختار المدرّسين من صفحة الصف.',
   'You have no lesson with {0} this day': 'ليس لديك حصة مع {0} في هذا اليوم',
   'You have no lessons this day.': 'ليس لديك حصص في هذا اليوم.',
-  'You signed in with a temporary password from the school. Choose your own password to continue — one only you know.':
-      'دخلت بكلمة مرور مؤقتة من المدرسة. اختر كلمة مرور خاصة بك للمتابعة — لا يعرفها غيرك.',
+  'You signed in with a temporary password from the school. Choose your own password to continue, one only you know.':
+      'دخلت بكلمة مرور مؤقتة من المدرسة. اختر كلمة مرور خاصة بك للمتابعة، لا يعرفها غيرك.',
   'You will need your ID and password to sign in again.':
       'ستحتاج رقمك وكلمة المرور للدخول مرة أخرى.',
   'You\'re all caught up': 'لا شيء جديد',
@@ -163,7 +163,7 @@ const Map<String, String> arabic3 = {
   'present on average': 'نسبة الحضور',
   '{0} (now on {1})': '{0} (حالياً على {1})',
   '{0} absent{1}': '{0} غائب{1}',
-  '{0} and {1} — plan your evening': '{0} و{1} — نظّم مساءك',
+  '{0} and {1}: plan your evening': '{0} و{1}: نظّم مساءك',
   '{0} at a glance': '{0} بنظرة سريعة',
   '{0} at {1}': '{0} الساعة {1}',
   '{0} at {1}{2}': '{0} الساعة {1}{2}',
@@ -250,7 +250,7 @@ const Map<String, String> arabic3 = {
   '{0} · {1} · due {2}': '{0} · {1} · مستحق {2}',
   '{0} · {1} · due {2} · out of {3}': '{0} · {1} · مستحق {2} · من {3}',
   '{0} · {1} · {2} · out of {3}': '{0} · {1} · {2} · من {3}',
-  '{0} — due {1}': '{0} — مستحق {1}',
+  '{0} · due {1}': '{0} · مستحق {1}',
   '{0}% collected': 'حُصِّل {0}%',
   '{0}% present': 'الحضور {0}%',
   '{0}/{1} taken': 'سُجِّل {0}/{1}',

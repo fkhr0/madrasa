@@ -33,8 +33,7 @@ async function cached(key, seconds, compute) {
 
 /**
  * Each school has a version number; it is part of every key, so raising it
- * (forgetSchool) makes all the old answers unreachable at once. They then
- * expire by themselves.
+ * (forgetSchool) makes all the old answers unreachable at once.
  */
 const localVersions = new Map();
 
@@ -69,8 +68,8 @@ const NOT_A_CHANGE = /^\/(auth|messages|notifications|files|transport\/routes\/[
 
 /**
  * Middleware: GET answers kept per person, language and address, until the
- * school's version goes up (any change, see forgetSchoolOnChange) or 5
- * minutes pass. A hit is served without touching the database.
+ * school's version goes up (any change, see forgetSchoolOnChange) or 5 minutes
+ * pass.
  */
 function cacheResponses(req, res, next) {
   if (req.method !== "GET" || LIVE.test(req.path)) return next();
@@ -103,9 +102,9 @@ function cacheResponses(req, res, next) {
 }
 
 /**
- * Middleware: any successful change in a school forgets its cached answers
- * - before the answer goes out, so the next screen anyone opens already
- * shows the change.
+ * Middleware: any successful change in a school forgets its cached answers -
+ * before the answer goes out, so the next screen anyone opens already shows
+ * the change.
  */
 function forgetSchoolOnChange(req, res, next) {
   if (req.method === "GET" || req.method === "HEAD" || req.method === "OPTIONS") return next();

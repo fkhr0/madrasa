@@ -106,9 +106,9 @@ class _GpsReporterState extends ConsumerState<GpsReporter>
             });
           },
         );
-    // A bus waiting at a light doesn't move, so the phone reports nothing
-    // new: repeat the last point so families still see it live, but only
-    // a recent one.
+    // A bus waiting at a light doesn't move, so the phone reports nothing new:
+    // repeat the last point so families still see it live, but only a recent
+    // one.
     _keepAlive = Timer.periodic(const Duration(seconds: 10), (_) {
       final readAt = _lastReadAt;
       if (_last == null || readAt == null) return;

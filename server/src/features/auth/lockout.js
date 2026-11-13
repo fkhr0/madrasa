@@ -1,6 +1,5 @@
-// Locks an ID after too many wrong passwords, whichever address they come
-// from (guessing from many phones at once). Counted in Redis when it is set
-// (several servers), otherwise in this process.
+// Locks an ID after too many wrong passwords, whichever address they come from
+// (guessing from many phones at once).
 const config = require("../../config");
 
 /** Wrong passwords allowed in the window before the ID is locked. */

@@ -1,4 +1,4 @@
-# Security audit — 2026-11-09
+# Security audit, 2026-11-09
 
 Scope: the Node server (`server/`), the Flutter app (`lib/`, `android/`), and
 the repository. Every finding below has a test in `server/test/`.
@@ -40,4 +40,4 @@ the repository. Every finding below has a test in `server/test/`.
 ## Automated from now on (CI)
 
 npm audit · CodeQL · Trivy (image and secrets) · Gitleaks · Hadolint ·
-Dependabot — see `.github/workflows/`.
+Dependabot: see `.github/workflows/`.

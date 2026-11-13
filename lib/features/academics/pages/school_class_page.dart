@@ -188,7 +188,7 @@ class _ClassBody extends ConsumerWidget {
                         label: tr('Head teacher'),
                         value:
                             schoolClass.homeroomTeacherName ??
-                            tr('Not chosen — tap to choose'),
+                            tr('Not chosen, tap to choose'),
                       ),
                     ),
                     Icon(

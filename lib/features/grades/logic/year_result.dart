@@ -6,8 +6,8 @@ import '../../subjects/models/subject_model.dart';
 /// A subject's year result, the Iraqi way (all marks out of 100): 1st term work
 /// = average of the monthly exams of the first semester 2nd term work = average
 /// of the monthly exams of the second semester year work (السعي السنوي) = (1st
-/// term + mid-year exam + 2nd term) ÷ 3 result = (year work + final exam) ÷ 2
-/// → pass from 50 Quizzes show in Grades but don't count here.
+/// term + mid-year exam + 2nd term) ÷ 3 result = (year work + final exam) ÷ 2 →
+/// pass from 50 Quizzes show in Grades but don't count here.
 class YearResultModel {
   final SubjectModel subject;
   final double? firstTerm;

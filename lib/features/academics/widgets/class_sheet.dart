@@ -11,9 +11,8 @@ import '../providers/academics_provider.dart';
 import 'teacher_picker_sheet.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator: a new class (name, head teacher, subjects), or rename a
-/// class and change its head teacher ([schoolClass] given).
-/// Returns true when the class was deleted.
+/// Administrator: a new class (name, head teacher, subjects), or rename a class
+/// and change its head teacher ([schoolClass] given).
 Future<bool?> showClassSheet(
   BuildContext context, {
   SchoolClassModel? schoolClass,
@@ -154,7 +153,7 @@ class _ClassSheetState extends ConsumerState<_ClassSheet> {
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.star_outline),
               title: Text(tr('Head of the class')),
-              subtitle: Text(_headName ?? tr('Not chosen — tap to choose')),
+              subtitle: Text(_headName ?? tr('Not chosen, tap to choose')),
               trailing: const Icon(Icons.chevron_right),
               onTap: _pickHead,
             ),

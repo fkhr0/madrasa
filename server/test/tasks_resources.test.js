@@ -65,9 +65,7 @@ test("study material: the teacher shares, the class sees it", async () => {
   const created = (await request(app).post("/resources/classes/cls-5a").set(as.ahmed).send(shared).expect(201)).body;
   assert.equal(created.fileName, "Chapter 3.pdf");
 
-  // Zainab can open the file; a student of another school can't. (Like
-  // worksheets, shared material may be opened by anyone at the school, but
-  // only the class sees it in its list.)
+  // Zainab can open the file; a student of another school can't.
   await request(app).get(`/files/${file.id}/link`).set(as.zainab).expect(200);
   await request(app).get(`/files/${file.id}/link`).set(as.otherSchool).expect(404);
   assert.equal((await request(app).get("/resources/students/STU-2026-0153").set(as.ali)).body.length, 0);

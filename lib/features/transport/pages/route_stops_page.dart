@@ -19,8 +19,6 @@ import '../widgets/stop_sheet.dart';
 import '../../../core/l10n/language.dart';
 
 /// Administrator: the stops of a line on a map.
-/// Tap the map to add a stop (it goes where it adds the least driving),
-/// drag to reorder, tap a stop to rename it or change its times.
 class RouteStopsPage extends ConsumerStatefulWidget {
   final String routeId;
 

@@ -7,11 +7,7 @@ const { HttpError } = require("../../common/http");
 
 const sha256 = (text) => crypto.createHash("sha256").update(text).digest("hex");
 
-/**
- * What each signed token is for. A token made for one purpose (a file's
- * download link, which appears in addresses and logs) is refused for any
- * other (signing in).
- */
+/** What each signed token is for. */
 const PURPOSE = { access: "access", file: "file" };
 
 /** The token's payload, or throws: wrong key, expired, other purpose, other algorithm. */

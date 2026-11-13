@@ -44,10 +44,10 @@ const Map<String, String> arabic4 = {
   'Results': 'النتائج',
   'Between terms': 'بين الفصلين',
   'Outside the study year': 'خارج السنة الدراسية',
-  'No school today — showing the next school day.':
-      'لا دوام اليوم — يُعرض يوم الدوام التالي.',
-  "Today's classes are over — showing the next school day.":
-      'انتهت حصص اليوم — يُعرض يوم الدوام التالي.',
+  'No school today. Showing the next school day.':
+      'لا دوام اليوم. يُعرض يوم الدوام التالي.',
+  "Today's classes are over. Showing the next school day.":
+      'انتهت حصص اليوم. يُعرض يوم الدوام التالي.',
   'lessons taken': 'حصص مسجَّلة',
   'on the way': 'في الطريق',
   'on {0}': 'يوم {0}',
@@ -194,8 +194,8 @@ const Map<String, String> arabic4 = {
       'انخفض الحضور {0} نقطة عن الفترة السابقة.',
   '{0} has the lowest attendance ({1}). A word with the homeroom teacher may help.':
       'لدى {0} أقل نسبة حضور ({1}). قد يفيد الحديث مع مرشد الصف.',
-  '{0} attendance is {1} — {2} points below {3}.':
-      'الحضور يوم {0} {1} — أقل بـ {2} نقطة من يوم {3}.',
+  '{0} attendance is {1}, {2} points below {3}.':
+      'الحضور يوم {0} {1}، أقل بـ {2} نقطة من يوم {3}.',
   '{0} has the lowest average ({1}/100). Extra support sessions before the exams could help.':
       'لمادة {0} أقل معدل ({1}/100). قد تفيد حصص تقوية قبل الامتحانات.',
   'Only {0} of homework was handed in.': 'سُلِّم {0} فقط من الواجبات.',

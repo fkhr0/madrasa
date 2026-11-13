@@ -5,9 +5,7 @@ import '../../auth/models/user_model.dart';
 import 'school_event_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Kinds of items on the calendar. Each academic item keeps its own kind
-/// (homework, quiz, exam...) so a busy day is readable at a glance.
-/// Which kinds a user sees depends on their role (see [visibleFor]).
+/// Kinds of items on the calendar.
 enum CalendarEventType {
   homework,
   assignment,
@@ -101,9 +99,7 @@ enum CalendarEventType {
   }
 }
 
-/// Anything shown on the calendar. School events come from the calendar
-/// repository; homework, exams, holidays and reminders are turned into
-/// this model by the calendar provider.
+/// Anything shown on the calendar.
 class CalendarEventModel {
   final String id;
   final String title;

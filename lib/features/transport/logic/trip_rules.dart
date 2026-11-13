@@ -27,8 +27,6 @@ enum TripBlock {
 }
 
 /// Whether one of today's trips can start, and when.
-/// The same rules run on the driver's screen and in the repository
-/// (on the server in production), so a button can't bypass them.
 class TripAvailability {
   final TripDirection direction;
   final TripBlock block;

@@ -1,8 +1,6 @@
 import '../models/user_model.dart';
 
 /// Fake accounts used until the backend is connected.
-/// IDs follow the school's generator: STU- student, TCH- teacher,
-/// PAR- parent, ADM- administrator, DRV- bus driver.
 class MockUsers {
   MockUsers._();
 

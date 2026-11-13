@@ -5,8 +5,6 @@ class AppConfig {
   static const apiUrl = String.fromEnvironment('API_URL');
 
   /// True when the app talks to the server instead of the mock data.
-  /// Features move to the server one at a time: today sign-in, profile and
-  /// the study year; the rest still use mock data.
   static bool get useApi => apiUrl.isNotEmpty;
 
   /// The demo accounts list on the sign-in page: mock mode only. Online the

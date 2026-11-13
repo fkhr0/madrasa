@@ -17,8 +17,6 @@ final taskRepositoryProvider = Provider<TaskRepository>(
 );
 
 /// The task list plus the actions that change it.
-/// Read the list with `ref.watch(tasksProvider)`, call actions with
-/// `ref.read(tasksProvider.notifier).toggle(task)`.
 final tasksProvider = AsyncNotifierProvider<TasksController, List<TaskModel>>(
   TasksController.new,
 );

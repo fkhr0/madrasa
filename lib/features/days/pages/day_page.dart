@@ -25,12 +25,12 @@ import '../providers/day_provider.dart';
 import '../widgets/period_card.dart';
 import '../../../core/l10n/language.dart';
 
-/// A day at school, for any date, as the signed-in person needs it: office
-/// the whole school: totals, what's on now, every period and whether its
-/// attendance was taken (by whom, when) teacher  their lessons with attendance,
-/// homework due, exams student  their lessons with their own marks, homework,
-/// exams, bus parent   the same for the selected child Then "What happened"
-/// that day, from the activity log.
+/// A day at school, for any date, as the signed-in person needs it: office the
+/// whole school: totals, what's on now, every period and whether its attendance
+/// was taken (by whom, when) teacher  their lessons with attendance, homework
+/// due, exams student  their lessons with their own marks, homework, exams, bus
+/// parent   the same for the selected child Then "What happened" that day, from
+/// the activity log.
 class DayPage extends ConsumerStatefulWidget {
   final DateTime? date;
 

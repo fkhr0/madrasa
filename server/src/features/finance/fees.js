@@ -15,7 +15,6 @@ function paidOf(account) {
 /**
  * The total split evenly over the due dates, rounded to 1,000 dinars as
  * offices do; the last installment takes the rounding.
- * [{ dueDate: "YYYY-MM-DD", amount }]
  */
 function installmentsOf(account) {
   const total = totalOf(account);

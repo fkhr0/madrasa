@@ -9,9 +9,9 @@ import '../../../core/widgets/icon_box.dart';
 import '../models/account_credentials_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Shows the generated ID and temporary password once, so the
-/// administrator can hand them over: copy one, or copy both as a message
-/// ready to paste into WhatsApp or an SMS.
+/// Shows the generated ID and temporary password once, so the administrator can
+/// hand them over: copy one, or copy both as a message ready to paste into
+/// WhatsApp or an SMS.
 Future<void> showCredentialsSheet(
   BuildContext context,
   AccountCredentialsModel credentials, {
@@ -124,7 +124,7 @@ class _CredentialsSheetState extends State<_CredentialsSheet> {
               ),
               label: Text(
                 _copied == 'both'
-                    ? tr('Copied — paste it in WhatsApp or SMS')
+                    ? tr('Copied. Paste it in WhatsApp or SMS')
                     : tr('Copy both as a message'),
               ),
             ),

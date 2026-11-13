@@ -1,6 +1,4 @@
-// Arabic for the server's texts. The English is the key (see index.js);
-// {0}, {1}… keep their meaning but may move. Activity lines (log.js) use
-// {actor} for who did it, placed where Arabic puts the doer.
+// Arabic for the server's texts.
 module.exports = {
   // ── Errors ──────────────────────────────────────────────────────
   'A student already has {0}. "Out of" can\'t be lower.': 'لدى أحد الطلاب {0}. لا يمكن أن تكون الدرجة الكاملة أقل.',

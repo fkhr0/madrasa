@@ -15,9 +15,7 @@ import '../providers/finance_provider.dart';
 import '../repo/finance_repository.dart';
 import '../../../core/l10n/language.dart';
 
-/// Office: the year's fees. Tuition (and classes that pay a different
-/// tuition), the bus fee for students on a bus line, and when the
-/// installments are due. Every family's account follows these.
+/// Office: the year's fees.
 class FeeSettingsPage extends ConsumerWidget {
   const FeeSettingsPage({super.key});
 

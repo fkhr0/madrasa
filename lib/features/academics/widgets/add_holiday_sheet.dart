@@ -10,9 +10,7 @@ import '../../institution/providers/institution_provider.dart';
 import '../../../core/network/api_exception.dart';
 import '../../../core/l10n/language.dart';
 
-/// Lets the administrator add a day off (or several) to the study year,
-/// e.g. an unplanned closure or a confirmed Eid date, or change one
-/// ([holiday] given) when the moon sighting moves an Eid.
+/// Lets the administrator add a day off (or several) to the study year, e.g.
 Future<void> showAddHolidaySheet(
   BuildContext context,
   AcademicYearModel year, {

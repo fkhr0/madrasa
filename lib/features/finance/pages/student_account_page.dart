@@ -130,7 +130,7 @@ class StudentAccountView extends ConsumerWidget {
                         MoneyFormatter.iqd(overdue),
                       ])
                     : next == null
-                    ? tr('Thank you — nothing more is due this year.')
+                    ? tr('Thank you, nothing more is due this year.')
                     : tr('Next: {0} by {1}', [
                         MoneyFormatter.iqd(next.$2),
                         DateFormatter.fullDate(next.$1.dueDate),

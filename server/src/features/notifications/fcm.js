@@ -1,11 +1,5 @@
-// Notifications on Android phones, even when the app is closed: Firebase
-// Cloud Messaging (FCM, free). The browser app keeps using Web Push (push.js).
-//
-// The app sends its phone's Firebase Installation ID (FID) after signing in
-// (POST /notifications/devices { token: <FID> }).
-// Sending needs the Firebase project's service account file
-// (FIREBASE_SERVICE_ACCOUNT_FILE). Without it nothing breaks: phones just
-// get their notifications when they open the app.
+// Notifications on Android phones, even when the app is closed: Firebase Cloud
+// Messaging (FCM, free).
 const fs = require("fs");
 const config = require("../../config");
 const { query } = require("../../db/database");

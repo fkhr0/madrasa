@@ -19,9 +19,8 @@ function createApp() {
   app.disable("x-powered-by");
   app.use(security.headersMiddleware());
   app.use(security.corsMiddleware());
-  // Answers zipped on the way out: JSON lists and the app's 4 MB of
-  // JavaScript shrink to about a quarter. (Photos and PDFs are skipped:
-  // they are already compressed.)
+  // Answers zipped on the way out: JSON lists and the app's 4 MB of JavaScript
+  // shrink to about a quarter.
   app.use(require("compression")());
   // Answers are one person's: the phone may keep them (and ask with ETag),
   // but no proxy or CDN in between may store or share them.

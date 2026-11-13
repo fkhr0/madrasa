@@ -12,14 +12,8 @@ const gpsFreshFor = Duration(seconds: 30);
 /// A school bus in city traffic: about 25 km/h on average.
 const cityMetresPerSecond = 7.0;
 
-/// Builds the app's [TripModel] from a running trip as the server sends it
-/// (GET /transport/routes/:id/trip → "trip").
-///
-/// Between two server updates the bus keeps moving on the screen:
-/// - fresh GPS → where the driver's phone is;
-/// - test mode without GPS → the server moves the bus one stop every
-///   [LiveTrip.demoDriveTime], so it slides along the line the same way;
-/// - otherwise → along the line at the timetable's pace.
+/// Builds the app's [TripModel] from a running trip as the server sends it (GET
+/// /transport/routes/:id/trip → "trip").
 TripModel tripFromServer({
   required BusRouteModel route,
   required Map<String, dynamic> json,

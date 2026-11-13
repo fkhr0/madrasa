@@ -130,9 +130,8 @@ class RouteStudentsPage extends ConsumerWidget {
     afternoonMinute: 0,
   );
 
-  /// The stop at the student's home: asks where it is, then adds it to the
-  /// line where it adds the least driving (the road is redrawn on save).
-  /// A brother or sister already picked up at that door shares their stop.
+  /// The stop at the student's home: asks where it is, then adds it to the line
+  /// where it adds the least driving (the road is redrawn on save).
   Future<BusStopModel?> _homeStop(
     BuildContext context,
     WidgetRef ref,
