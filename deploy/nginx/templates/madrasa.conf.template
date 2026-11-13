@@ -1,11 +1,11 @@
 # The site at https://${DOMAIN}. Nginx's image turns this file into
 # /etc/nginx/conf.d/madrasa.conf, filling in ${DOMAIN} from the environment.
 
-# ── http: only the certificate check, everything else moves to https ──
+# ── http, every name on this server: the certificate check, else https ──
 server {
-  listen 80;
-  listen [::]:80;
-  server_name ${DOMAIN};
+  listen 80 default_server;
+  listen [::]:80 default_server;
+  server_name _;
 
   location /.well-known/acme-challenge/ {
     root /var/www/certbot;
