@@ -4,7 +4,6 @@ import 'app_config.dart';
 
 /// Test builds (API_URL=ask) let the sign-in page set the server's address,
 /// because a Cloudflare test tunnel gets a new one each time it starts.
-/// The address is kept on the phone for the next launch.
 class ServerAddress {
   ServerAddress._();
 

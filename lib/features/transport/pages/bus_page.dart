@@ -162,7 +162,7 @@ class _Content extends ConsumerWidget {
                 Expanded(
                   child: Text(
                     trip.isLive
-                        ? tr('Live — the driver is reporting this trip.')
+                        ? tr('Live: the driver is reporting this trip.')
                         : tr(
                             'Following the timetable until the driver starts the trip.',
                           ),

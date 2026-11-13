@@ -57,9 +57,9 @@ int bestInsertIndex(List<BusStopModel> stops, double lat, double lng) {
   return (morning, afternoonFor(school, morning));
 }
 
-/// The afternoon trip drives the same road backwards: a stop reached
-/// N minutes before school in the morning is reached N minutes after the
-/// bus leaves school in the afternoon.
+/// The afternoon trip drives the same road backwards: a stop reached N minutes
+/// before school in the morning is reached N minutes after the bus leaves
+/// school in the afternoon.
 int afternoonFor(BusStopModel school, int morningMinute) =>
     school.afternoonMinute + (school.morningMinute - morningMinute);
 
@@ -112,9 +112,8 @@ List<BusStopModel> evenTimes(List<BusStopModel> stops) {
 /// How long the bus waits at each stop for students to get on or off.
 const stopWaitMinutes = 1;
 
-/// Times from the real driving times on the roads: the school times stay,
-/// each earlier stop is one drive (plus a short wait) before the next.
-/// [toSchool] and [toHome] are the line's roads (afternoon may be missing).
+/// Times from the real driving times on the roads: the school times stay, each
+/// earlier stop is one drive (plus a short wait) before the next.
 List<BusStopModel> timesFromRoads(
   List<BusStopModel> stops,
   RoadPathModel toSchool,

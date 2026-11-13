@@ -3,8 +3,6 @@ import '../models/account_credentials_model.dart';
 import '../models/new_account_model.dart';
 
 /// The school's accounts, managed by the administrator.
-/// MockPeopleRepository (mock data) or ApiPeopleRepository (the server, which
-/// generates IDs and passwords; the app never makes them up).
 abstract class PeopleRepository {
   /// Everyone with [role], sorted by name.
   Future<List<UserModel>> getByRole(UserRole role);

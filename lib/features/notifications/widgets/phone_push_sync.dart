@@ -56,9 +56,8 @@ class _PhonePushSyncState extends ConsumerState<PhonePushSync> {
     });
   }
 
-  /// The first time the app opens signed in: what notifications are for,
-  /// and a button to allow them (the system then asks). Once per phone; the
-  /// card on the notifications page stays for later.
+  /// The first time the app opens signed in: what notifications are for, and a
+  /// button to allow them (the system then asks).
   Future<void> _askOnce() async {
     if (!AppConfig.useApi || (!kIsWeb && !PhonePush.supported)) return;
     final permission = kIsWeb

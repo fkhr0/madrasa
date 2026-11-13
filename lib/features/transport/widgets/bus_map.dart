@@ -116,8 +116,8 @@ class _BusMapState extends ConsumerState<BusMap> {
               mapController: _map,
               options: MapOptions(
                 // Never flutter_map's default place (Kyiv): start on the line,
-                // and fit it again once the map knows its size (the web
-                // may lay it out at zero size first and skip the fit).
+                // and fit it again once the map knows its size (the web may lay
+                // it out at zero size first and skip the fit).
                 initialCenter: area.center,
                 initialZoom: 12,
                 initialCameraFit: CameraFit.bounds(

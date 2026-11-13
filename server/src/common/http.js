@@ -2,11 +2,7 @@
 const { z } = require("zod");
 const { t, render, currentLanguage } = require("../i18n");
 
-/**
- * An error the client should see, with its HTTP status. The message is the
- * English text with slots for values, sent in the caller's language:
- *   new HttpError(400, "{0} doesn't study this subject.", [className])
- */
+/** An error the client should see, with its HTTP status. */
 class HttpError extends Error {
   constructor(status, message, args = []) {
     super(t(message, args, "en"));

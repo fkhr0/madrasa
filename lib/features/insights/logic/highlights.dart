@@ -10,9 +10,8 @@ class Highlight {
   const Highlight(this.text, {this.isGood = false});
 }
 
-/// Reads the numbers so the administrator doesn't have to: the weakest
-/// class, the hardest subject, the day students skip, late buses...
-/// Rule-based, like the planner; no AI needed.
+/// Reads the numbers so the administrator doesn't have to: the weakest class,
+/// the hardest subject, the day students skip, late buses...
 List<Highlight> highlightsFor(InsightsModel data) {
   LabeledValue lowest(List<LabeledValue> list) =>
       list.reduce((a, b) => a.value <= b.value ? a : b);
@@ -68,7 +67,7 @@ List<Highlight> highlightsFor(InsightsModel data) {
       bestDay.value - weakDay.value >= 0.05) {
     highlights.add(
       Highlight(
-        tr('{0} attendance is {1} — {2} points below {3}.', [
+        tr('{0} attendance is {1}, {2} points below {3}.', [
           weakDay.label,
           pct(weakDay.value),
           ((bestDay.value - weakDay.value) * 100).round(),

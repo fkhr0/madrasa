@@ -6,9 +6,7 @@ import '../models/period_model.dart';
 import '../models/timetable_lesson_model.dart';
 import 'timetable_repository.dart';
 
-/// In-memory timetable for mock mode (lost on reload). 5th A starts with a
-/// few lessons so the editor isn't empty; the server checks teacher clashes,
-/// this mock doesn't.
+/// In-memory timetable for mock mode (lost on reload).
 class MockTimetableRepository implements TimetableRepository {
   List<PeriodModel> _periods = const [
     PeriodModel(number: 1, start: '08:00', end: '08:45'),

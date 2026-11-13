@@ -45,7 +45,7 @@ List<PlanTipModel> studentTips({
               ? -days == 1
                     ? tr('1 day late · late work is still accepted')
                     : tr('{0} days late · late work is still accepted', [-days])
-              : tr('Late work isn\'t accepted — talk to your teacher'),
+              : tr('Late work isn\'t accepted. Talk to your teacher'),
           priority: 90,
           route: route,
         ),
@@ -86,7 +86,7 @@ List<PlanTipModel> studentTips({
           when: PlanWhen.thisWeek,
           icon: Icons.assignment_outlined,
           color: AppColors.subjectBlue,
-          title: tr('{0} — due {1}', [a.title, onDay(now, a.dueDate)]),
+          title: tr('{0} · due {1}', [a.title, onDay(now, a.dueDate)]),
           detail: a.subject.name,
           priority: 40,
           route: route,
@@ -187,7 +187,7 @@ List<PlanTipModel> studentTips({
         icon: Icons.event_busy_outlined,
         color: AppColors.subjectPurple,
         title: tr('Tomorrow is a busy day'),
-        detail: tr('{0} and {1} — plan your evening', [
+        detail: tr('{0} and {1}: plan your evening', [
           examsTomorrow.length == 1
               ? tr('1 exam')
               : tr('{0} exams', [examsTomorrow.length]),

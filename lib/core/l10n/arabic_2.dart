@@ -64,7 +64,7 @@ const Map<String, String> arabic2 = {
   'Nobody found': 'لم يُعثر على أحد',
   'Nobody gets on here yet': 'لا أحد يصعد من هنا بعد',
   'Not at the stop': 'ليس في الموقف',
-  'Not chosen — tap to choose': 'لم يُختر — اضغط للاختيار',
+  'Not chosen, tap to choose': 'لم يُختر، اضغط للاختيار',
   'Not handed in': 'لم يُسلَّم',
   'Not handed in yet.': 'لم يُسلَّم بعد.',
   'Not riding today': 'لن يركب اليوم',

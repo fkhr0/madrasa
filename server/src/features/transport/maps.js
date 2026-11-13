@@ -119,8 +119,7 @@ const SHORT_LINK_HOSTS = ["maps.app.goo.gl", "goo.gl", "g.co"];
 
 /**
  * Reads a location from what a family sent: a WhatsApp / Google Maps link
- * (short ones are followed), or "33.31, 44.36". Null if none is found.
- * Only Google's short-link hosts are ever fetched.
+ * (short ones are followed), or "33.31, 44.36".
  */
 async function readLocation(text) {
   const direct = coordinatesIn(text);

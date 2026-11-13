@@ -10,8 +10,6 @@ import '../models/calendar_event_model.dart';
 import '../../../core/l10n/language.dart';
 
 /// Month grid (table_calendar) limited to the study year.
-/// Holidays get a green tint, weekends (Fri / Sat) are muted, and each
-/// day shows up to 3 dots for the kinds of items on it.
 class MonthCalendar extends StatefulWidget {
   final AcademicYearModel year;
   final List<CalendarEventModel> events;

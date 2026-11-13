@@ -23,8 +23,6 @@ import '../widgets/trip_status_card.dart';
 import '../../../core/l10n/language.dart';
 
 /// A whole bus line: map, live status, stops and staff.
-/// Administrators also get the tools to change it.
-/// Without [routeId] it is the signed-in driver's Route tab.
 class RouteDetailsPage extends ConsumerWidget {
   /// Null = the signed-in driver's own line.
   final String? routeId;

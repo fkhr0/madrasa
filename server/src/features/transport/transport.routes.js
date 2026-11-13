@@ -27,8 +27,8 @@ const LEFT_METRES = 150;
 const GPS_FRESH_MS = 30_000;
 /**
  * Rougher readings move the bus on the map but never decide "arrived" or
- * "left" (indoors, or a phone sharing only its rough area, is off by
- * hundreds of metres).
+ * "left" (indoors, or a phone sharing only its rough area, is off by hundreds
+ * of metres).
  */
 const DECIDES_WITHIN_METRES = 100;
 

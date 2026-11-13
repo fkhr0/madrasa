@@ -8,9 +8,7 @@ import '../../../core/widgets/user_avatar.dart';
 import '../../auth/providers/active_student_provider.dart';
 import '../../auth/providers/auth_provider.dart';
 
-/// One chip per child. Picking a child refreshes every screen
-/// (grades, attendance, schedule...) for that child.
-/// Hidden when the parent has only one child.
+/// One chip per child.
 class ChildSwitcher extends ConsumerWidget {
   const ChildSwitcher({super.key});
 

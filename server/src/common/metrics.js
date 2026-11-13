@@ -1,6 +1,6 @@
 // Numbers for Prometheus and Grafana: how many requests, how fast, how many
-// failed, live connections, cache hits, plus Node's own (memory, CPU,
-// event-loop delay). Read at GET /metrics, which Nginx blocks from outside.
+// failed, live connections, cache hits, plus Node's own (memory, CPU, event-
+// loop delay).
 const client = require("prom-client");
 
 const registry = new client.Registry();

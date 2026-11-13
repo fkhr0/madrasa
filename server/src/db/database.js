@@ -33,9 +33,7 @@ async function connect({ dataDir } = {}) {
       },
       exec: (text) => pool.query(text),
       async withLock(name, work) {
-        // A PostgreSQL "advisory lock": a named lock that other servers
-        // wait on. Held by an open transaction, so it also works through a
-        // pooler (Neon's), which moves plain connections between statements.
+        // A PostgreSQL "advisory lock": a named lock that other servers wait on.
         const client = await pool.connect();
         try {
           await client.query("BEGIN");
@@ -127,11 +125,7 @@ function transaction(work) {
   return db().transaction(work);
 }
 
-/**
- * Runs `work` while no other server runs work under the same name. Several
- * servers starting together: one brings the database up to date, the
- * others wait and then find nothing left to do.
- */
+/** Runs `work` while no other server runs work under the same name. */
 function withLock(name, work) {
   return db().withLock(name, work);
 }

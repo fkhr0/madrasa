@@ -13,9 +13,8 @@ import '../models/announcement_model.dart';
 import '../providers/announcement_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Teachers announce to their own classes; administrators to the whole
-/// school, a class, all parents or all teachers, and can pin or schedule.
-/// With [announcementId] it edits that announcement instead.
+/// Teachers announce to their own classes; administrators to the whole school,
+/// a class, all parents or all teachers, and can pin or schedule.
 class NewAnnouncementPage extends ConsumerStatefulWidget {
   final String? announcementId;
 

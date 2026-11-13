@@ -1,6 +1,4 @@
-// Announcements. Everyone reads what is meant for them.
-// Administrators announce to anyone and pin; teachers announce to their own
-// classes. The author or an administrator edits and deletes.
+// Announcements.
 const express = require("express");
 const { HttpError, validate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");

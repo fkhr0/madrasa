@@ -1,6 +1,4 @@
 // The signed-in user's own account.
-// Name, class and ID are managed by the school; users change contact info
-// and their password only.
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const { HttpError, validate, z } = require("../../common/http");

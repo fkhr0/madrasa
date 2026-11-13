@@ -7,11 +7,7 @@ const { rateLimit, ipKeyGenerator } = require("express-rate-limit");
 const config = require("../config");
 const { t } = require("../i18n");
 
-/**
- * Websites allowed to call the API from a browser. The app itself is served
- * by this server (same origin, always fine); CORS_ORIGINS adds others, e.g.
- * https://app.example.iq. In development, localhost and the local network.
- */
+/** Websites allowed to call the API from a browser. */
 function corsMiddleware() {
   return cors({
     // Not allowed: no CORS headers, so the browser blocks the answer.

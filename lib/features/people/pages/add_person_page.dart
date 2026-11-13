@@ -14,8 +14,6 @@ import '../widgets/role_chips.dart';
 import '../../../core/l10n/language.dart';
 
 /// Creates an account, or edits one when [personId] is given.
-/// For a new account the ID and first password are generated and shown at
-/// the end. The role of an existing account can't change.
 class AddPersonPage extends ConsumerStatefulWidget {
   final String? personId;
 

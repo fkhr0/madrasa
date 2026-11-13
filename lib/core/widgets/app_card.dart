@@ -5,9 +5,8 @@ import '../constants/app_shadows.dart';
 import '../constants/app_spacing.dart';
 import '../utils/context_extensions.dart';
 
-/// The base surface of the app: rounded, a hairline border, and a soft
-/// shadow in light mode so cards lift off the background.
-/// Pass [onTap] to make the whole card tappable.
+/// The base surface of the app: rounded, a hairline border, and a soft shadow
+/// in light mode so cards lift off the background.
 class AppCard extends StatelessWidget {
   final Widget child;
   final VoidCallback? onTap;

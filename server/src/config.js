@@ -67,9 +67,7 @@ module.exports = {
   // so the whole app runs from this PC without Flutter's debug tools.
   webDir: process.env.WEB_DIR || require("path").join(__dirname, "../../build/web"),
 
-  // Background jobs (BullMQ). The Redis address, e.g. from Redis Cloud:
-  // redis://default:PASSWORD@host:port. Empty = a small timer inside this
-  // process runs the same jobs (fine for tests and a single PC).
+  // Background jobs (BullMQ).
   redisUrl: process.env.REDIS_URL || "",
   // Shown on the public privacy and account deletion pages (Google Play
   // links to them).

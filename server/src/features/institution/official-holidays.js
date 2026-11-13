@@ -18,9 +18,8 @@ const OFFICIAL_HOLIDAYS = {
 };
 
 /**
- * Adds the official holidays a study year is missing (new year, or one
- * deleted before they were protected). Holidays already there keep the
- * dates the school set.
+ * Adds the official holidays a study year is missing (new year, or one deleted
+ * before they were protected).
  */
 async function addMissingOfficialHolidays(yearId) {
   const year = await queryOne(

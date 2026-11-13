@@ -17,9 +17,8 @@ import '../providers/activity_provider.dart';
 import '../widgets/activity_tile.dart';
 import '../../../core/l10n/language.dart';
 
-/// Every record of who did what, newest first, with filters: when, what
-/// kind, and (office, teachers) which class, who, and words to search.
-/// Each role sees only its part; scrolling down loads older records.
+/// Every record of who did what, newest first, with filters: when, what kind,
+/// and (office, teachers) which class, who, and words to search.
 class ActivityPage extends ConsumerStatefulWidget {
   /// Opens on this day (e.g. from a day's page).
   final DateTime? date;

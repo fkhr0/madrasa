@@ -103,10 +103,10 @@ DateTime _sundayOf(DateTime d) =>
     case SchoolOver(next: final next?, hadClassesToday: true):
       return (
         next.date,
-        tr('Today\'s classes are over — showing the next school day.'),
+        tr('Today\'s classes are over. Showing the next school day.'),
       );
     case DayOff(next: final next?):
-      return (next.date, tr('No school today — showing the next school day.'));
+      return (next.date, tr('No school today. Showing the next school day.'));
     default:
       return (today, null);
   }

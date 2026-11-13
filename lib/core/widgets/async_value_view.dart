@@ -4,9 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/app_strings.dart';
 import 'empty_state.dart';
 
-/// Shows a loader, an error with a retry button, or [data], so every
-/// screen handles loading the same way. Works the same with mock data
-/// today and with the real server later.
+/// Shows a loader, an error with a retry button, or [data], so every screen
+/// handles loading the same way.
 class AsyncValueView<T> extends StatelessWidget {
   final AsyncValue<T> value;
   final Widget Function(T data) data;

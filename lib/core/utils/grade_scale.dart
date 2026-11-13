@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../l10n/language.dart';
 
-/// The Iraqi grading scale (out of 100, pass mark 50):
-/// 90+ Excellent (امتياز) · 80+ Very good (جيد جداً) · 70+ Good (جيد)
-/// 60+ Average (متوسط) · 50+ Pass (مقبول) · below 50 Fail (راسب)
+/// The Iraqi grading scale (out of 100, pass mark 50): 90+ Excellent (امتياز) ·
+/// 80+ Very good (جيد جداً) · 70+ Good (جيد) 60+ Average (متوسط) · 50+ Pass
+/// (مقبول) · below 50 Fail (راسب)
 class GradeScale {
   GradeScale._();
 

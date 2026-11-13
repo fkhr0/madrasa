@@ -15,9 +15,8 @@ import '../../../core/widgets/icon_box.dart';
 import '../providers/notification_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// "Get notifications on this phone": asks once, so the bus, announcements
-/// and the rest reach the phone even when the app is closed.
-/// Hidden once they are on, and when there is no server to send them.
+/// "Get notifications on this phone": asks once, so the bus, announcements and
+/// the rest reach the phone even when the app is closed.
 class PhoneNotificationsCard extends ConsumerStatefulWidget {
   const PhoneNotificationsCard({super.key});
 

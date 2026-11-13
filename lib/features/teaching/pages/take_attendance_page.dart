@@ -17,9 +17,7 @@ import '../../auth/providers/auth_provider.dart';
 import '../widgets/attendance_toggle.dart';
 import '../../../core/l10n/language.dart';
 
-/// Attendance for one lesson of a class. Opens on today's current lesson;
-/// the teacher can go back a week to correct, the administrator further.
-/// Everyone starts as present; only the exceptions need a tap.
+/// Attendance for one lesson of a class.
 class TakeAttendancePage extends ConsumerStatefulWidget {
   final String classId;
 

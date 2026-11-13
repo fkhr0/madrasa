@@ -1,9 +1,7 @@
 import '../l10n/counted.dart';
 import '../l10n/language.dart';
 
-/// Turns dates into short, friendly text, in the app's language. Arabic
-/// uses the month names of Iraq and the Levant (كانون الثاني، شباط...) and
-/// Western digits.
+/// Turns dates into short, friendly text, in the app's language.
 class DateFormatter {
   DateFormatter._();
 

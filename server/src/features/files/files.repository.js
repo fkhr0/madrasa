@@ -28,9 +28,9 @@ function ownFiles(userId, ids) {
 }
 
 /**
- * The uploader and the school office always; a teacher's attachment or
- * study material: anyone at the school and parents of the class; handed-in work: the student, their
- * parents and the subject's teacher.
+ * The uploader and the school office always; a teacher's attachment or study
+ * material: anyone at the school and parents of the class; handed-in work: the
+ * student, their parents and the subject's teacher.
  */
 async function canSee(user, file) {
   if (file.uploadedBy === user.id) return true;

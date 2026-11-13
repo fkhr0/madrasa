@@ -1,7 +1,5 @@
 const { msg } = require("../../i18n");
-// When a bus trip may start. The same rules as the app's logic/trip_rules.dart,
-// checked again here so a button can't bypass them.
-// Times are the server's local time: the server runs in the school's city.
+// When a bus trip may start.
 
 /** "2026-11-05" for a Date, in local time. */
 function dayText(date) {

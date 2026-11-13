@@ -22,11 +22,7 @@ function findInInstitution(institutionId, id, db = database) {
   );
 }
 
-/**
- * The next free ID for a role this year, e.g. STU-2026-0166.
- * Runs inside the transaction that creates the account; the lock makes two
- * administrators adding people at the same moment wait for each other.
- */
+/** The next free ID for a role this year, e.g. */
 async function nextId(tx, prefix, year) {
   const start = `${prefix}-${year}-`;
   await tx.query("SELECT pg_advisory_xact_lock(hashtext($1))", [start]);

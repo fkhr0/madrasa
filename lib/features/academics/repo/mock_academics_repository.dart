@@ -6,9 +6,9 @@ import '../models/school_class_model.dart';
 import '../models/school_subject_model.dart';
 import 'academics_repository.dart';
 
-/// Keeps subjects and classes in memory and follows the server's rules
-/// (unique names, no deleting a class with students), so the screens
-/// behave the same without a server.
+/// Keeps subjects and classes in memory and follows the server's rules (unique
+/// names, no deleting a class with students), so the screens behave the same
+/// without a server.
 class MockAcademicsRepository implements AcademicsRepository {
   final List<SchoolSubjectModel> _subjects = MockSchoolClasses.subjects;
   final List<SchoolClassModel> _classes = MockSchoolClasses.classes;
