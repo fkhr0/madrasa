@@ -115,6 +115,11 @@ class _BusMapState extends ConsumerState<BusMap> {
             FlutterMap(
               mapController: _map,
               options: MapOptions(
+                // Never flutter_map's default place (Kyiv): start on the line,
+                // and fit it again once the map knows its size (the web
+                // may lay it out at zero size first and skip the fit).
+                initialCenter: area.center,
+                initialZoom: 12,
                 initialCameraFit: CameraFit.bounds(
                   bounds: area,
                   padding: const EdgeInsets.all(36),
@@ -127,7 +132,15 @@ class _BusMapState extends ConsumerState<BusMap> {
                 minZoom: editing ? null : 6,
                 backgroundColor: palette.cardMuted,
                 onTap: editing ? (_, point) => widget.onTap!(point) : null,
-                onMapReady: () => _ready = true,
+                onMapReady: () {
+                  _ready = true;
+                  _map.fitCamera(
+                    CameraFit.bounds(
+                      bounds: area,
+                      padding: const EdgeInsets.all(36),
+                    ),
+                  );
+                },
                 // Dragging or zooming by hand: stop following the bus.
                 onPositionChanged: (_, hasGesture) {
                   if (hasGesture && _following && bus != null) {
