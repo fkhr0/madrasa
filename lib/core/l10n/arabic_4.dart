@@ -404,4 +404,5 @@ const Map<String, String> arabic4 = {
   'Continue': 'متابعة',
   'Madrasa collects this phone\'s location to show the school bus to students\' families on a map during a trip, even when the app is closed or not in use. Sharing stops when you end the trip. The location is not used for anything else and is not sold.':
       'يجمع تطبيق مدرسة موقع هذا الهاتف ليُظهر الباص المدرسي لعوائل الطلاب على الخريطة أثناء الرحلة، حتى عندما يكون التطبيق مغلقاً أو غير مستخدم. تتوقف المشاركة عند إنهاء الرحلة. لا يُستخدم الموقع لأي غرض آخر ولا يُباع.',
+  'Back on {0}': 'العودة يوم {0}',
 };

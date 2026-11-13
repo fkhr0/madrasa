@@ -133,7 +133,10 @@ class DayStatusCard extends ConsumerWidget {
           title: holiday?.name ?? tr('Enjoy your weekend'),
           lines: next == null
               ? const []
-              : ['Back on ${_dayName(next.date)}', ..._upcomingLines(next)],
+              : [
+                  tr('Back on {0}', [_dayName(next.date)]),
+                  ..._upcomingLines(next),
+                ],
         );
 
       case OutsideYear(:final notStartedYet, :final yearStart):
