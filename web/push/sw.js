@@ -1,6 +1,5 @@
-// Shows the school's notifications on the phone, even when the app is
-// closed, and opens the right page when one is tapped. Registered by the
-// app (lib/core/push) with the scope /push/, apart from Flutter's own.
+// Shows the school's notifications on the phone, even when the app is closed,
+// and opens the right page when one is tapped.
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => event.waitUntil(self.clients.claim()));
