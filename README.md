@@ -8,6 +8,18 @@ A school app for Iraqi schools: one calm place for **students, parents,
 teachers, the school office and bus drivers**. Arabic first (right to left)
 with English, on Android and the web, backed by a Node.js server.
 
+## Screenshots
+
+From the live demo (Arabic, dark theme).
+
+| Parent | Bus on the map | Student | Timetable |
+|---|---|---|---|
+| <img src="docs/screenshots/parent-home.png" width="200"> | <img src="docs/screenshots/parent-bus.png" width="200"> | <img src="docs/screenshots/student-home.png" width="200"> | <img src="docs/screenshots/student-timetable.png" width="200"> |
+
+| Grades | Teacher | School office | Messages |
+|---|---|---|---|
+| <img src="docs/screenshots/student-grades.png" width="200"> | <img src="docs/screenshots/teacher-home.png" width="200"> | <img src="docs/screenshots/office-home.png" width="200"> | <img src="docs/screenshots/messages.png" width="200"> |
+
 ## What it does
 
 | Role | Highlights |
