@@ -1,19 +1,14 @@
-// What families, the driver and the office are told during a bus trip.
-// Called by transport.routes.js after each change to a trip.
 const repo = require("./transport.repository");
 const { notify, admins, withParents } = require("../notifications/notify");
 const { dayText, distanceMetres } = require("./trip-rules");
 const { msg } = require("../../i18n");
 
-/** Families are told "about N min away" once the bus is this close. */
 const NEAR_MINUTES = 5;
-/** City traffic: about 25 km/h, streets ~1.3× the straight line. */
 const METRES_PER_MINUTE = (7 * 60) / 1.3;
 
 const BUS_PAGE = "/bus";
 const lineRoute = (route) => `/transport/${route.id}`;
 
-/** Riders still riding today (optionally of one stop), with their parents. */
 async function families(route, stopId = null) {
   const today = dayText(new Date());
   const riders = (await repo.findRiders(route.id)).filter(
@@ -22,7 +17,6 @@ async function families(route, stopId = null) {
   return withParents(riders.map((r) => r.id));
 }
 
-/** The student's parents only (not the student). */
 async function parentsOf(studentId) {
   return (await withParents([studentId])).filter((id) => id !== studentId);
 }
@@ -53,7 +47,6 @@ async function tripStarted(institutionId, route, trip) {
   await tellOffice(institutionId, route, title, route.driverName || msg("No driver named"));
 }
 
-/** The bus left a stop: the next stop is told it is coming. */
 async function leftStop(institutionId, route, trip) {
   const next = stopOf(route, trip, trip.reachedIndex + 1);
   if (!next || next.id === "school") return;
@@ -65,10 +58,6 @@ async function leftStop(institutionId, route, trip) {
   });
 }
 
-/**
- * From the GPS: "about 4 min away" once per stop, for the next stop.
- * Returns true when it told someone (the trip's alerts_sent changed).
- */
 async function maybeNear(institutionId, route, trip) {
   const next = stopOf(route, trip, trip.reachedIndex + 1);
   if (!next || next.id === "school" || trip.latitude == null) return false;
@@ -91,7 +80,6 @@ async function maybeNear(institutionId, route, trip) {
   return true;
 }
 
-/** The bus reached stop [index]. */
 async function arrived(institutionId, route, trip, index) {
   const stop = stopOf(route, trip, index);
   if (!stop) return;
@@ -99,7 +87,6 @@ async function arrived(institutionId, route, trip, index) {
 
   if (trip.direction === "toSchool") {
     if (isLast) {
-      // Everyone who got on is now at school.
       await notify(institutionId, await withParents(trip.boardedIds), {
         type: "transport",
         title: msg("Bus {0} arrived at school", route.busNumber),
@@ -124,7 +111,6 @@ async function arrived(institutionId, route, trip, index) {
   }
 }
 
-/** The driver ticked a student on board or absent. */
 async function boarding(institutionId, route, trip, studentId, status) {
   const here = stopOf(route, trip, Math.max(0, trip.reachedIndex));
   const rider = (await repo.findRiders(route.id)).find((r) => r.id === studentId);
@@ -138,7 +124,6 @@ async function boarding(institutionId, route, trip, studentId, status) {
       route: BUS_PAGE,
     });
   } else if (status === "absent") {
-    // Every parent of the child (a child may have two accounts' parents).
     await notify(institutionId, await parentsOf(studentId), {
       type: "transport",
       title: msg("{0} was not at the bus stop", rider.name),
@@ -155,8 +140,6 @@ async function delayed(institutionId, route, trip) {
   await notify(institutionId, await families(route), {
     type: "transport",
     title,
-    // The driver's reason is an English preset: each reader gets it in
-    // their language.
     body: trip.delayReason ? msg(trip.delayReason) : "",
     route: BUS_PAGE,
   });
@@ -182,7 +165,6 @@ async function endedEarly(institutionId, route, trip) {
   );
 }
 
-/** A parent said the child won't (or will) ride today: the driver is told. */
 async function ridingChanged(institutionId, studentId, notRiding) {
   const riding = await repo.findRiding(studentId);
   if (!riding) return;
@@ -197,11 +179,6 @@ async function ridingChanged(institutionId, studentId, notRiding) {
   });
 }
 
-/**
- * Tells everyone what changed between [before] and [after] (the same trip
- * before and after an action), whoever moved it: GPS, the driver's buttons, or
- * test mode.
- */
 async function tripChanged(institutionId, route, before, after) {
   for (let i = before.reachedIndex + 1; i <= after.reachedIndex; i++) {
     await arrived(institutionId, route, after, i);

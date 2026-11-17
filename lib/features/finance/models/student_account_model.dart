@@ -5,7 +5,6 @@ import '../../../core/utils/day_json.dart';
 import 'payment_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// One part of the year's fees, due on a date.
 class InstallmentModel {
   final String name;
   final DateTime dueDate;
@@ -56,7 +55,6 @@ enum InstallmentStatus {
   }
 }
 
-/// The family's standing for the whole year.
 enum AccountStatus {
   paidInFull,
   onTrack,
@@ -85,8 +83,6 @@ enum AccountStatus {
   }
 }
 
-/// A student's fees for the study year: what is owed, when, and what was
-/// paid. Payments fill the installments in order, oldest first.
 class StudentAccountModel {
   final String studentId;
   final String studentName;
@@ -96,19 +92,14 @@ class StudentAccountModel {
 
   final int tuition;
 
-  /// 0 when the student doesn't use the school bus.
   final int busFee;
 
-  /// e.g. 10 for a sibling discount. Applies to tuition only.
   final int discountPercent;
   final String discountReason;
 
-  /// The school's installment dates (usually three in the year).
   final List<DateTime> dueDates;
   final List<PaymentModel> payments;
 
-  /// False until the office enters this year's fees: nothing is owed or
-  /// late, and the family sees "not set yet".
   final bool feesSet;
 
   const StudentAccountModel({
@@ -134,11 +125,9 @@ class StudentAccountModel {
 
   int get balance => total - paid;
 
-  /// The total split evenly; the last installment takes the rounding.
   List<InstallmentModel> get installments {
     const names = ['1st', '2nd', '3rd', '4th', '5th', '6th'];
     final n = dueDates.length;
-    // Round to the nearest 1,000 dinars, as offices do.
     final part = (total / n / 1000).round() * 1000;
 
     return [
@@ -151,7 +140,6 @@ class StudentAccountModel {
     ];
   }
 
-  /// What should have been paid by [now].
   int dueBy(DateTime now) => installments
       .where((i) => !i.dueDate.isAfter(now))
       .fold(0, (sum, i) => sum + i.amount);
@@ -168,7 +156,6 @@ class StudentAccountModel {
     return AccountStatus.onTrack;
   }
 
-  /// How much of installment [index] the payments cover.
   int coveredOf(int index) {
     final list = installments;
     final before = list.take(index).fold(0, (sum, i) => sum + i.amount);
@@ -191,7 +178,6 @@ class StudentAccountModel {
     return InstallmentStatus.upcoming;
   }
 
-  /// The first installment not fully paid, with what is left of it.
   (InstallmentModel, int)? nextDue() {
     final list = installments;
     for (var i = 0; i < list.length; i++) {

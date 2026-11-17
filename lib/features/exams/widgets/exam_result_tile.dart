@@ -9,7 +9,6 @@ import '../../../core/widgets/icon_box.dart';
 import '../models/exam_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// A past exam with its result (or "Results soon").
 class ExamResultTile extends StatelessWidget {
   final ExamModel exam;
 

@@ -1,13 +1,9 @@
-/// A student as the teacher sees them inside one class.
 class ClassStudentModel {
   final String id;
   final String name;
 
-  /// The student's average in this teacher's subject (0–100), or null
-  /// while there are no grades.
   final double? average;
 
-  /// Attendance rate in this subject (0–100), or null before any marks.
   final double? attendanceRate;
 
   const ClassStudentModel({

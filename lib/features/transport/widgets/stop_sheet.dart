@@ -10,7 +10,6 @@ import '../../../core/utils/date_formatter.dart';
 import '../models/bus_stop_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// What the administrator did in the stop sheet.
 sealed class StopSheetResult {
   const StopSheetResult();
 }
@@ -25,8 +24,6 @@ class StopDeleted extends StopSheetResult {
   const StopDeleted();
 }
 
-/// Name, landmark and planned times of one stop.
-/// [ridersHere] warns before deleting a stop that has students.
 Future<StopSheetResult?> showStopSheet(
   BuildContext context, {
   required BusStopModel stop,
@@ -42,7 +39,6 @@ Future<StopSheetResult?> showStopSheet(
   );
 }
 
-/// "07:22" for 442 minutes after midnight.
 String minuteText(int minuteOfDay) =>
     DateFormatter.time(DateTime(2000).add(Duration(minutes: minuteOfDay)));
 
@@ -109,7 +105,6 @@ class _StopSheetState extends State<_StopSheet> {
   Widget build(BuildContext context) {
     final isSchool = widget.stop.isSchool;
 
-    // Scrolls on small phones, where the map and the keyboard don't fit.
     return SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(
         AppSpacing.page,
@@ -145,7 +140,6 @@ class _StopSheetState extends State<_StopSheet> {
           ),
           if (!isSchool) ...[
             const SizedBox(height: AppSpacing.md),
-            // Tap to move the stop, or stand there and tap "I'm here".
             LocationPicker(
               point: _point,
               height: 160,

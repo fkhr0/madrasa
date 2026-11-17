@@ -3,21 +3,19 @@ import '../models/bus_route_model.dart';
 import '../models/bus_stop_model.dart';
 import '../models/route_student_model.dart';
 
-/// Fake bus lines in Baghdad until the transport module has a backend.
 class MockTransport {
   MockTransport._();
 
   static int _at(int hour, int minute) => hour * 60 + minute;
 
-  /// Every line ends at the school (morning) and starts there (afternoon).
   static const school = BusStopModel(
     id: BusStopModel.schoolId,
     name: 'Al-Noor School',
     landmark: 'Main gate',
     latitude: 33.315,
     longitude: 44.365,
-    morningMinute: 465, // 07:45
-    afternoonMinute: 800, // 13:20
+    morningMinute: 465,
+    afternoonMinute: 800,
   );
 
   static const mansourLine = BusRouteModel(
@@ -38,8 +36,8 @@ class MockTransport {
         landmark: 'Al-Ghazaliya square',
         latitude: 33.338,
         longitude: 44.270,
-        morningMinute: 410, // 06:50
-        afternoonMinute: 854, // 14:14
+        morningMinute: 410,
+        afternoonMinute: 854,
       ),
       BusStopModel(
         id: 's2',
@@ -47,8 +45,8 @@ class MockTransport {
         landmark: 'Al-Adel mosque',
         latitude: 33.330,
         longitude: 44.300,
-        morningMinute: 422, // 07:02
-        afternoonMinute: 842, // 14:02
+        morningMinute: 422,
+        afternoonMinute: 842,
       ),
       BusStopModel(
         id: 's3',
@@ -56,8 +54,8 @@ class MockTransport {
         landmark: 'Al-Jamia street',
         latitude: 33.317,
         longitude: 44.318,
-        morningMinute: 432, // 07:12
-        afternoonMinute: 832, // 13:52
+        morningMinute: 432,
+        afternoonMinute: 832,
       ),
       BusStopModel(
         id: 's4',
@@ -65,8 +63,8 @@ class MockTransport {
         landmark: 'Al-Yarmouk hospital',
         latitude: 33.300,
         longitude: 44.335,
-        morningMinute: 442, // 07:22
-        afternoonMinute: 822, // 13:42
+        morningMinute: 442,
+        afternoonMinute: 822,
       ),
       BusStopModel(
         id: 's5',
@@ -74,8 +72,8 @@ class MockTransport {
         landmark: '14th of Ramadan street',
         latitude: 33.310,
         longitude: 44.350,
-        morningMinute: 452, // 07:32
-        afternoonMinute: 812, // 13:32
+        morningMinute: 452,
+        afternoonMinute: 812,
       ),
       school,
     ],
@@ -117,8 +115,6 @@ class MockTransport {
 
   static List<BusRouteModel> get routes => [mansourLine, karradaLine];
 
-  /// (student ID, name, class, stop, parent). The IDs are the same as in
-  /// the People directory; parents are often known as "Umm ..." / "Abu ...".
   static const _riders = {
     'route-1': [
       ('STU-2026-0150', 'Fatima Ali', '5th Scientific – A', 's1', 'Umm Fatima'),
@@ -193,7 +189,6 @@ class MockTransport {
     ],
   };
 
-  /// Students registered on a route (Zainab rides the Al-Mansour line).
   static List<RouteStudentModel> rosterOf(String routeId) {
     final riders = _riders[routeId] ?? const [];
 

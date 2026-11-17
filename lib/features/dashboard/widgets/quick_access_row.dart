@@ -7,7 +7,6 @@ import '../../../core/widgets/quick_actions_row.dart';
 import '../../tasks/widgets/reminder_sheet.dart';
 import '../../../core/l10n/language.dart';
 
-/// Shortcuts to the places students open most.
 class QuickAccessRow extends StatelessWidget {
   const QuickAccessRow({super.key});
 

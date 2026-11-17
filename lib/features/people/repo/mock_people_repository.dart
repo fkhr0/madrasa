@@ -6,8 +6,6 @@ import '../models/account_credentials_model.dart';
 import '../models/new_account_model.dart';
 import 'people_repository.dart';
 
-/// Keeps accounts in memory and imitates the server's ID generator:
-/// PREFIX-YEAR-NUMBER, e.g. STU-2026-0160.
 class MockPeopleRepository implements PeopleRepository {
   final List<UserModel> _users = MockPeople.all;
   final _random = Random();
@@ -90,7 +88,6 @@ class MockPeopleRepository implements PeopleRepository {
     return AccountCredentialsModel(user: user, temporaryPassword: _password());
   }
 
-  /// Next free number for this role in the current year.
   String _nextId(UserRole role) {
     final year = DateTime.now().year;
     final prefix = '${role.idPrefix}-$year-';
@@ -103,7 +100,6 @@ class MockPeopleRepository implements PeopleRepository {
     return '$prefix${next.toString().padLeft(4, '0')}';
   }
 
-  /// 8 characters, without letters that look alike (0/O, 1/l/I).
   String _password() {
     const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789';
     return List.generate(8, (_) => chars[_random.nextInt(chars.length)]).join();

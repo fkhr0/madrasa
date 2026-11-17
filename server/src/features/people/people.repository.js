@@ -1,4 +1,3 @@
-// SQL for the administrator's People directory.
 const database = require("../../db/database");
 
 const SELECT_USER = `
@@ -22,12 +21,10 @@ function findInInstitution(institutionId, id, db = database) {
   );
 }
 
-/** The next free ID for a role this year, e.g. */
 async function nextId(tx, prefix, year) {
   const start = `${prefix}-${year}-`;
   await tx.query("SELECT pg_advisory_xact_lock(hashtext($1))", [start]);
 
-  // "STU-2026-0142" → part 3 → 142
   const row = await tx.queryOne(
     `SELECT COALESCE(MAX(CAST(split_part(id, '-', 3) AS INTEGER)), 0) AS last
      FROM users WHERE id LIKE $1`,
@@ -88,7 +85,6 @@ function setTemporaryPassword(institutionId, id, passwordHash) {
   );
 }
 
-/** Replaces a parent's children. */
 async function setChildren(tx, parentId, childIds) {
   await tx.query("DELETE FROM parent_children WHERE parent_id = $1", [
     parentId,
@@ -101,7 +97,6 @@ async function setChildren(tx, parentId, childIds) {
   }
 }
 
-/** How many of these IDs are students of the institution. */
 async function countStudents(institutionId, ids) {
   if (ids.length === 0) return 0;
   const row = await database.queryOne(
@@ -120,7 +115,6 @@ async function deleteUser(institutionId, id) {
   return rows.length > 0;
 }
 
-/** Signs the person out on every device. */
 const endSessions = (userId) =>
   database.query(
     `UPDATE sessions SET revoked_at = now()

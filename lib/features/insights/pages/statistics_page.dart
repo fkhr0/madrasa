@@ -19,8 +19,6 @@ import '../providers/insights_provider.dart';
 import '../widgets/day_columns_chart.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator: the school in numbers, with the important parts
-/// spelled out at the top.
 class StatisticsPage extends ConsumerWidget {
   const StatisticsPage({super.key});
 
@@ -80,7 +78,6 @@ class _StatisticsBody extends ConsumerWidget {
     final change = data.attendanceChange;
     final highlights = highlightsFor(data);
 
-    // A new school: say what will appear, not a page of zeros.
     if (data.isEmpty) {
       return ListView(
         padding: const EdgeInsets.all(AppSpacing.page),
@@ -279,7 +276,6 @@ class _StatisticsBody extends ConsumerWidget {
   }
 }
 
-/// A section with no data in the period yet.
 class _NothingYet extends StatelessWidget {
   final String text;
 

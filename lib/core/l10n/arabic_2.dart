@@ -1,4 +1,3 @@
-// Arabic texts, N–S (see arabic.dart).
 const Map<String, String> arabic2 = {
   'Name': 'الاسم',
   'Name, e.g. Eid al-Fitr': 'الاسم، مثل عيد الفطر',

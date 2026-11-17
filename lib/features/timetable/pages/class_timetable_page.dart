@@ -19,8 +19,6 @@ import '../providers/timetable_provider.dart';
 import '../widgets/lesson_sheet.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator: a class's week. Pick a day, tap a period to place or
-/// change its lesson. The clock button opens the school's bell times.
 class ClassTimetablePage extends ConsumerStatefulWidget {
   final String classId;
 
@@ -31,8 +29,6 @@ class ClassTimetablePage extends ConsumerStatefulWidget {
 }
 
 class _ClassTimetablePageState extends ConsumerState<ClassTimetablePage> {
-  /// Null until the user picks a day; then today if it's a study day,
-  /// otherwise the first day of the week.
   int? _day;
 
   @override

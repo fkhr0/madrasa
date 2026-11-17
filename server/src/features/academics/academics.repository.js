@@ -1,8 +1,5 @@
-// SQL for subjects and classes. Always limited to one institution.
 const database = require("../../db/database");
 const { query, queryOne } = database;
-
-// ---------- Subjects ----------
 
 function listSubjects(institutionId) {
   return query(
@@ -39,9 +36,6 @@ async function deleteSubject(institutionId, id) {
   return rows.length > 0;
 }
 
-// ---------- Classes ----------
-
-/** Classes with their head teacher, student count and subjects. */
 async function listClasses(institutionId, classId = null) {
   const classes = await query(
     `SELECT c.id, c.name, c.homeroom_teacher_id AS "homeroomTeacherId",
@@ -95,7 +89,6 @@ async function insertClass(tx, institutionId, { name, homeroomTeacherId, subject
   return row.id;
 }
 
-/** Renames the class (and moves its students to the new name). */
 async function updateClass(tx, institutionId, old, { name, homeroomTeacherId }) {
   await tx.query(
     `UPDATE classes SET name = $3, homeroom_teacher_id = $4
@@ -119,7 +112,6 @@ async function deleteClass(institutionId, classId) {
   return rows.length > 0;
 }
 
-/** Adds the subject to the class, or changes its teacher (null = none). */
 function setClassSubject(classId, subjectId, teacherId) {
   return query(
     `INSERT INTO class_subjects (class_id, subject_id, teacher_id)
@@ -138,9 +130,6 @@ async function removeClassSubject(classId, subjectId) {
   return rows.length > 0;
 }
 
-// ---------- Checks ----------
-
-/** True when every ID is a teacher of the institution (nulls are skipped). */
 async function areTeachers(institutionId, ids) {
   const wanted = [...new Set(ids.filter(Boolean))];
   if (wanted.length === 0) return true;

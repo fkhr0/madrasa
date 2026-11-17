@@ -22,7 +22,6 @@ before(async () => {
 });
 after(close);
 
-/** The first school day [from] days from today or after (or before, if negative). */
 function schoolDay(from) {
   const step = from < 0 ? -1 : 1;
   for (let d = from; ; d += step) {
@@ -82,7 +81,6 @@ test("a teacher sees and schedules exams only for his subjects", async () => {
   assert.equal(created.body.title, "Inequalities quiz");
   assert.equal(created.body.published, false);
 
-  // Students and their parents hear about it.
   assert.ok((await notifications(as.parent)).some((n) => n.title === "New Mathematics quiz"));
 
   const moved = await request(app)
@@ -114,7 +112,6 @@ test("scores: checked, published, and students are told", async () => {
   await request(app).put(url).set(as.ahmed).send({ scores: { "STU-2026-0153": 10 } }).expect(400);
   await request(app).put(url).set(as.sara).send({ scores: {} }).expect(403);
 
-  // Before publishing, Zainab doesn't see her score.
   const hidden = (await request(app).get("/exams/students/STU-2026-0142").set(as.zainab)).body;
   assert.equal(hidden.find((e) => e.id === exam.id).score, null);
 
@@ -130,7 +127,6 @@ test("scores: checked, published, and students are told", async () => {
   assert.equal(shown.find((e) => e.id === exam.id).score, 18.5);
   assert.ok((await notifications(as.parent)).some((n) => n.title === "Mathematics: 18.5 / 20"));
 
-  // "Out of" can't drop below a score already given.
   await request(app)
     .patch(`/exams/${exam.id}`)
     .set(as.ahmed)

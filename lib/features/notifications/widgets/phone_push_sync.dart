@@ -17,7 +17,6 @@ import '../../../core/utils/context_extensions.dart';
 import 'phone_notifications_card.dart';
 import '../providers/notification_provider.dart';
 
-/// Phone notifications while someone is signed in.
 class PhonePushSync extends ConsumerStatefulWidget {
   final Widget child;
 
@@ -50,14 +49,11 @@ class _PhonePushSyncState extends ConsumerState<PhonePushSync> {
           (_) => ref.invalidate(notificationsProvider),
         ),
       );
-    // The app was opened by tapping a notification.
     PhonePush.openedFrom().then((route) {
       if (route != null) _open(route);
     });
   }
 
-  /// The first time the app opens signed in: what notifications are for, and a
-  /// button to allow them (the system then asks).
   Future<void> _askOnce() async {
     if (!AppConfig.useApi || (!kIsWeb && !PhonePush.supported)) return;
     final permission = kIsWeb
@@ -99,15 +95,12 @@ class _PhonePushSyncState extends ConsumerState<PhonePushSync> {
 
   static const _askedKey = 'notifications.asked';
 
-  /// Offline now: the next app start tries again.
   Future<void> _register(Future<void> Function() send) async {
     try {
       await send();
     } catch (_) {}
   }
 
-  /// A tab (or a chat inside Messages) is opened in place; any other page
-  /// on top of the app, so back returns to it instead of closing the app.
   void _open(String route) {
     if (!mounted || !route.startsWith('/')) return;
     const tabs = [

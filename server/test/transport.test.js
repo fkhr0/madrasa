@@ -10,7 +10,7 @@ before(async () => {
     ["admin", "ADM-2020-0001"],
     ["student", "STU-2026-0142"],
     ["parent", "PAR-2026-0142"],
-    ["driver", "DRV-2024-0012"], // Al-Mansour line
+    ["driver", "DRV-2024-0012"],
     ["otherDriver", "DRV-2024-0019"],
   ]) {
     as[role] = { Authorization: `Bearer ${(await signIn(app, id)).accessToken}` };
@@ -29,7 +29,6 @@ test("a student sees their bus, ending at the school's location", async () => {
   assert.equal(school.id, "school");
   assert.equal(school.latitude, 33.315);
 
-  // Moving the school moves the end of every line.
   const settings = (await request(app).get("/institution").set(as.admin)).body;
   await request(app)
     .patch("/institution")
@@ -55,7 +54,6 @@ test("a parent says the child won't ride today; the driver sees it", async () =>
   const zainab = riders.body.find((r) => r.id === "STU-2026-0142");
   assert.equal(zainab.notRidingToday, true);
   assert.equal(zainab.parentName, "Haider Jasim");
-  // Sorted by stop, from the first pick-up.
   assert.equal(riders.body[0].stopId, "s1");
 });
 
@@ -67,7 +65,7 @@ test("an administrator manages lines, stops and riders", async () => {
       name: "Al-Adhamiya line",
       busNumber: "3",
       capacity: 1,
-      driverId: "DRV-2024-0012", // moves the driver off the Al-Mansour line
+      driverId: "DRV-2024-0012",
       stops: [
         { name: "Antar square", latitude: 33.37, longitude: 44.36, morningMinute: 420, afternoonMinute: 840 },
         { id: "school", name: "School", latitude: 0, longitude: 0, morningMinute: 470, afternoonMinute: 805 },
@@ -86,9 +84,8 @@ test("an administrator manages lines, stops and riders", async () => {
       .set(as.admin)
       .send({ stopId });
   await put("STU-2026-0163").expect(204);
-  await put("STU-2026-0164").expect(409); // one seat
+  await put("STU-2026-0164").expect(409);
 
-  // Renaming the stop keeps its rider; removing it takes them off.
   const renamed = await request(app)
     .patch(`/transport/routes/${created.body.id}`)
     .set(as.admin)
@@ -103,7 +100,6 @@ test("an administrator manages lines, stops and riders", async () => {
   assert.equal(emptied.body.studentCount, 0);
 
   await request(app).delete(`/transport/routes/${created.body.id}`).set(as.admin).expect(204);
-  // Give the driver back their line.
   await request(app)
     .patch("/transport/routes/route-1")
     .set(as.admin)
@@ -112,7 +108,6 @@ test("an administrator manages lines, stops and riders", async () => {
 });
 
 test("the driver runs a trip; GPS moves the bus", async () => {
-  // Another line's driver can't start this bus.
   await request(app)
     .post("/transport/routes/route-1/trip/start")
     .set(as.otherDriver)
@@ -125,7 +120,6 @@ test("the driver runs a trip; GPS moves the bus", async () => {
     .send({ direction: "toSchool" })
     .expect(201);
   assert.deepEqual(started.body.stopIds.slice(0, 2), ["s1", "s2"]);
-  // The bus starts where the driver is, on its way to the first stop.
   assert.equal(started.body.reachedIndex, -1);
   assert.ok(started.body.leftStopAt);
 
@@ -133,7 +127,7 @@ test("the driver runs a trip; GPS moves the bus", async () => {
     .post("/transport/routes/route-1/trip/start")
     .set(as.driver)
     .send({ direction: "toHome" })
-    .expect(409); // one trip at a time
+    .expect(409);
 
   const at = (latitude, longitude, accuracy) =>
     request(app)
@@ -142,13 +136,10 @@ test("the driver runs a trip; GPS moves the bus", async () => {
       .send({ latitude, longitude, accuracy })
       .expect(200);
 
-  // A rough reading (indoors, or "approximate location") right at the stop
-  // moves the bus on the map but doesn't count as arriving.
   const rough = await at(33.3381, 44.2701, 900);
   assert.equal(rough.body.reachedIndex, -1);
   assert.equal(rough.body.latitude, 33.3381);
 
-  // Reaching Al-Ghazaliya, driving away from it, then reaching Al-Adel.
   const first = await at(33.3381, 44.2701, 12);
   assert.equal(first.body.reachedIndex, 0);
   assert.equal(first.body.leftStopAt, null);
@@ -168,7 +159,6 @@ test("the driver runs a trip; GPS moves the bus", async () => {
     .send({ minutes: 5, reason: "Traffic" })
     .expect(200);
 
-  // Families see the same trip.
   const seen = await request(app).get("/transport/routes/route-1/trip").set(as.parent).expect(200);
   assert.equal(seen.body.trip.delayMinutes, 5);
   assert.deepEqual(seen.body.trip.boardedIds, ["STU-2026-0152"]);
@@ -189,7 +179,6 @@ test("outside test mode the clock and calendar decide", async () => {
     .set(as.admin)
     .send({ opensBeforeMinutes: 45, closesAfterMinutes: 60, testMode: false })
     .expect(204);
-  // The morning trip was already driven today (or there's no school today).
   const res = await request(app)
     .post("/transport/routes/route-1/trip/start")
     .set(as.driver)
@@ -199,7 +188,6 @@ test("outside test mode the clock and calendar decide", async () => {
 });
 
 test("door to door: the family shares home, the school reads WhatsApp links", async () => {
-  // Outside Iraq is refused (a wrong link or a typo).
   await request(app)
     .put("/transport/students/STU-2026-0142/home")
     .set(as.parent)
@@ -213,7 +201,6 @@ test("door to door: the family shares home, the school reads WhatsApp links", as
     .expect(200);
   assert.equal(shared.body.setBy, "family");
 
-  // Another family's child: no.
   await request(app)
     .put("/transport/students/STU-2026-0150/home")
     .set(as.parent)

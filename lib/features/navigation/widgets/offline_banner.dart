@@ -6,8 +6,6 @@ import '../../../core/l10n/language.dart';
 import '../../../core/network/api_provider.dart';
 import '../../../core/utils/context_extensions.dart';
 
-/// A thin bar above the page while the server can't be reached and the
-/// screens show what was saved on this phone (ApiClient.offline).
 class OfflineBanner extends ConsumerWidget {
   const OfflineBanner({super.key});
 

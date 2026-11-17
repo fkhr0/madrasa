@@ -5,7 +5,6 @@ import '../../../core/utils/context_extensions.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/l10n/language.dart';
 
-/// The gap between two periods (الفرصة), drawn as a quiet dashed line.
 class BreakTile extends StatelessWidget {
   final DateTime start;
   final DateTime end;

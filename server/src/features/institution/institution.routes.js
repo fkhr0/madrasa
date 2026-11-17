@@ -1,5 +1,3 @@
-// The signed-in user's school and its study year.
-// Everyone reads; only administrators change.
 const express = require("express");
 const { HttpError, validate, isoDate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");
@@ -9,20 +7,14 @@ const { cachedForSchool } = require("../../common/cache");
 const config = require("../../config");
 
 const router = express.Router();
-// Only these paths: the router is mounted at "/", next to the app's files.
 router.use(["/institution", "/academic-year"], requireAuth);
 
-// GET /institution -> { id, name, city, address, phone, email, whatsapp,
-//   latitude, longitude, appSupportEmail }
-// appSupportEmail: whoever runs the app, for problems with the app itself.
 router.get("/institution", async (req, res) => {
   const id = req.user.institutionId;
   const school = await cachedForSchool(id, "institution", () => repo.findInstitution(id));
   res.json({ ...school, appSupportEmail: config.contactEmail });
 });
 
-// PATCH /institution { name, city, address, phone, email, whatsapp, latitude, longitude }
-//   -> institution  (admin)
 router.patch("/institution", requireRole("admin"), async (req, res) => {
   const body = validate(
     z
@@ -37,7 +29,6 @@ router.patch("/institution", requireRole("admin"), async (req, res) => {
           .trim()
           .regex(/^[+0-9 ]{0,20}$/, "only digits, spaces and +")
           .default(""),
-        // The school's gate on the map; both or neither.
         latitude: z.number().min(-90).max(90).nullish(),
         longitude: z.number().min(-180).max(180).nullish(),
       })
@@ -48,14 +39,12 @@ router.patch("/institution", requireRole("admin"), async (req, res) => {
   );
   const before = await repo.findInstitution(req.user.institutionId);
   const updated = await repo.updateInstitution(req.user.institutionId, body);
-  // Every bus line ends at the school: redraw them when it moves.
   if (before.latitude !== updated.latitude || before.longitude !== updated.longitude) {
     require("../transport/roads").updateSchoolRoads(req.user.institutionId);
   }
   res.json({ ...updated, appSupportEmail: config.contactEmail });
 });
 
-// GET /academic-year -> { id, name, start, end, workingDays, terms, holidays }
 router.get("/academic-year", async (req, res) => {
   const id = req.user.institutionId;
   res.json(await cachedForSchool(id, `year:${req.language}`, () => yearOf(req)));
@@ -71,15 +60,12 @@ async function yearOf(req) {
     end: year.end,
     workingDays: year.working_days,
     terms: await repo.findTerms(year.id),
-    // Official holidays (the platform's list) in the caller's language.
     holidays: (await repo.findHolidays(year.id)).map((h) =>
       h.isOfficial ? { ...h, name: t(h.name) } : h,
     ),
   };
 }
 
-// PATCH /academic-year { workingDays } -> 204  (admin)
-// Days use Dart's numbers: 1 = Monday ... 7 = Sunday.
 router.patch("/academic-year", requireRole("admin"), async (req, res) => {
   const year = await currentYear(req);
   const { workingDays } = validate(
@@ -95,7 +81,6 @@ router.patch("/academic-year", requireRole("admin"), async (req, res) => {
   res.status(204).end();
 });
 
-/** A holiday's fields, checked against the study year. */
 const holidayFields = (year) =>
   z
     .object({
@@ -111,7 +96,6 @@ const holidayFields = (year) =>
       message: "the holiday must be inside the study year",
     });
 
-// POST /academic-year/holidays { name, type, start, end? } -> holiday  (admin)
 router.post(
   "/academic-year/holidays",
   requireRole("admin"),
@@ -122,7 +106,6 @@ router.post(
   },
 );
 
-// PATCH /academic-year/holidays/:id { name, type, start, end? } -> holiday  (admin)
 router.patch(
   "/academic-year/holidays/:id",
   requireRole("admin"),
@@ -132,7 +115,6 @@ router.patch(
     const old = await repo.findHoliday(year.id, req.params.id);
     if (!old) throw new HttpError(404, "Holiday not found.");
 
-    // Official holidays keep their name and type; only the dates move.
     const holiday = await repo.updateHoliday(
       year.id,
       old.id,
@@ -142,7 +124,6 @@ router.patch(
   },
 );
 
-// DELETE /academic-year/holidays/:id -> 204  (admin)
 router.delete(
   "/academic-year/holidays/:id",
   requireRole("admin"),

@@ -2,7 +2,6 @@ import '../../../core/utils/date_formatter.dart';
 import '../models/activity_item_model.dart';
 import 'activity_repository.dart';
 
-/// A few lines of a school day, for mock mode.
 class MockActivityRepository implements ActivityRepository {
   const MockActivityRepository();
 

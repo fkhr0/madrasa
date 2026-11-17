@@ -6,8 +6,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/context_extensions.dart';
 import '../../auth/providers/auth_provider.dart';
 
-/// "Demo school": shown while someone looks around with "Try the app", so
-/// nobody takes the sample data for a real school.
 class DemoBanner extends ConsumerWidget {
   const DemoBanner({super.key});
 

@@ -1,14 +1,4 @@
 #!/usr/bin/env bash
-# One-time setup of a fresh Ubuntu 24.04 server (AWS or Oracle). Run as the
-# default "ubuntu" user, over SSH:
-#   curl -fsSL <raw url of this file> | bash      (or copy it and: bash server-setup.sh)
-#
-# What it does:
-#   1. updates, automatic security updates, fail2ban
-#   2. SSH hardening: keys only, no root, few tries
-#   3. firewall: 80/443 open; SSH and Grafana only over Tailscale (after lock-ssh.sh)
-#   4. Docker (with log rotation) and Tailscale
-#   5. /opt/madrasa for the app
 set -euo pipefail
 
 if [[ $EUID -eq 0 ]]; then
@@ -22,16 +12,13 @@ sudo apt-get update -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
   unattended-upgrades fail2ban iptables-persistent ca-certificates curl gettext-base jq
-# Security updates install themselves every night.
 sudo dpkg-reconfigure -f noninteractive unattended-upgrades
 
 echo "== 2. SSH hardening"
 sudo tee /etc/ssh/sshd_config.d/99-madrasa.conf >/dev/null <<'EOF'
-# Keys only: no passwords to guess.
 PasswordAuthentication no
 KbdInteractiveAuthentication no
 PermitEmptyPasswords no
-# Nobody logs in as root; admins use sudo.
 PermitRootLogin no
 MaxAuthTries 3
 LoginGraceTime 30
@@ -42,7 +29,6 @@ ClientAliveCountMax 2
 EOF
 sudo sshd -t && sudo systemctl reload ssh
 
-# fail2ban: 5 failed SSH logins = banned for an hour.
 sudo tee /etc/fail2ban/jail.d/sshd.local >/dev/null <<'EOF'
 [sshd]
 enabled = true
@@ -54,8 +40,6 @@ sudo systemctl enable --now fail2ban
 
 echo "== 3. Firewall (the server's own; the cloud firewall is the other layer)"
 allow() { sudo iptables -C INPUT "$@" -j ACCEPT 2>/dev/null || sudo iptables -I INPUT 1 "$@" -j ACCEPT; }
-# Oracle's images reject everything but SSH; AWS's allow everything. Same
-# result on both: web, Tailscale, SSH (until lock-ssh.sh), the rest dropped.
 allow -p tcp -m state --state NEW -m tcp --dport 22
 allow -p tcp --dport 443 -m state --state NEW
 allow -p tcp --dport 80 -m state --state NEW
@@ -81,7 +65,6 @@ if ! command -v docker >/dev/null; then
   curl -fsSL https://get.docker.com | sudo sh
 fi
 sudo usermod -aG docker "$USER"
-# Logs never fill the disk: 3 files of 10 MB per container.
 sudo tee /etc/docker/daemon.json >/dev/null <<'EOF'
 {
   "log-driver": "json-file",
@@ -90,7 +73,6 @@ sudo tee /etc/docker/daemon.json >/dev/null <<'EOF'
 }
 EOF
 sudo systemctl restart docker
-# Redis wants this, to save to disk under memory pressure.
 echo "vm.overcommit_memory = 1" | sudo tee /etc/sysctl.d/90-redis.conf >/dev/null
 sudo sysctl --system >/dev/null
 

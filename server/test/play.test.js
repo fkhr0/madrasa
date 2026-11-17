@@ -18,7 +18,7 @@ test("the privacy and account deletion pages are public, in both languages", asy
     assert.match(res.headers["content-type"], /html/);
     assert.match(res.text, /lang="ar"/);
     assert.match(res.text, /lang="en"/);
-    assert.doesNotMatch(res.text, /\{\{/); // every placeholder filled
+    assert.doesNotMatch(res.text, /\{\{/);
   }
 });
 

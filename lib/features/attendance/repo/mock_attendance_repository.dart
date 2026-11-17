@@ -7,13 +7,9 @@ import '../models/attendance_record_model.dart';
 import '../models/class_lesson_model.dart';
 import 'attendance_repository.dart';
 
-/// In-memory attendance for mock mode (lost on reload). Lessons come from
-/// Mr. Ahmed's mock timetable.
 class MockAttendanceRepository implements AttendanceRepository {
-  /// "cls-5a/2026-11-08/2" → student ID → status.
   final _marks = <String, Map<String, AttendanceStatus>>{};
 
-  /// "STU-.../2026-11-08" → note.
   final _excuses = <String, String>{};
 
   @override

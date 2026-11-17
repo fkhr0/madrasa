@@ -1,4 +1,3 @@
-// SQL for school events. Always limited to one institution.
 const { query, queryOne } = require("../../db/database");
 
 const COLUMNS = `id, title, type, audience, event_date::text AS date,

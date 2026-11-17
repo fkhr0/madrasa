@@ -10,7 +10,6 @@ import '../providers/finance_provider.dart';
 import 'student_account_page.dart';
 import '../../../core/l10n/language.dart';
 
-/// Parent: the selected child's school fees (read-only).
 class FeesPage extends ConsumerWidget {
   const FeesPage({super.key});
 

@@ -12,21 +12,18 @@ import '../repo/api_assignment_repository.dart';
 import '../repo/assignment_repository.dart';
 import '../repo/mock_assignment_repository.dart';
 
-/// The server when API_URL is set, otherwise the in-memory mock.
 final assignmentRepositoryProvider = Provider<AssignmentRepository>(
   (ref) => AppConfig.useApi
       ? ApiAssignmentRepository(watchApi(ref))
       : MockAssignmentRepository(),
 );
 
-/// Any student's work.
 final studentAssignmentsProvider =
     FutureProvider.family<List<AssignmentModel>, String>((ref, studentId) {
       ref.watch(authProvider.select((user) => user?.id));
       return ref.watch(assignmentRepositoryProvider).getAll(studentId);
     });
 
-/// The signed-in student's work, or the parent's selected child's.
 final assignmentsProvider = FutureProvider<List<AssignmentModel>>(
   (ref) => ref.watch(
     studentAssignmentsProvider(ref.watch(activeStudentIdProvider)).future,
@@ -37,7 +34,6 @@ final assignmentFilterProvider = StateProvider<AssignmentFilter>(
   (ref) => AssignmentFilter.all,
 );
 
-/// Assignments that match the selected filter chip.
 final filteredAssignmentsProvider = FutureProvider<List<AssignmentModel>>((
   ref,
 ) async {
@@ -47,7 +43,6 @@ final filteredAssignmentsProvider = FutureProvider<List<AssignmentModel>>((
   return all.where(filter.matches).toList();
 });
 
-/// Work still to do, nearest due date first (used on the dashboard).
 final pendingAssignmentsProvider = FutureProvider<List<AssignmentModel>>((
   ref,
 ) async {
@@ -56,7 +51,6 @@ final pendingAssignmentsProvider = FutureProvider<List<AssignmentModel>>((
   return all.where((a) => a.status == AssignmentStatus.pending).toList();
 });
 
-/// Taken from the list, so it refreshes together with it (e.g. after submitting).
 final assignmentByIdProvider = FutureProvider.family<AssignmentModel?, String>((
   ref,
   id,
@@ -70,7 +64,6 @@ final assignmentByIdProvider = FutureProvider.family<AssignmentModel?, String>((
   return null;
 });
 
-/// A class's work for the subject's teacher or the office.
 final classAssignmentsProvider =
     FutureProvider.family<List<AssignmentModel>, String>(
       (ref, classId) =>
@@ -90,8 +83,6 @@ final assignmentActionsProvider = Provider<AssignmentActions>(
   AssignmentActions.new,
 );
 
-/// Handing in, setting work and grading. Each reloads what it changed.
-/// They throw ApiException with a message to show.
 class AssignmentActions {
   final Ref _ref;
 
@@ -136,7 +127,6 @@ class AssignmentActions {
     _reloadClass(assignment.classId);
     _ref
       ..invalidate(submissionsProvider(assignment.id))
-      // "To grade" on the teacher's class cards.
       ..invalidate(myClassesProvider);
   }
 

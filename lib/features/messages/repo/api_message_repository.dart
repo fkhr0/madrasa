@@ -3,7 +3,6 @@ import '../models/conversation_model.dart';
 import '../models/message_model.dart';
 import 'message_repository.dart';
 
-/// Messages on the school API (server/src/features/messages).
 class ApiMessageRepository implements MessageRepository {
   final ApiClient _api;
 

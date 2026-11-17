@@ -1,5 +1,3 @@
-// npm run db:reset, deletes the LOCAL database folder so the next start
-// creates it again with fresh demo data. Never touches an online database.
 const fs = require("fs");
 const config = require("../config");
 

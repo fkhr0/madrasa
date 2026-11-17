@@ -4,7 +4,6 @@ import '../constants/app_radius.dart';
 import '../constants/app_spacing.dart';
 import '../utils/context_extensions.dart';
 
-/// Small soft-tinted label, e.g. "Pending", "Graded", "Exam".
 class StatusBadge extends StatelessWidget {
   final String label;
   final Color color;

@@ -11,8 +11,6 @@ import '../../messages/providers/message_provider.dart';
 import '../../notifications/providers/notification_provider.dart';
 import '../providers/realtime_provider.dart';
 
-/// Keeps the live connection open while the app's tabs are shown, and reloads
-/// exactly what the server says changed.
 class RealtimeSync extends ConsumerWidget {
   final Widget child;
 
@@ -29,12 +27,9 @@ class RealtimeSync extends ConsumerWidget {
           ref.invalidate(conversationsProvider);
           final id = event['conversationId'];
           if (id == null) break;
-          // A chat already in memory gets just the new message; others load
-          // when they are opened.
           if (ref.exists(chatProvider(id))) {
             ref.read(chatProvider(id).notifier).fetchNewer().ignore();
           }
-          // Someone else wrote, and that chat isn't on screen: a banner.
           final me = ref.read(currentUserProvider).id;
           if (event['senderId'] != me && ref.read(openChatProvider) != id) {
             _showMessageBanner(context, event, id);

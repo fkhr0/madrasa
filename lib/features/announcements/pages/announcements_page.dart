@@ -46,7 +46,7 @@ class AnnouncementsPage extends ConsumerWidget {
               AppSpacing.page,
               AppSpacing.sm,
               AppSpacing.page,
-              96, // room for the button
+              96,
             ),
             itemCount: items.length,
             separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),

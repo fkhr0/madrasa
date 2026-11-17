@@ -32,7 +32,6 @@ Map<String, dynamic> _exam({
   'score': score,
 };
 
-/// Serves fixed server answers for a student's exams.
 class _FixedExams extends MockExamRepository {
   final List<ExamModel> exams;
 
@@ -86,7 +85,6 @@ void main() {
       _exam(id: '1', subjectId: 'math', subjectName: 'Mathematics', score: 18),
       _exam(id: '2', subjectId: 'math', subjectName: 'Mathematics', score: 10),
       _exam(id: '3', subjectId: 'arabic', subjectName: 'Arabic', score: 15),
-      // Coming up, or not published: not a grade.
       _exam(
         id: '4',
         subjectId: 'physics',
@@ -102,7 +100,7 @@ void main() {
     expect(grades.map((g) => g.subject.name), ['Arabic', 'Mathematics']);
     final maths = grades.last;
     expect(maths.items, hasLength(2));
-    expect(maths.average, 70); // 28 of 40
+    expect(maths.average, 70);
   });
 
   test('mock: schedule, score and delete', () async {

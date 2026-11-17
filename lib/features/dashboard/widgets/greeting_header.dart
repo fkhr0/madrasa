@@ -12,7 +12,6 @@ import '../../institution/providers/institution_provider.dart';
 import '../../notifications/providers/notification_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Date, greeting, bell (with unread dot) and the profile avatar.
 class GreetingHeader extends ConsumerWidget {
   const GreetingHeader({super.key});
 
@@ -31,7 +30,6 @@ class GreetingHeader extends ConsumerWidget {
     final year = ref.watch(academicYearProvider).valueOrNull;
     final today = DateTime.now();
 
-    // "Wednesday, 4 November · Week 7" during the study year.
     final dateLine = year != null && year.contains(today)
         ? tr('{0} · Week {1}', [
             DateFormatter.fullDate(today),

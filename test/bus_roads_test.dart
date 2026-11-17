@@ -11,7 +11,6 @@ import 'package:school/features/transport/models/road_path_model.dart';
 import 'package:school/features/transport/models/trip_model.dart';
 
 void main() {
-  // Two drives: an L-shaped street, then a straight one.
   final road = RoadPathModel.fromJson({
     'legs': [
       [
@@ -30,8 +29,6 @@ void main() {
   })!;
 
   test('the bus follows the bends of the street', () {
-    // Halfway along the L is near its corner, on the street, not the
-    // straight-line midpoint (33.305, 44.305) across the buildings.
     final half = road.along(0, 0.5);
     expect(half.latitude, closeTo(33.30, 0.002));
     expect(half.longitude, closeTo(44.31, 0.0001));
@@ -40,15 +37,13 @@ void main() {
   });
 
   test('stop times from the real driving times', () {
-    final line = MockTransport.karradaLine; // k1, k2, school
+    final line = MockTransport.karradaLine;
     final planned = timesFromRoads(line.stops, road, null);
 
     final school = line.stops.last;
     expect(planned.last.morningMinute, school.morningMinute);
-    // 3 min drive + 1 min wait before the school; 7 + 1 before that.
     expect(planned[1].morningMinute, school.morningMinute - 4);
     expect(planned[0].morningMinute, school.morningMinute - 12);
-    // Afternoon runs from the school outwards.
     expect(planned[1].afternoonMinute, school.afternoonMinute + 8);
   });
 

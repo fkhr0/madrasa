@@ -1,4 +1,3 @@
-// The command that makes a real school: its admin, or one account per role.
 const { test, before, after } = require("node:test");
 const assert = require("node:assert/strict");
 const { startTestApp, signIn, close, request } = require("./helpers");
@@ -30,7 +29,6 @@ test("the school is ready to use: class, subject, teacher, child", async () => {
   const kid = (await request(app).get(`/people/${parent.id}`).set(as).expect(200)).body;
   assert.deepEqual(kid.childIds ?? kid.children.map((c) => c.id), [student.id]);
 
-  // Only its own people: none of the demo school's.
   const teachers = (await request(app).get("/people?role=teacher").set(as).expect(200)).body;
   assert.deepEqual(teachers.map((t) => t.id), [teacher.id]);
 });
@@ -57,7 +55,6 @@ test("a new school has no fees until the office sets them: nothing is late", asy
   assert.equal(before.busFee, 0);
 
   const asAdmin = { Authorization: `Bearer ${(await signIn(app, admin.id, admin.password)).accessToken}` };
-  // With no dates saved, the first one offered is the start of the study year.
   const { dueDates } = (await request(app).get("/finance/settings").set(asAdmin).expect(200)).body;
   await request(app)
     .put("/finance/settings")

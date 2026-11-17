@@ -1,5 +1,3 @@
-// The office's numbers: today at school and statistics for a week, month
-// or term, all from the real data. (Who did what: GET /activity.)
 const express = require("express");
 const { validate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");
@@ -14,8 +12,6 @@ router.use(requireAuth, requireRole("admin"));
 
 const DAY_NAMES = ["", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-// GET /reports/today
-//   -> { students, teachers, parents, classes, presentToday, absentToday, classesMissingAttendance }
 router.get("/today", async (req, res) => {
   const id = req.user.institutionId;
   const date = today();
@@ -31,13 +27,10 @@ router.get("/today", async (req, res) => {
   });
 });
 
-// GET /reports/insights?period=week|month|term -> numbers for the period
-// (the shape of the app's InsightsModel; rates are 0–1, grades 0–100).
 router.get("/insights", async (req, res) => {
   const period = validate(z.enum(["week", "month", "term"]).default("week"), req.query.period);
   const id = req.user.institutionId;
   const { from, to } = await rangeOf(id, period);
-  // A whole term of attendance and grades: worked out once every 5 minutes.
   res.json(
     await cached(`insights:${id}:${from}:${to}:${req.language}`, 5 * 60, () =>
       insights(id, period, from, to),
@@ -46,7 +39,6 @@ router.get("/insights", async (req, res) => {
 });
 
 async function insights(id, period, from, to) {
-  // The same number of days just before, for the change in attendance.
   const days = Math.round((new Date(to) - new Date(from)) / 86400000) + 1;
   const before = { from: addDays(from, -days), to: addDays(from, -1) };
 
@@ -56,7 +48,6 @@ async function insights(id, period, from, to) {
   const homework = await repo.homework(id, from, to);
   const trips = await repo.trips(id, from, to);
   const year = await institution.findCurrentYear(id);
-  // Days of the study week, Sunday first (the Iraqi week).
   const studyDays = [...(year?.working_days ?? [7, 1, 2, 3, 4])].sort((a, b) => (a % 7) - (b % 7));
 
   return {
@@ -84,7 +75,6 @@ async function insights(id, period, from, to) {
   };
 }
 
-/** week: since Sunday; month: since the 1st; term: since the term began. */
 async function rangeOf(institutionId, period) {
   const to = today();
   if (period === "week") {

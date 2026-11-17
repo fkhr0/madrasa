@@ -1,5 +1,3 @@
-// Runs the background jobs on their own (online: a separate service next to the
-// API, both pointing at the same database and Redis).
 const config = require("./config");
 const { connect, close } = require("./db/database");
 const { registerJobs } = require("./jobs");

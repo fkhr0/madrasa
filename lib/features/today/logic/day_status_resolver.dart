@@ -2,7 +2,6 @@ import '../../institution/models/academic_year_model.dart';
 import '../../schedule/models/lesson_model.dart';
 import '../models/day_status.dart';
 
-/// Works out the [DayStatus] for [now].
 DayStatus resolveDayStatus({
   required DateTime now,
   required AcademicYearModel year,

@@ -2,8 +2,6 @@ import '../../../core/network/api_client.dart';
 import '../models/task_model.dart';
 import 'task_repository.dart';
 
-/// The signed-in person's own tasks on the school API
-/// (server/src/features/tasks).
 class ApiTaskRepository implements TaskRepository {
   final ApiClient _api;
 

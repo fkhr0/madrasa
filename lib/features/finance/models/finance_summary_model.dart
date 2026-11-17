@@ -1,7 +1,6 @@
 import 'payment_model.dart';
 import 'student_account_model.dart';
 
-/// Collection progress of one class.
 class ClassCollection {
   final String className;
   final int collected;
@@ -16,7 +15,6 @@ class ClassCollection {
   double get rate => expected == 0 ? 0 : collected / expected;
 }
 
-/// The school's money for the year, worked out from the accounts.
 class FinanceSummaryModel {
   final int expected;
   final int collected;
@@ -26,7 +24,6 @@ class FinanceSummaryModel {
   final int collectedThisMonth;
   final List<ClassCollection> byClass;
 
-  /// Newest first.
   final List<PaymentModel> recentPayments;
 
   const FinanceSummaryModel({
@@ -71,7 +68,7 @@ class FinanceSummaryModel {
           collected: e.value.$1,
           expected: e.value.$2,
         ),
-    ]..sort((a, b) => a.rate.compareTo(b.rate)); // weakest first
+    ]..sort((a, b) => a.rate.compareTo(b.rate));
 
     return FinanceSummaryModel(
       expected: accounts.fold(0, (sum, a) => sum + a.total),

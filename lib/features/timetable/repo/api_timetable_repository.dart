@@ -3,7 +3,6 @@ import '../models/class_timetable_model.dart';
 import '../models/period_model.dart';
 import 'timetable_repository.dart';
 
-/// The timetable on the school API (server/src/features/timetable).
 class ApiTimetableRepository implements TimetableRepository {
   final ApiClient _api;
 

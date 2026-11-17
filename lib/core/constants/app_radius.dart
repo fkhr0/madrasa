@@ -1,4 +1,3 @@
-/// Corner radius scale.
 class AppRadius {
   AppRadius._();
 

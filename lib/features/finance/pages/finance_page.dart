@@ -22,8 +22,6 @@ import '../widgets/account_tile.dart';
 import '../widgets/payment_tile.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator: the year's fees, collected, outstanding, who is behind,
-/// and each family's account.
 class FinancePage extends ConsumerWidget {
   const FinancePage({super.key});
 

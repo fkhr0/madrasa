@@ -1,6 +1,5 @@
 import '../l10n/language.dart';
 
-/// App-wide texts, in the app's language (see core/l10n).
 class AppStrings {
   AppStrings._();
 

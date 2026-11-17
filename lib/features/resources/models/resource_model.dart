@@ -52,7 +52,6 @@ enum ResourceType {
   }
 }
 
-/// Study material shared by a teacher.
 class ResourceModel {
   final String id;
   final String title;
@@ -60,13 +59,10 @@ class ResourceModel {
   final ResourceType type;
   final DateTime uploadedAt;
 
-  /// "2.4 MB" for files, "12 min" for videos, null for links.
   final String? detail;
 
-  /// The shared file (server), or null for a link / mock data.
   final AttachmentModel? file;
 
-  /// The web address of a link or video.
   final String? url;
 
   final String classId;

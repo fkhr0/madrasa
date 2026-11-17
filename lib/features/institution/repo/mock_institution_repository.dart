@@ -5,7 +5,6 @@ import '../models/holiday_model.dart';
 import '../models/institution_model.dart';
 import 'institution_repository.dart';
 
-/// Keeps changes in memory so the admin screens work during the session.
 class MockInstitutionRepository implements InstitutionRepository {
   InstitutionModel _institution = MockInstitution.institution;
   AcademicYearModel _year = MockInstitution.academicYear;
@@ -42,7 +41,6 @@ class MockInstitutionRepository implements InstitutionRepository {
           if (!identical(h, old))
             h
           else if (old.isOfficial)
-            // Official holidays keep their name and type; only dates move.
             HolidayModel(
               name: old.name,
               type: old.type,

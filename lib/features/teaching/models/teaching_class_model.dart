@@ -1,7 +1,6 @@
 import '../../academics/models/subject_style.dart';
 import '../../subjects/models/subject_model.dart';
 
-/// A class a teacher teaches, e.g. "5th Scientific – A" for Mathematics.
 class TeachingClassModel {
   final String id;
   final String name;
@@ -9,7 +8,6 @@ class TeachingClassModel {
   final String room;
   final int studentCount;
 
-  /// Past exams (and, later, handed-in work) still waiting for scores.
   final int toGradeCount;
 
   const TeachingClassModel({

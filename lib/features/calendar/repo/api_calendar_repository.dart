@@ -3,7 +3,6 @@ import '../../auth/models/user_model.dart';
 import '../models/school_event_model.dart';
 import 'calendar_repository.dart';
 
-/// School events on the school API (server/src/features/events).
 class ApiCalendarRepository implements CalendarRepository {
   final ApiClient _api;
 
@@ -11,7 +10,6 @@ class ApiCalendarRepository implements CalendarRepository {
 
   @override
   Future<List<SchoolEventModel>> getSchoolEvents(UserRole role) async {
-    // The server filters by the signed-in user's role.
     final list = await _api.get('/events') as List;
     return [
       for (final json in list)

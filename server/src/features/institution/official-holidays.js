@@ -1,7 +1,5 @@
-// Iraq's official holidays, kept by the platform for every school.
 const { query, queryOne } = require("../../db/database");
 
-// study year name -> [key, name, type, start, end]
 const OFFICIAL_HOLIDAYS = {
   "2026–2027": [
     ["national-day", "Iraqi National Day", "national", "2026-10-03", null],
@@ -17,10 +15,6 @@ const OFFICIAL_HOLIDAYS = {
   ],
 };
 
-/**
- * Adds the official holidays a study year is missing (new year, or one deleted
- * before they were protected).
- */
 async function addMissingOfficialHolidays(yearId) {
   const year = await queryOne(
     `SELECT name, start_date::text AS start, end_date::text AS "end"
@@ -42,7 +36,6 @@ async function addMissingOfficialHolidays(yearId) {
   return added;
 }
 
-/** Runs on start-up, so every school always has its official holidays. */
 async function addMissingOfficialHolidaysEverywhere() {
   let added = 0;
   for (const { id } of await query("SELECT id FROM academic_years WHERE is_current")) {

@@ -5,7 +5,6 @@ import '../../auth/models/user_model.dart';
 import 'school_event_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Kinds of items on the calendar.
 enum CalendarEventType {
   homework,
   assignment,
@@ -14,10 +13,8 @@ enum CalendarEventType {
   event,
   holiday,
 
-  /// Parent–teacher and staff meetings (parents and teachers only).
   meeting,
 
-  /// The student's own tasks and reminders.
   reminder;
 
   static List<CalendarEventType> visibleFor(UserRole role) {
@@ -99,22 +96,18 @@ enum CalendarEventType {
   }
 }
 
-/// Anything shown on the calendar.
 class CalendarEventModel {
   final String id;
   final String title;
   final CalendarEventType type;
   final DateTime start;
 
-  /// Last day for multi-day items (holidays, trips). Null for one-day items.
   final DateTime? endDay;
   final bool isAllDay;
   final String? subtitle;
 
-  /// Where tapping the item leads, if anywhere.
   final String? route;
 
-  /// Set for events from the school calendar (the administrator edits them).
   final SchoolEventModel? schoolEvent;
 
   const CalendarEventModel({

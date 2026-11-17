@@ -4,7 +4,6 @@ import '../models/account_credentials_model.dart';
 import '../models/new_account_model.dart';
 import 'people_repository.dart';
 
-/// The People directory on the school API (server/src/features/people).
 class ApiPeopleRepository implements PeopleRepository {
   final ApiClient _api;
 

@@ -11,15 +11,12 @@ import '../repo/api_resource_repository.dart';
 import '../repo/mock_resource_repository.dart';
 import '../repo/resource_repository.dart';
 
-/// The server when API_URL is set, otherwise the in-memory mock.
 final resourceRepositoryProvider = Provider<ResourceRepository>(
   (ref) => AppConfig.useApi
       ? ApiResourceRepository(watchApi(ref))
       : MockResourceRepository(),
 );
 
-/// Material for the signed-in student, or the parent's selected child.
-/// A teacher sees what they share in their classes; the office, all.
 final resourcesProvider = FutureProvider<List<ResourceModel>>((ref) {
   final repository = ref.watch(resourceRepositoryProvider);
   final role = ref.watch(currentUserProvider).role;
@@ -29,14 +26,12 @@ final resourcesProvider = FutureProvider<List<ResourceModel>>((ref) {
   return repository.getAll(ref.watch(activeStudentIdProvider));
 });
 
-/// A class's material for the subject's teacher or the office.
 final classResourcesProvider =
     FutureProvider.family<List<ResourceModel>, String>(
       (ref, classId) =>
           ref.watch(resourceRepositoryProvider).getClassResources(classId),
     );
 
-/// Selected subject chip; null means "All".
 final resourceSubjectProvider = StateProvider<String?>((ref) => null);
 
 final resourceSearchProvider = StateProvider<String>((ref) => '');
@@ -56,7 +51,6 @@ final filteredResourcesProvider = FutureProvider<List<ResourceModel>>((
 
 final resourceActionsProvider = Provider<ResourceActions>(ResourceActions.new);
 
-/// Sharing and removing material. They throw ApiException with a message.
 class ResourceActions {
   final Ref _ref;
 

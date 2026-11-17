@@ -17,7 +17,7 @@ const upload = (name, bytes) =>
   request(app)
     .post("/files")
     .set(as.ahmed)
-    .set("Content-Type", "text/html") // ignored: the server decides the type
+    .set("Content-Type", "text/html")
     .set("X-File-Name", encodeURIComponent(name))
     .send(Buffer.from(bytes));
 
@@ -25,7 +25,6 @@ test("five wrong passwords lock the ID for 15 minutes, and the office sees it", 
   const wrong = { schoolId: "TCH-2019-0041", password: "guess" };
   for (let i = 0; i < 5; i++) await request(app).post("/auth/login").send(wrong).expect(401);
 
-  // Even the right password waits now.
   const locked = await request(app)
     .post("/auth/login")
     .send({ schoolId: "tch-2019-0041", password: config.demoPassword })
@@ -49,7 +48,6 @@ test("only allowed kinds of files, and only when the content matches the name", 
   await upload("virus.exe", "MZ...").expect(415);
   await upload("page.html", "<script>alert(1)</script>").expect(415);
   await upload("page.svg", "<svg onload=alert(1)>").expect(415);
-  // A web page dressed up as a photo.
   const fake = await upload("photo.jpg", "<html><script>alert(1)</script>").expect(415);
   assert.match(fake.body.error, /doesn't match its name/);
 
@@ -84,7 +82,6 @@ test("other websites can't call the API from a browser", async () => {
   const stranger = await request(app).get("/health").set("Origin", "https://evil.example");
   assert.equal(stranger.headers["access-control-allow-origin"], undefined);
 
-  // While developing, the web app on localhost works.
   const local = await request(app).get("/health").set("Origin", "http://localhost:5173");
   assert.equal(local.headers["access-control-allow-origin"], "http://localhost:5173");
 });
@@ -94,13 +91,11 @@ test("the server refuses to start online with unsafe settings", () => {
     () => config.checkProductionSettings({ isProduction: true, databaseUrl: "", seedDemoData: true }),
     /JWT_ACCESS_SECRET[\s\S]*DATABASE_URL[\s\S]*SEED_DEMO_DATA/,
   );
-  // Fine on this PC.
   config.checkProductionSettings({ isProduction: false });
 });
 
 test("photos are shrunk, turned upright, and lose their hidden GPS place", async () => {
   const sharp = require("sharp");
-  // A 4000×3000 phone photo with noise (hard to compress) and its place in EXIF.
   const width = 4000, height = 3000;
   const noise = Buffer.alloc(width * height * 3);
   for (let i = 0; i < noise.length; i++) noise[i] = (i * 7919) % 251;
@@ -119,12 +114,10 @@ test("photos are shrunk, turned upright, and lose their hidden GPS place", async
   assert.equal(Math.max(info.width, info.height), 1600);
   assert.equal(info.exif, undefined);
 
-  // Not really a photo inside: refused, not saved.
   const broken = Buffer.concat([Buffer.from([0xff, 0xd8, 0xff, 0xe0]), Buffer.from("not a photo")]);
   await upload("broken.jpg", broken).expect(415);
 });
 
-/** supertest: keep the answer as bytes. */
 function binary(res, done) {
   const parts = [];
   res.on("data", (c) => parts.push(c));

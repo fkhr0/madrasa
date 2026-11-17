@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Ticks every 15 seconds so "smart" screens (current class, bus ETA,
-/// "no more classes today"...) change by themselves as time passes.
 final clockProvider = StreamProvider<DateTime>((ref) {
   final controller = StreamController<DateTime>();
   controller.add(DateTime.now());
@@ -21,8 +19,6 @@ final clockProvider = StreamProvider<DateTime>((ref) {
   return controller.stream;
 });
 
-/// The current time. Watch this instead of calling DateTime.now()
-/// in widgets that should refresh on their own.
 final nowProvider = Provider<DateTime>(
   (ref) => ref.watch(clockProvider).valueOrNull ?? DateTime.now(),
 );

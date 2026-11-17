@@ -10,7 +10,6 @@ import '../repo/academics_repository.dart';
 import '../repo/api_academics_repository.dart';
 import '../repo/mock_academics_repository.dart';
 
-/// The server when API_URL is set, otherwise the mock school.
 final academicsRepositoryProvider = Provider<AcademicsRepository>(
   (ref) => AppConfig.useApi
       ? ApiAcademicsRepository(watchApi(ref))
@@ -38,7 +37,6 @@ final schoolClassByIdProvider =
       return null;
     });
 
-/// Subjects across all classes that still have no teacher.
 final unassignedSubjectsCountProvider = Provider<int>((ref) {
   final classes = ref.watch(schoolClassesProvider).valueOrNull ?? [];
 
@@ -49,8 +47,6 @@ final academicsActionsProvider = Provider<AcademicsActions>(
   AcademicsActions.new,
 );
 
-/// Administrator actions on subjects and classes. Each one reloads what
-/// it changed. They throw ApiException with a message to show.
 class AcademicsActions {
   final Ref _ref;
 
@@ -88,7 +84,6 @@ class AcademicsActions {
     _reload();
   }
 
-  /// Adds the subject to the class, or changes its teacher (null = none).
   Future<void> setSubjectTeacher({
     required String classId,
     required String subjectId,
@@ -113,8 +108,6 @@ class AcademicsActions {
     _reload();
   }
 
-  /// Timetables show subject and teacher names, and lose the lessons of a
-  /// subject removed from a class, so they reload too.
   void _reload() {
     _ref
       ..invalidate(schoolSubjectsProvider)

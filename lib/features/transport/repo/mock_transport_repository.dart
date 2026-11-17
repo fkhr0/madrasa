@@ -22,16 +22,12 @@ import '../models/trip_model.dart';
 import 'live_trip.dart';
 import 'transport_repository.dart';
 
-/// TEST MODE.
 class MockTransportRepository implements TransportRepository {
-  /// Why there is no school on a date ("Weekend", "Eid al-Fitr"...),
-  /// or null on school days. Buses only run on school days.
   final String? Function(DateTime day) dayOffReason;
   final DemoNotifier notifier;
 
   MockTransportRepository({required this.dayOffReason, required this.notifier});
 
-  /// Told about every trip start, delay and early end.
   static final _officeIds = [MockUsers.admin.id];
 
   final Map<String, BusRouteModel> _routes = {
@@ -45,20 +41,15 @@ class MockTransportRepository implements TransportRepository {
 
   TransportSettingsModel _settings = const TransportSettingsModel();
 
-  /// Route ID → trips finished on [_finishedDay].
   final Map<String, Map<TripDirection, DateTime>> _finished = {};
   DateTime? _finishedDay;
   int _routeCount = 0;
 
-  /// Route ID → the trip the driver is running.
   final Map<String, LiveTrip> _live = {};
 
-  /// Route ID → open trip streams.
   final Map<String, Set<StreamController<TripModel>>> _listeners = {};
   Timer? _ticker;
   int _notificationCount = 0;
-
-  // ---------- Reading ----------
 
   @override
   Future<StudentTransportModel?> getStudentTransport(String studentId) async {
@@ -133,8 +124,6 @@ class MockTransportRepository implements TransportRepository {
     return controller.stream;
   }
 
-  // ---------- Parent ----------
-
   @override
   Future<void> setNotRidingToday(String studentId, bool notRiding) async {
     for (final route in _routes.values) {
@@ -157,14 +146,11 @@ class MockTransportRepository implements TransportRepository {
     }
   }
 
-  // ---------- Driver ----------
-
   @override
   Future<void> startTrip(String routeId, TripDirection direction) async {
     final route = (await getRoute(routeId))!;
     final now = DateTime.now();
 
-    // The same rules as the driver's screen: a button can't bypass them.
     final check = checkTrip(
       route: route,
       direction: direction,
@@ -200,7 +186,6 @@ class MockTransportRepository implements TransportRepository {
 
     trip.leave(DateTime.now());
 
-    // Tell the next stop the bus is coming.
     final next = trip.stops[trip.reachedIndex + 1];
     _notify(
       _ridersAndParents(routeId, stopId: next.id),
@@ -220,7 +205,6 @@ class MockTransportRepository implements TransportRepository {
     _emit(routeId);
   }
 
-  /// Test mode drives the bus itself; GPS points are not needed.
   @override
   Future<void> sendLocation(
     String routeId,
@@ -303,8 +287,6 @@ class MockTransportRepository implements TransportRepository {
     _emit(routeId);
   }
 
-  // ---------- Administrator ----------
-
   @override
   Future<BusRouteModel> saveRoute(BusRouteModel route) async {
     var saved = route;
@@ -320,14 +302,12 @@ class MockTransportRepository implements TransportRepository {
         driverPhone: route.driverPhone,
         supervisorName: route.supervisorName,
         supervisorPhone: route.supervisorPhone,
-        // Every line ends at the school.
         stops: route.stops.isEmpty ? [MockTransport.school] : route.stops,
         capacity: route.capacity,
       );
       _rosters[saved.id] = [];
     }
 
-    // A driver drives one bus: take them off any other line.
     if (saved.hasDriver) {
       for (final other in _routes.values.toList()) {
         if (other.id != saved.id && other.driverId == saved.driverId) {
@@ -342,7 +322,6 @@ class MockTransportRepository implements TransportRepository {
 
     _routes[saved.id] = saved;
 
-    // Students of a stop that was removed come off the line.
     final stopIds = {for (final s in saved.stops) s.id};
     _rosters[saved.id]!.removeWhere((s) => !stopIds.contains(s.stopId));
 
@@ -379,7 +358,6 @@ class MockTransportRepository implements TransportRepository {
         );
       }
 
-      // A student rides one bus: take them off the old one.
       for (final other in _rosters.values) {
         other.removeWhere((s) => s.id == student.id);
       }
@@ -399,7 +377,6 @@ class MockTransportRepository implements TransportRepository {
     _settings = settings;
   }
 
-  /// Test mode has no internet search: a few well-known Baghdad places.
   @override
   Future<List<PlaceModel>> searchPlaces(String text) async {
     const places = [
@@ -440,7 +417,6 @@ class MockTransportRepository implements TransportRepository {
     _homes[studentId] = home;
   }
 
-  /// Test mode can't follow short links; full links and numbers work.
   @override
   Future<LatLng> readLocation(String text) async {
     final found = coordinatesIn(text);
@@ -452,8 +428,6 @@ class MockTransportRepository implements TransportRepository {
     }
     return found;
   }
-
-  // ---------- Engine ----------
 
   TripModel _current(String routeId) {
     final now = DateTime.now();
@@ -473,7 +447,6 @@ class MockTransportRepository implements TransportRepository {
   BusRouteModel _withCount(BusRouteModel route) =>
       route.copyWith(studentCount: _rosters[route.id]?.length ?? 0);
 
-  /// Today's finished trips of a route (cleared when the day changes).
   Map<TripDirection, DateTime> _finishedToday(String routeId) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -485,7 +458,6 @@ class MockTransportRepository implements TransportRepository {
     return _finished.putIfAbsent(routeId, () => {});
   }
 
-  /// One shared clock: moves live buses and refreshes every open stream.
   void _ensureTicker() {
     _ticker ??= Timer.periodic(const Duration(seconds: 1), (_) => _tick());
   }
@@ -559,7 +531,6 @@ class MockTransportRepository implements TransportRepository {
     }
   }
 
-  /// Students riding today (optionally only one stop) and their parents.
   List<String> _ridersAndParents(String routeId, {String? stopId}) {
     return [
       for (final s in _rosters[routeId]!)
@@ -570,7 +541,6 @@ class MockTransportRepository implements TransportRepository {
     ];
   }
 
-  /// The school office gets the same news, opening the line's page.
   void _notifyOffice(
     String routeId, {
     required String title,

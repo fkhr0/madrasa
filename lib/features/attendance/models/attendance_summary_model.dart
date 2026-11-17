@@ -1,6 +1,5 @@
 import 'attendance_record_model.dart';
 
-/// Totals calculated from a list of records.
 class AttendanceSummaryModel {
   final int present;
   final int late;
@@ -28,8 +27,6 @@ class AttendanceSummaryModel {
 
   int get totalDays => present + late + absent + excused;
 
-  /// Days the student was at school (late still counts), as 0–100; null
-  /// before the first day is recorded.
   double? get rate {
     if (totalDays == 0) return null;
     return (present + late) / totalDays * 100;

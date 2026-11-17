@@ -3,7 +3,6 @@ import '../../../core/utils/day_json.dart';
 import '../models/day_model.dart';
 import 'day_repository.dart';
 
-/// Days on the school API (server/src/features/days).
 class ApiDayRepository implements DayRepository {
   final ApiClient _api;
 

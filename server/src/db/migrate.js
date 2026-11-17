@@ -1,5 +1,3 @@
-// Brings the database up to date: runs every file in migrations/ that hasn't
-// run yet, in name order (001_, 002_, ...).
 const fs = require("fs");
 const path = require("path");
 const { db, query } = require("./database");
@@ -27,8 +25,6 @@ async function migrate() {
     if (done.has(file)) continue;
 
     const sql = fs.readFileSync(path.join(DIR, file), "utf8");
-    // One transaction per file: a failing migration leaves nothing half-done.
-    // (file names come from our own folder, so they are safe to inline)
     try {
       await db().exec(`
         BEGIN;

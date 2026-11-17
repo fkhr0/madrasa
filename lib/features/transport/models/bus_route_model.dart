@@ -2,31 +2,24 @@ import 'bus_stop_model.dart';
 import 'road_path_model.dart';
 import 'trip_model.dart';
 
-/// A bus line: the bus, the people on board, and the stops in
-/// morning order (first pick-up → school). Afternoon runs in reverse.
 class BusRouteModel {
   final String id;
   final String name;
   final String busNumber;
   final String plateNumber;
 
-  /// Empty when no driver is assigned yet.
   final String driverId;
   final String driverName;
   final String driverPhone;
 
-  /// The adult who rides with the students.
   final String supervisorName;
   final String supervisorPhone;
 
   final List<BusStopModel> stops;
 
-  /// Students registered on the line (filled in by the repository).
   final int studentCount;
   final int capacity;
 
-  /// The streets of each trip, once the server has worked them out
-  /// (null: the map draws straight lines between stops).
   final RoadPathModel? roadToSchool;
   final RoadPathModel? roadToHome;
 
@@ -47,7 +40,6 @@ class BusRouteModel {
     this.roadToHome,
   });
 
-  /// The road of one trip, if it matches the stops (one leg per drive).
   RoadPathModel? roadFor(TripDirection direction) {
     final road = direction == TripDirection.toSchool
         ? roadToSchool
@@ -77,7 +69,6 @@ class BusRouteModel {
     );
   }
 
-  /// The driver's name and phone come from their account on the server.
   Map<String, dynamic> toJson() => {
     'name': name,
     'busNumber': busNumber,
@@ -95,7 +86,6 @@ class BusRouteModel {
 
   int get freeSeats => (capacity - studentCount).clamp(0, capacity);
 
-  /// Pick-up stops only (without the school).
   List<BusStopModel> get pickUpStops =>
       stops.where((s) => !s.isSchool).toList();
 
@@ -125,7 +115,6 @@ class BusRouteModel {
       stops: stops ?? this.stops,
       studentCount: studentCount ?? this.studentCount,
       capacity: capacity ?? this.capacity,
-      // New stops need a new road (the server works it out on save).
       roadToSchool: stops == null ? roadToSchool : null,
       roadToHome: stops == null ? roadToHome : null,
     );

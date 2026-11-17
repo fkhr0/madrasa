@@ -3,14 +3,11 @@ import '../../../core/utils/day_json.dart';
 import 'calendar_event_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Who sees a school event.
 enum EventAudience {
   everyone,
 
-  /// Parents and staff (e.g. a parent–teacher meeting).
   families,
 
-  /// Teachers and administrators only.
   staff;
 
   String get label {
@@ -25,21 +22,16 @@ enum EventAudience {
   }
 }
 
-/// An event or meeting the administrator puts on the school calendar.
 class SchoolEventModel {
-  /// Empty for an event not saved yet.
   final String id;
   final String title;
 
-  /// [CalendarEventType.event] or [CalendarEventType.meeting].
   final CalendarEventType type;
   final EventAudience audience;
   final DateTime date;
 
-  /// Minutes after midnight (08:30 → 510); null = all day.
   final int? startMinute;
 
-  /// Last day, for events of several days (e.g. a trip).
   final DateTime? endDate;
   final String place;
   final String details;
@@ -107,7 +99,6 @@ class SchoolEventModel {
     details: details,
   );
 
-  /// How the calendar shows it.
   CalendarEventModel toCalendarEvent() {
     return CalendarEventModel(
       id: 'school-$id',

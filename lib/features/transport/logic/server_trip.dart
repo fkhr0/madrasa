@@ -6,14 +6,10 @@ import '../models/bus_stop_model.dart';
 import '../models/trip_model.dart';
 import '../repo/live_trip.dart';
 
-/// A GPS point older than this no longer places the bus on the map.
 const gpsFreshFor = Duration(seconds: 30);
 
-/// A school bus in city traffic: about 25 km/h on average.
 const cityMetresPerSecond = 7.0;
 
-/// Builds the app's [TripModel] from a running trip as the server sends it (GET
-/// /transport/routes/:id/trip → "trip").
 TripModel tripFromServer({
   required BusRouteModel route,
   required Map<String, dynamic> json,
@@ -26,7 +22,6 @@ TripModel tripFromServer({
   final allReached = json['reachedAt'] as List;
   final stopIds = json['stopIds'] as List;
   for (var i = 0; i < stopIds.length; i++) {
-    // A stop deleted during the trip is simply skipped.
     final stop = route.stops.where((s) => s.id == stopIds[i]).firstOrNull;
     if (stop == null) continue;
     stops.add(stop);
@@ -42,8 +37,6 @@ TripModel tripFromServer({
       ),
   ];
 
-  // -1: the trip has started and the bus is driving to its first stop
-  // from wherever the driver was.
   final reached = (json['reachedIndex'] as num).toInt().clamp(
     -1,
     stops.length - 1,
@@ -64,8 +57,6 @@ TripModel tripFromServer({
       ? route.roadFor(direction)
       : null;
 
-  // How long the bus takes to drive to stop [i] from the one before:
-  // the road's driving time when known, else the timetable's.
   Duration leg(int i) {
     if (demo) return LiveTrip.demoDriveTime;
     if (road != null) return Duration(seconds: road.legSeconds[i - 1]);
@@ -75,10 +66,8 @@ TripModel tripFromServer({
         : planned_;
   }
 
-  // How long until the bus reaches the next stop from where it is now.
   Duration toNext(int next) {
     if (busAt != null) {
-      // Streets are about a third longer than the straight line.
       final metres =
           const Distance()(
             busAt,
@@ -91,15 +80,12 @@ TripModel tripFromServer({
     final drive = next == 0 ? LiveTrip.demoDriveTime : leg(next);
     final left = drive - now.difference(leftAt!);
     if (next == 0 && !demo) {
-      // No GPS yet on the way to the first stop: trust the timetable.
       final planned_ = planned[0].difference(now);
       return planned_.isNegative ? Duration.zero : planned_;
     }
     return left.isNegative ? Duration.zero : left;
   }
 
-  // Estimates: real times for reached stops, the next one from where the
-  // bus is now, then one leg after another.
   final estimates = <DateTime>[];
   DateTime? clock;
   for (var i = 0; i < stops.length; i++) {
@@ -111,8 +97,6 @@ TripModel tripFromServer({
     }
   }
 
-  // Position on the map: the driver's phone, else along the line. Before
-  // the first stop without GPS, where the bus is isn't known.
   double? lat;
   double? lng;
   if (busAt != null) {

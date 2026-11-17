@@ -17,8 +17,6 @@ import '../widgets/class_card.dart';
 import '../widgets/teacher_quick_actions.dart';
 import '../../../core/l10n/language.dart';
 
-/// Teacher's 10–30 second screen: where they are in the teaching day,
-/// what needs grading, quick actions and their classes.
 class TeacherHomePage extends ConsumerWidget {
   const TeacherHomePage({super.key});
 

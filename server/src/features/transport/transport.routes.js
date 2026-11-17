@@ -1,4 +1,3 @@
-// School buses.
 const express = require("express");
 const { HttpError, validate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");
@@ -17,22 +16,11 @@ const { msg } = require("../../i18n");
 const router = express.Router();
 router.use(requireAuth);
 
-/** Test mode: how long the bus "drives" between stops without GPS. */
 const DEMO_DRIVE_MS = 20_000;
-/** GPS: the bus has reached a stop within this distance… */
 const ARRIVED_METRES = 80;
-/** …and has left it beyond this one. */
 const LEFT_METRES = 150;
-/** A GPS point older than this no longer moves the bus. */
 const GPS_FRESH_MS = 30_000;
-/**
- * Rougher readings move the bus on the map but never decide "arrived" or
- * "left" (indoors, or a phone sharing only its rough area, is off by hundreds
- * of metres).
- */
 const DECIDES_WITHIN_METRES = 100;
-
-// ---------- Helpers ----------
 
 async function routeOr404(req, routeId = req.params.id) {
   const route = await repo.findRoute(req.user.institutionId, routeId);
@@ -40,7 +28,6 @@ async function routeOr404(req, routeId = req.params.id) {
   return route;
 }
 
-/** The line's driver or an administrator. */
 function requireDriverOf(req, route) {
   if (req.user.role === "admin") return;
   if (req.user.role !== "driver" || route.driverId !== req.user.id) {
@@ -48,7 +35,6 @@ function requireDriverOf(req, route) {
   }
 }
 
-/** The student themself, their parent, or an administrator. */
 async function requireFamilyOf(req, studentId) {
   if (req.user.role === "admin" || req.user.id === studentId) return;
   if (req.user.role === "parent") {
@@ -74,10 +60,6 @@ const riderJson = ({ notRidingOn, ...rider }) => ({
   notRidingToday: notRidingOn === dayText(new Date()),
 });
 
-/**
- * Today's trips of a line. Moves a test-mode bus on when it has "driven"
- * long enough without GPS, so the demo works on a computer.
- */
 async function todaysTrips(institutionId, route, settings) {
   const trips = await repo.findTodaysTrips(route.id, dayText(new Date()));
   const running = trips.find((t) => !t.endedAt) ?? null;
@@ -100,7 +82,6 @@ async function todaysTrips(institutionId, route, settings) {
 const hasFreshGps = (trip) =>
   trip.positionAt && Date.now() - new Date(trip.positionAt) < GPS_FRESH_MS;
 
-/** The bus reached the next stop. */
 function arrive(trip) {
   if (trip.reachedIndex >= trip.stopIds.length - 1) return;
   trip.reachedIndex += 1;
@@ -115,14 +96,10 @@ async function runningTripOr409(institutionId, route, settings) {
   return running;
 }
 
-// ---------- Settings ----------
-
-// GET /transport/settings -> { opensBeforeMinutes, closesAfterMinutes, testMode }
 router.get("/settings", async (req, res) => {
   res.json(await repo.findSettings(req.user.institutionId));
 });
 
-// PUT /transport/settings -> 204  (admin)
 router.put("/settings", requireRole("admin"), async (req, res) => {
   const body = validate(
     z.object({
@@ -136,8 +113,6 @@ router.put("/settings", requireRole("admin"), async (req, res) => {
   res.status(204).end();
 });
 
-// ---------- Lines ----------
-
 const minute = z.number().int().min(0).max(24 * 60 - 1);
 const routeFields = z.object({
   name: z.string().trim().min(2).max(80),
@@ -147,7 +122,6 @@ const routeFields = z.object({
   supervisorName: z.string().trim().max(80).default(""),
   supervisorPhone: z.string().trim().max(30).default(""),
   capacity: z.number().int().min(1).max(100),
-  // Morning order; the "school" stop only carries the school's times.
   stops: z
     .array(
       z.object({
@@ -177,7 +151,6 @@ async function saveRoute(req, res, routeId) {
   try {
     const id = await repo.saveRoute(req.user.institutionId, routeId, body);
     if (!id) throw new HttpError(404, "Bus line not found.");
-    // Draw the line on the roads now, so every map shows streets.
     await updateRoads(req.user.institutionId, id);
     res.status(routeId ? 200 : 201).json(await repo.findRoute(req.user.institutionId, id));
   } catch (e) {
@@ -186,8 +159,6 @@ async function saveRoute(req, res, routeId) {
   }
 }
 
-// GET /transport/places?q=Yarmouk hospital -> [{ name, address, latitude, longitude }]
-// (admin) Finds a place by name to put a stop there.
 router.get("/places", requireRole("admin"), async (req, res) => {
   const { q } = validate(z.object({ q: z.string().trim().min(2).max(120) }), req.query);
   const school = await institution.findInstitution(req.user.institutionId);
@@ -198,32 +169,26 @@ router.get("/places", requireRole("admin"), async (req, res) => {
   }
 });
 
-// POST /transport/routes/:id/road -> route  (admin) Works the road out again.
 router.post("/routes/:id/road", requireRole("admin"), async (req, res) => {
   const route = await routeOr404(req);
   await updateRoads(req.user.institutionId, route.id);
   res.json(await repo.findRoute(req.user.institutionId, route.id));
 });
 
-// GET /transport/routes -> [route]
 router.get("/routes", async (req, res) => {
   res.json(await repo.findRoutes(req.user.institutionId));
 });
 
-// GET /transport/routes/:id -> route
 router.get("/routes/:id", async (req, res) => {
   res.json(await routeOr404(req));
 });
 
-// POST /transport/routes -> route  (admin)
 router.post("/routes", requireRole("admin"), (req, res) => saveRoute(req, res, null));
 
-// PATCH /transport/routes/:id -> route  (admin)
 router.patch("/routes/:id", requireRole("admin"), (req, res) =>
   saveRoute(req, res, req.params.id),
 );
 
-// DELETE /transport/routes/:id -> 204  (admin; not during a trip)
 router.delete("/routes/:id", requireRole("admin"), async (req, res) => {
   const route = await routeOr404(req);
   const { running } = await todaysTrips(
@@ -238,14 +203,10 @@ router.delete("/routes/:id", requireRole("admin"), async (req, res) => {
   res.status(204).end();
 });
 
-// GET /transport/driver-route -> route | null  (the signed-in driver's line)
 router.get("/driver-route", requireRole("driver"), async (req, res) => {
   res.json(await repo.findDriverRoute(req.user.institutionId, req.user.id));
 });
 
-// ---------- Riders ----------
-
-// GET /transport/routes/:id/students -> [rider]  (staff and the driver)
 router.get(
   "/routes/:id/students",
   requireRole("admin", "teacher", "driver"),
@@ -255,13 +216,10 @@ router.get(
   },
 );
 
-// GET /transport/students-without-bus -> [{ id, name, className }]  (admin)
 router.get("/students-without-bus", requireRole("admin"), async (req, res) => {
   res.json(await repo.findStudentsWithoutBus(req.user.institutionId));
 });
 
-// PUT /transport/routes/:id/students/:studentId { stopId } -> 204  (admin)
-// Adds the student, moves them to another stop, or from another bus.
 router.put(
   "/routes/:id/students/:studentId",
   requireRole("admin"),
@@ -286,7 +244,6 @@ router.put(
   },
 );
 
-// DELETE /transport/routes/:id/students/:studentId -> 204  (admin)
 router.delete(
   "/routes/:id/students/:studentId",
   requireRole("admin"),
@@ -299,7 +256,6 @@ router.delete(
   },
 );
 
-// GET /transport/students/:studentId -> { route, stopId, notRidingToday } | null
 router.get("/students/:studentId", async (req, res) => {
   await requireFamilyOf(req, req.params.studentId);
   const riding = await repo.findRiding(req.params.studentId);
@@ -313,8 +269,6 @@ router.get("/students/:studentId", async (req, res) => {
   });
 });
 
-// POST /transport/students/:studentId/not-riding { notRiding } -> 204
-// The parent tells the driver the child won't ride today.
 router.post("/students/:studentId/not-riding", async (req, res) => {
   await requireFamilyOf(req, req.params.studentId);
   const { notRiding } = validate(z.object({ notRiding: z.boolean() }), req.body);
@@ -323,16 +277,11 @@ router.post("/students/:studentId/not-riding", async (req, res) => {
   res.status(204).end();
 });
 
-// ---------- Homes (door-to-door pick-up) ----------
-
-// GET /transport/students/:studentId/home -> home | null  (family, admin)
 router.get("/students/:studentId/home", async (req, res) => {
   await requireFamilyOf(req, req.params.studentId);
   res.json(await repo.findHome(req.params.studentId));
 });
 
-// PUT /transport/students/:studentId/home { latitude, longitude, note } -> home
-// The family shares where they live, or the school sets it.
 router.put("/students/:studentId/home", async (req, res) => {
   await requireFamilyOf(req, req.params.studentId);
   const body = validate(
@@ -349,15 +298,12 @@ router.put("/students/:studentId/home", async (req, res) => {
   res.json(await repo.saveHome(req.params.studentId, body, setBy));
 });
 
-// POST /transport/read-location { text } -> { latitude, longitude }
-// Reads a WhatsApp / Google Maps location link, or "33.31, 44.36".
 router.post("/read-location", requireRole("admin", "parent", "student"), async (req, res) => {
   const { text } = validate(z.object({ text: z.string().trim().min(3).max(2000) }), req.body);
   let found = null;
   try {
     found = await readLocation(text);
   } catch {
-    // The short link couldn't be followed: same answer as "not found".
   }
   if (!found) {
     throw new HttpError(400, "No place in Iraq found in that. Paste the location link from WhatsApp or Google Maps.",
@@ -366,12 +312,6 @@ router.post("/read-location", requireRole("admin", "parent", "student"), async (
   res.json(found);
 });
 
-// ---------- Trips ----------
-
-// GET /transport/routes/:id/trip
-//   -> { trip: running trip | null, finished: { toSchool?, toHome? }, serverTime }
-// serverTime: phones' clocks are often a few minutes off; the app compares
-// the trip's times with this clock, not its own.
 router.get("/routes/:id/trip", async (req, res) => {
   const route = await routeOr404(req);
   const { running, finished } = await todaysTrips(
@@ -382,7 +322,6 @@ router.get("/routes/:id/trip", async (req, res) => {
   res.json({ trip: running, finished, serverTime: new Date() });
 });
 
-// POST /transport/routes/:id/trip/start { direction } -> trip  (driver)
 router.post("/routes/:id/trip/start", async (req, res) => {
   const route = await routeOr404(req);
   requireDriverOf(req, route);
@@ -425,13 +364,11 @@ router.post("/routes/:id/trip/start", async (req, res) => {
   res.status(201).json(trip);
 });
 
-/** The students who ride a line (their parents see its trips). */
 async function riderIds(routeId) {
   const rows = await query("SELECT student_id FROM route_students WHERE route_id = $1", [routeId]);
   return rows.map((r) => r.student_id);
 }
 
-/** Open apps watching this line reload its trip at once. */
 async function tellWatchers(institutionId, route) {
   hub.publish(await repo.tripWatchers(institutionId, route), {
     type: "trip.updated",
@@ -439,10 +376,6 @@ async function tellWatchers(institutionId, route) {
   });
 }
 
-/**
- * Runs [change] on the running trip, saves it, tells everyone what changed
- * (see alerts.js) and returns it.
- */
 function tripAction(change) {
   return async (req, res) => {
     const institutionId = req.user.institutionId;
@@ -460,7 +393,6 @@ function tripAction(change) {
   };
 }
 
-// POST /transport/routes/:id/trip/leave -> trip  (driver leaves the stop)
 router.post(
   "/routes/:id/trip/leave",
   tripAction((trip) => {
@@ -470,8 +402,6 @@ router.post(
   }),
 );
 
-// POST /transport/routes/:id/trip/arrive -> trip
-// The driver says they reached the next stop (when GPS is off or late).
 router.post(
   "/routes/:id/trip/arrive",
   tripAction((trip) => {
@@ -479,7 +409,6 @@ router.post(
   }),
 );
 
-// POST /transport/routes/:id/trip/boarding { studentId, status } -> trip
 router.post(
   "/routes/:id/trip/boarding",
   tripAction((trip, req) => {
@@ -494,7 +423,6 @@ router.post(
   }),
 );
 
-// POST /transport/routes/:id/trip/delay { minutes, reason } -> trip
 router.post(
   "/routes/:id/trip/delay",
   tripAction((trip, req) => {
@@ -507,7 +435,6 @@ router.post(
   }),
 );
 
-// POST /transport/routes/:id/trip/end { earlyReason? } -> trip
 router.post(
   "/routes/:id/trip/end",
   tripAction(async (trip, req, route) => {
@@ -540,11 +467,6 @@ router.post(
   }),
 );
 
-// POST /transport/routes/:id/trip/location { latitude, longitude, accuracy? } -> trip
-// The driver's phone, every few seconds. Moves the bus on by itself:
-// it leaves a stop when it drives away and reaches the next one when close.
-// (Positions are never written to the log: where the children's bus was
-// all day is nobody's business.)
 router.post(
   "/routes/:id/trip/location",
   tripAction((trip, req, route) => {
@@ -565,8 +487,6 @@ router.post(
     const distanceTo = (s) => distanceMetres(latitude, longitude, s.latitude, s.longitude);
     const isLast = trip.reachedIndex >= trip.stopIds.length - 1;
 
-    // Standing at a stop: it leaves when it drives away. (Before the
-    // first stop, leftStopAt is already set: it is on its way there.)
     if (!trip.leftStopAt && !isLast) {
       const here = stop(trip.reachedIndex);
       if (here && distanceTo(here) > LEFT_METRES) trip.leftStopAt = new Date();

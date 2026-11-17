@@ -44,7 +44,6 @@ test("an administrator adds and removes a holiday", async () => {
     .expect(201);
   assert.ok(added.body.id);
 
-  // Outside the study year: refused.
   await request(app)
     .post("/academic-year/holidays")
     .set(admin)
@@ -77,7 +76,6 @@ test("an administrator edits the school's settings", async () => {
   assert.equal(res.body.name, "Al-Noor Model School");
   assert.equal(res.body.latitude, 33.31);
 
-  // Half a location is refused.
   await request(app)
     .patch("/institution")
     .set(admin)
@@ -106,7 +104,6 @@ test("official holidays can be moved but not deleted, and come back", async () =
 
   await request(app).delete(`/academic-year/holidays/${eid.id}`).set(admin).expect(409);
 
-  // The moon was sighted a day later: the date moves, the name stays.
   const moved = await request(app)
     .patch(`/academic-year/holidays/${eid.id}`)
     .set(admin)
@@ -115,11 +112,9 @@ test("official holidays can be moved but not deleted, and come back", async () =
   assert.equal(moved.body.name, "Eid al-Fitr");
   assert.equal(moved.body.start, "2027-03-10");
 
-  // Deleted before they were protected: the server adds them back.
   const { query } = require("../src/db/database");
   await query("DELETE FROM holidays WHERE official_key = 'nowruz'");
   assert.equal(await addMissingOfficialHolidays(year.id), 1);
-  // ...without touching the moved Eid.
   assert.equal(await addMissingOfficialHolidays(year.id), 0);
 });
 

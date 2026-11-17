@@ -11,7 +11,6 @@ import '../../schedule/providers/schedule_provider.dart';
 import 'stat_tile.dart';
 import '../../../core/l10n/language.dart';
 
-/// Three quick numbers: classes today, work to do, attendance.
 class TodayOverview extends ConsumerWidget {
   const TodayOverview({super.key});
 

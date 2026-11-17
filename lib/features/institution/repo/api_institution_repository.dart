@@ -6,8 +6,6 @@ import '../models/institution_model.dart';
 import 'institution_repository.dart';
 import '../../../core/l10n/language.dart';
 
-/// The school and its study year, on the school API.
-/// The server decides which school: the one of the signed-in user.
 class ApiInstitutionRepository implements InstitutionRepository {
   final ApiClient _api;
 

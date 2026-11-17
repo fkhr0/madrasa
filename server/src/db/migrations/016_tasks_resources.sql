@@ -1,7 +1,3 @@
--- Personal tasks and reminders, and study material teachers share.
-
--- Each person's own to-dos. The app makes the ID (so a new task shows at
--- once), so it is unique per person, not across the platform.
 CREATE TABLE tasks (
   user_id      TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   id           TEXT NOT NULL,
@@ -16,7 +12,6 @@ CREATE TABLE tasks (
   PRIMARY KEY (user_id, id)
 );
 
--- A file or a link a teacher (or the office) shares with a class.
 CREATE TABLE resources (
   id              TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
   institution_id  TEXT NOT NULL REFERENCES institutions(id) ON DELETE CASCADE,

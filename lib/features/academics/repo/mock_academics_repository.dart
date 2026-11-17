@@ -6,9 +6,6 @@ import '../models/school_class_model.dart';
 import '../models/school_subject_model.dart';
 import 'academics_repository.dart';
 
-/// Keeps subjects and classes in memory and follows the server's rules (unique
-/// names, no deleting a class with students), so the screens behave the same
-/// without a server.
 class MockAcademicsRepository implements AcademicsRepository {
   final List<SchoolSubjectModel> _subjects = MockSchoolClasses.subjects;
   final List<SchoolClassModel> _classes = MockSchoolClasses.classes;
@@ -21,8 +18,6 @@ class MockAcademicsRepository implements AcademicsRepository {
     }
     return null;
   }
-
-  // ---------- Subjects ----------
 
   @override
   Future<List<SchoolSubjectModel>> getSubjects() async => [
@@ -48,7 +43,6 @@ class MockAcademicsRepository implements AcademicsRepository {
     final index = _subjects.indexWhere((s) => s.id == subject.id);
     _subjects[index] = subject;
 
-    // Classes show the subject's name: keep it up to date.
     for (var i = 0; i < _classes.length; i++) {
       _classes[i] = _withSubjects(_classes[i], [
         for (final cs in _classes[i].subjects)
@@ -74,8 +68,6 @@ class MockAcademicsRepository implements AcademicsRepository {
       );
     }
   }
-
-  // ---------- Classes ----------
 
   @override
   Future<List<SchoolClassModel>> getClasses() async =>
@@ -174,8 +166,6 @@ class MockAcademicsRepository implements AcademicsRepository {
           .toList(),
     );
   }
-
-  // ---------- helpers ----------
 
   static SchoolClassModel _withSubjects(
     SchoolClassModel c,

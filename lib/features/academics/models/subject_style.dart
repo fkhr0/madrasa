@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
 
-/// The icons and colours a subject can have. The server stores the key
-/// ("math", "purple"); the app turns it into an icon and a colour.
 class SubjectStyle {
   SubjectStyle._();
 

@@ -1,4 +1,3 @@
-// Arabic texts, T–Z and the ones that start with a placeholder (see arabic.dart).
 const Map<String, String> arabic3 = {
   'Take attendance for…': 'تسجيل الحضور لـ…',
   'Take or correct any lesson': 'سجّل أو صحّح أي حصة',

@@ -47,8 +47,8 @@ void main() {
   test('the Iraqi year: terms, mid-year, year work and final', () {
     final exams = [
       _exam(ExamType.monthly, DateTime(2026, 10, 20), 80),
-      _exam(ExamType.monthly, DateTime(2026, 11, 20), 45, 50), // 90%
-      _exam(ExamType.quiz, DateTime(2026, 11, 3), 2, 10), // doesn't count
+      _exam(ExamType.monthly, DateTime(2026, 11, 20), 45, 50),
+      _exam(ExamType.quiz, DateTime(2026, 11, 3), 2, 10),
       _exam(ExamType.midYear, DateTime(2027, 1, 12), 70),
       _exam(ExamType.monthly, DateTime(2027, 3, 15), 60),
       _exam(ExamType.monthly, DateTime(2027, 4, 15), 80),

@@ -4,8 +4,6 @@ import '../../../core/network/session_store.dart';
 import '../models/user_model.dart';
 import 'auth_repository.dart';
 
-/// Sign-in and the user's own account, on the school API.
-/// Turns [ApiException] into [AuthException], so the pages stay the same.
 class ApiAuthRepository implements AuthRepository {
   final ApiClient _api;
   final SessionStore _session;
@@ -29,7 +27,6 @@ class ApiAuthRepository implements AuthRepository {
     return _signedIn(data as Map<String, dynamic>);
   }
 
-  /// Keeps the tokens and the session (password or demo sign-in alike).
   Future<UserModel> _signedIn(Map<String, dynamic> data) async {
     _api.setTokens(
       accessToken: data['accessToken'] as String,
@@ -37,9 +34,7 @@ class ApiAuthRepository implements AuthRepository {
     );
     final json = data['user'] as Map<String, dynamic>;
     final user = UserModel.fromJson(json);
-    // Saved answers are this person's own.
     _api.cacheOwner = user.id;
-    // Stay signed in when the app is closed.
     await _session.save(data['refreshToken'] as String, json);
     return user;
   }
@@ -53,7 +48,7 @@ class ApiAuthRepository implements AuthRepository {
           UserRole.fromName(name as String),
       ];
     } on ApiException {
-      return const []; // no demo on this server
+      return const [];
     }
   }
 
@@ -97,12 +92,10 @@ class ApiAuthRepository implements AuthRepository {
     await _session.clear();
     if (token == null) return;
 
-    // Tell the server to end this device's session. If we are offline the
-    // token simply expires later.
     try {
       await _api.post('/auth/logout', {'refreshToken': token});
     } on ApiException {
-      // Already signed out on this device; nothing else to do.
+      // already signed out
     }
   }
 
@@ -131,7 +124,6 @@ class ApiAuthRepository implements AuthRepository {
     () => _api.post('/me/password', {
       'currentPassword': currentPassword,
       'newPassword': newPassword,
-      // Keeps this device signed in; others are signed out.
       'refreshToken': _api.refreshToken,
     }),
   );

@@ -1,5 +1,3 @@
-// The Express app: middleware and routes. server.js starts it; the tests use it
-// directly without opening a port.
 const fs = require("fs");
 const express = require("express");
 const config = require("./config");
@@ -10,32 +8,23 @@ function createApp() {
   const app = express();
   const security = require("./common/security");
 
-  // The real visitor address behind Caddy / Cloudflare (for the limits).
   app.set("trust proxy", config.trustProxy);
   const metrics = require("./common/metrics");
   app.use(metrics.measureRequests);
-  // For Prometheus inside the server; Nginx refuses it from outside.
   app.get("/metrics", metrics.metricsPage);
   app.disable("x-powered-by");
   app.use(security.headersMiddleware());
   app.use(security.corsMiddleware());
-  // Answers zipped on the way out: JSON lists and the app's 4 MB of JavaScript
-  // shrink to about a quarter.
   app.use(require("compression")());
-  // Answers are one person's: the phone may keep them (and ask with ETag),
-  // but no proxy or CDN in between may store or share them.
   app.use((_req, res, next) => {
     res.setHeader("Cache-Control", "private, no-cache");
     next();
   });
-  // The caller's language (X-Language from the app) for everything below.
   app.use(require("./i18n").languageMiddleware);
   app.use(security.apiLimit);
-  // Uploads read their own raw body, so they come before the JSON parser.
   app.use("/files", require("./features/files/files.routes"));
   app.use(express.json({ limit: "1mb" }));
 
-  // Health check for the hosting service and the app's "server address" test.
   app.get("/health", (_req, res) =>
     res.json({
       ok: true,
@@ -44,8 +33,6 @@ function createApp() {
     }),
   );
 
-  // Server cache (common/cache.js): any change in a school clears its
-  // cached answers; GET answers come from the cache until then.
   const cache = require("./common/cache");
   app.use(cache.forgetSchoolOnChange);
   app.use(cache.cacheResponses);
@@ -72,7 +59,6 @@ function createApp() {
   app.use("/resources", require("./features/resources/resources.routes"));
   app.use("/", require("./features/institution/institution.routes"));
 
-  // The app itself, when it has been built (build-app.bat).
   if (fs.existsSync(config.webDir)) {
     app.use(
       express.static(config.webDir, {
@@ -82,7 +68,6 @@ function createApp() {
     );
   }
 
-  // Public pages Google Play links to (no sign-in).
   for (const page of ["privacy", "delete-account"]) {
     const html = fs
       .readFileSync(require("path").join(__dirname, "..", "public", `${page}.html`), "utf8")

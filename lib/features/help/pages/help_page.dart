@@ -42,7 +42,6 @@ class HelpPage extends ConsumerWidget {
               children: [
                 for (final faq in FaqData.items)
                   Theme(
-                    // Removes ExpansionTile's default top/bottom lines.
                     data: Theme.of(
                       context,
                     ).copyWith(dividerColor: Colors.transparent),
@@ -67,7 +66,6 @@ class HelpPage extends ConsumerWidget {
               ],
             ),
           ),
-          // The office is the school: it doesn't contact itself.
           if (!isOffice && school != null) ...[
             const SizedBox(height: AppSpacing.xl),
             _SchoolContacts(school: school),
@@ -97,8 +95,6 @@ class HelpPage extends ConsumerWidget {
   }
 }
 
-/// The school's own phone, WhatsApp and email, as the office entered them
-/// in School settings. Empty ones are left out.
 class _SchoolContacts extends StatelessWidget {
   final InstitutionModel school;
 
@@ -163,10 +159,8 @@ Future<void> _email(BuildContext context, String to, {String? subject}) async {
   }
 }
 
-/// wa.me wants the number in international form, digits only.
 Future<void> _whatsApp(BuildContext context, String number) async {
   var digits = number.replaceAll(RegExp(r'[^0-9]'), '');
-  // 0770... (Iraqi local) → 964770...
   if (digits.startsWith('0')) digits = '964${digits.substring(1)}';
   final opened = await launchUrl(
     Uri.parse('https://wa.me/$digits'),

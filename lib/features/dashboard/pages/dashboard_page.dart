@@ -16,7 +16,6 @@ import '../widgets/latest_announcements_section.dart';
 import '../widgets/quick_access_row.dart';
 import '../widgets/today_overview.dart';
 
-/// Student's 10–30 second screen.
 class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
 

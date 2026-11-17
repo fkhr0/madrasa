@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../l10n/language.dart';
 
-/// Typography. Sizes are modest and line heights generous so long lists
-/// stay easy to read for every age group.
 class AppTextTheme {
   AppTextTheme._();
 
@@ -11,13 +9,10 @@ class AppTextTheme {
     required Color primaryText,
     required Color secondaryText,
   }) {
-    // Cairo reads well in Arabic (and has Latin letters for IDs and names).
     final arabic = AppLanguage.current.isArabic;
-    // Both bundled in assets/fonts (see pubspec.yaml).
     final base = ThemeData.light().textTheme.apply(
       fontFamily: arabic ? 'Cairo' : 'PlusJakartaSans',
     );
-    // Tight letter spacing breaks joined Arabic letters apart.
     double spacing(double latin) => arabic ? 0 : latin;
 
     return base.copyWith(

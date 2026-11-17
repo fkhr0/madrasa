@@ -16,8 +16,6 @@ import '../providers/assignment_provider.dart';
 import '../widgets/attachment_tile.dart';
 import '../../../core/l10n/language.dart';
 
-/// Teacher or office: set new work for a class, or change / delete
-/// [assignmentId].
 class AssignmentEditorPage extends ConsumerWidget {
   final String classId;
   final String? assignmentId;
@@ -77,7 +75,6 @@ class _EditorState extends ConsumerState<_Editor> {
   late AssignmentType _type =
       widget.assignment?.type ?? AssignmentType.homework;
 
-  /// Default: the next day, at the end of the day.
   late DateTime _dueDate =
       widget.assignment?.dueDate ??
       DateTime.now().copyWith(

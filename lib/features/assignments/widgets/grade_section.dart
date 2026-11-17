@@ -7,7 +7,6 @@ import '../../../core/widgets/app_card.dart';
 import '../models/assignment_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// The mark and the teacher's comment, shown once an assignment is graded.
 class GradeSection extends StatelessWidget {
   final AssignmentModel assignment;
 

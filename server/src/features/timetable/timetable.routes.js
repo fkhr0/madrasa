@@ -1,5 +1,3 @@
-// The weekly timetable. Everyone reads their own week; the administrator sets
-// the bell times and places each class's lessons.
 const express = require("express");
 const { HttpError, validate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");
@@ -17,18 +15,12 @@ router.use(requireAuth);
 
 const time = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "use HH:MM");
 
-// ---------- Bell times ----------
-
-// GET /timetable/periods -> [{ number, start, end }]
 router.get("/periods", async (req, res) => {
   res.json(await periodsOf(req.user.institutionId));
 });
 
 const periodsOf = (school) => cachedForSchool(school, "periods", () => repo.listPeriods(school));
 
-// PUT /timetable/periods { periods: [{ start, end }], removeLessons? } -> periods
-// Cutting periods that hold lessons is refused (409) unless removeLessons is
-// true, so the app can ask first.
 router.put("/periods", requireRole("admin"), async (req, res) => {
   const { periods, removeLessons } = validate(
     z.object({
@@ -72,16 +64,10 @@ router.put("/periods", requireRole("admin"), async (req, res) => {
   res.json(await repo.listPeriods(institutionId));
 });
 
-// ---------- Someone's week ----------
-
-// GET /timetable/people/:id/week -> { periods, lessons }
-// A student's class lessons or a teacher's teaching lessons. Allowed for
-// the person, their parents, and the administrator of their school.
 router.get("/people/:id/week", async (req, res) => {
   const person = await personOr404(req.user, req.params.id);
 
   const school = person.institutionId;
-  // Every student of a class shares one cached week.
   let lessons = [];
   if (person.role === "student" && person.className) {
     lessons = await cachedForSchool(school, `week:class:${person.className}`, () =>
@@ -95,20 +81,15 @@ router.get("/people/:id/week", async (req, res) => {
   res.json({ periods: await periodsOf(school), lessons });
 });
 
-// ---------- A class's week (administrator) ----------
-
 const admin = express.Router();
 admin.use(requireRole("admin"));
 router.use("/classes", admin);
 
-// GET /timetable/classes/:id -> { periods, workingDays, lessons }
 admin.get("/:id", async (req, res) => {
   const schoolClass = await classOr404(req);
   res.json(await classTimetable(req.user.institutionId, schoolClass.id));
 });
 
-// PUT /timetable/classes/:id/lessons/:weekday/:period { subjectId, room }
-//   -> class timetable. Refused when the subject's teacher is busy then.
 admin.put("/:id/lessons/:weekday/:period", async (req, res) => {
   const schoolClass = await classOr404(req);
   const { weekday, period } = await slotOr400(req);
@@ -142,7 +123,6 @@ admin.put("/:id/lessons/:weekday/:period", async (req, res) => {
   res.json(await classTimetable(req.user.institutionId, schoolClass.id));
 });
 
-// DELETE /timetable/classes/:id/lessons/:weekday/:period -> class timetable
 admin.delete("/:id/lessons/:weekday/:period", async (req, res) => {
   const schoolClass = await classOr404(req);
   const { weekday, period } = await slotOr400(req);
@@ -158,15 +138,12 @@ admin.delete("/:id/lessons/:weekday/:period", async (req, res) => {
   res.json(await classTimetable(req.user.institutionId, schoolClass.id));
 });
 
-// ---------- helpers ----------
-
 async function classOr404(req) {
   const schoolClass = await academics.findClass(req.user.institutionId, req.params.id);
   if (!schoolClass) throw new HttpError(404, "Class not found.");
   return schoolClass;
 }
 
-/** The day and period from the URL, checked against the school's week. */
 async function slotOr400(req) {
   const weekday = Number(req.params.weekday);
   const period = Number(req.params.period);

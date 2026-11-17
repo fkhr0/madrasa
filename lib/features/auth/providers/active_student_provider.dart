@@ -3,14 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user_model.dart';
 import 'auth_provider.dart';
 
-/// For parents: which child is selected in the child switcher.
-/// Resets to the first child whenever a different user signs in.
 final selectedChildIndexProvider = StateProvider<int>((ref) {
   ref.watch(authProvider);
   return 0;
 });
 
-/// The student whose data the screens show.
 final activeStudentProvider = Provider<UserModel?>((ref) {
   final user = ref.watch(currentUserProvider);
 
@@ -28,7 +25,6 @@ final activeStudentProvider = Provider<UserModel?>((ref) {
   }
 });
 
-/// Shortcut used by data providers: the active student's ID, or ''.
 final activeStudentIdProvider = Provider<String>(
   (ref) => ref.watch(activeStudentProvider)?.id ?? '',
 );

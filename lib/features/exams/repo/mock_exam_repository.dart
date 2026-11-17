@@ -6,12 +6,9 @@ import '../data/mock_exams.dart';
 import '../models/exam_model.dart';
 import 'exam_repository.dart';
 
-/// Mock exams (lost on reload). Students see MockExams; staff get an
-/// in-memory list per class that starts with the maths exams.
 class MockExamRepository implements ExamRepository {
   final _byClass = <String, List<ExamModel>>{};
 
-  /// Exam ID → student ID → score.
   final _scores = <String, Map<String, double>>{};
   int _nextId = 1;
 
@@ -30,7 +27,6 @@ class MockExamRepository implements ExamRepository {
     return [
       for (final e in MockExams.items)
         if (e.subject.id == MockSubjects.math.id)
-          // One copy per class, each with its own ID.
           _copy(
             e,
             id: '${e.id}-$classId',

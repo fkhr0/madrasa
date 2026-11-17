@@ -7,12 +7,9 @@ import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/icon_box.dart';
 import '../models/activity_item_model.dart';
 
-/// One line of activity: what kind, what happened, when (and the day, for
-/// older lines). Tapping opens what it is about.
 class ActivityTile extends StatelessWidget {
   final ActivityItemModel item;
 
-  /// Show the date too (lists that span several days).
   final bool showDay;
 
   const ActivityTile({super.key, required this.item, this.showDay = true});

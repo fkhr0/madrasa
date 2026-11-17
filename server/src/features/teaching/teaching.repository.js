@@ -1,8 +1,6 @@
-// SQL for a teacher's classes.
 const { query } = require("../../db/database");
 const { today } = require("../attendance/school-days");
 
-/** Every class where the teacher teaches a subject, with the room it is usually in (from the timetable) and what waits for a grade: past exams without scores and handed-in homework. */
 async function teacherClasses(teacherId) {
   const rows = await query(
     `SELECT DISTINCT ON (c.id)

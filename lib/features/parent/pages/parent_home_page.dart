@@ -18,8 +18,6 @@ import '../../transport/widgets/bus_mini_card.dart';
 import '../widgets/child_switcher.dart';
 import '../../../core/l10n/language.dart';
 
-/// Parent's 10–30 second screen: where my child is in their day,
-/// how they're doing, and what deserves my attention.
 class ParentHomePage extends ConsumerWidget {
   const ParentHomePage({super.key});
 

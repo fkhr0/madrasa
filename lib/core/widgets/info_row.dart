@@ -4,7 +4,6 @@ import '../constants/app_sizes.dart';
 import '../constants/app_spacing.dart';
 import '../utils/context_extensions.dart';
 
-/// Icon + label + value on one line, used in detail and profile pages.
 class InfoRow extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -25,7 +24,6 @@ class InfoRow extends StatelessWidget {
         children: [
           Icon(icon, size: AppSizes.iconSm, color: context.palette.textMuted),
           const SizedBox(width: AppSpacing.md),
-          // Long labels shrink instead of overflowing on small phones.
           Flexible(
             child: Text(
               label,

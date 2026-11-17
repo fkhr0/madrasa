@@ -13,8 +13,6 @@ import '../models/announcement_model.dart';
 import '../providers/announcement_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Teachers announce to their own classes; administrators to the whole school,
-/// a class, all parents or all teachers, and can pin or schedule.
 class NewAnnouncementPage extends ConsumerStatefulWidget {
   final String? announcementId;
 
@@ -39,11 +37,9 @@ class _NewAnnouncementPageState extends ConsumerState<NewAnnouncementPage> {
   String? _className;
   bool _isPinned = false;
 
-  /// Null = publish now.
   DateTime? _scheduledFor;
   bool _isSaving = false;
 
-  /// The announcement being edited, once loaded.
   AnnouncementModel? _editing;
 
   bool get _isNew => widget.announcementId == null;
@@ -163,7 +159,6 @@ class _NewAnnouncementPageState extends ConsumerState<NewAnnouncementPage> {
       _fill(loaded);
     }
 
-    // Admins choose from every class; teachers only from their own.
     final classNames = _isAdmin
         ? [
             for (final c in ref.watch(schoolClassesProvider).valueOrNull ?? [])

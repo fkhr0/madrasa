@@ -1,6 +1,5 @@
 import '../../subjects/models/subject_model.dart';
 
-/// One class period in the timetable.
 class LessonModel {
   final String id;
   final SubjectModel subject;
@@ -8,7 +7,6 @@ class LessonModel {
   final DateTime start;
   final DateTime end;
 
-  /// Set on a teacher's timetable: the class being taught.
   final String? className;
 
   const LessonModel({

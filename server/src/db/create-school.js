@@ -1,6 +1,3 @@
-// A new school and its office (admin) account: the office then adds its classes
-// and people in the app.
-//  docker compose exec api1 node src/db/create-school.js "School name" ["Admin name"]
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const config = require("../config");
@@ -16,7 +13,6 @@ function makePassword() {
   return Array.from({ length: 10 }, () => chars[crypto.randomInt(chars.length)]).join("");
 }
 
-/** The study year we are in: 20 Sep to 10 Jun. */
 function currentYear(today = new Date()) {
   const start = today.getMonth() >= 7 ? today.getFullYear() : today.getFullYear() - 1;
   return {
@@ -28,7 +24,6 @@ function currentYear(today = new Date()) {
   };
 }
 
-/** Makes the school and its accounts; returns them with their passwords. */
 async function createSchool(name, { adminName = "مدير المدرسة", sample = false } = {}) {
   if (await queryOne("SELECT id FROM institutions WHERE name = $1", [name])) {
     throw new Error(`A school called "${name}" exists already.`);
@@ -77,7 +72,6 @@ async function createSchool(name, { adminName = "مدير المدرسة", sampl
     const byRole = Object.fromEntries(people.map((p) => [p.role, p]));
     await repo.setChildren(tx, byRole.parent.id, [byRole.student.id]);
 
-    // The teacher's subject in the student's class, with the teacher as homeroom teacher.
     const subject = await tx.queryOne(
       "INSERT INTO subjects (institution_id, name, icon, color) VALUES ($1, $2, 'math', 'blue') RETURNING id",
       [institutionId, byRole.teacher.subjectName],

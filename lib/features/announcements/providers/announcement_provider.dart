@@ -9,15 +9,12 @@ import '../repo/announcement_repository.dart';
 import '../repo/api_announcement_repository.dart';
 import '../repo/mock_announcement_repository.dart';
 
-/// The server when API_URL is set, otherwise the mock announcements.
 final announcementRepositoryProvider = Provider<AnnouncementRepository>(
   (ref) => AppConfig.useApi
       ? ApiAnnouncementRepository(watchApi(ref))
       : MockAnnouncementRepository(),
 );
 
-/// Announcements meant for the signed-in user's role.
-/// The server already sends only those; this filter is for the mock.
 final announcementsProvider = FutureProvider<List<AnnouncementModel>>((
   ref,
 ) async {
@@ -54,7 +51,6 @@ final announcementActionsProvider = Provider<AnnouncementActions>(
   AnnouncementActions.new,
 );
 
-/// Publishing and managing announcements. Each change reloads the list.
 class AnnouncementActions {
   final Ref _ref;
 
@@ -63,7 +59,6 @@ class AnnouncementActions {
   AnnouncementRepository get _repository =>
       _ref.read(announcementRepositoryProvider);
 
-  /// Publishes now, or schedules it for a later [publishedAt].
   Future<void> publish(AnnouncementModel announcement) async {
     await _repository.publish(announcement);
     _ref.invalidate(announcementsProvider);

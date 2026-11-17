@@ -7,7 +7,6 @@ import '../models/attendance_record_model.dart';
 import '../models/attendance_summary_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Attendance rate plus one count per status.
 class AttendanceSummaryCard extends StatelessWidget {
   final AttendanceSummaryModel summary;
 
@@ -78,7 +77,6 @@ class AttendanceSummaryCard extends StatelessWidget {
   }
 }
 
-/// One bar split into coloured parts, one per status.
 class _StackedBar extends StatelessWidget {
   final AttendanceSummaryModel summary;
 

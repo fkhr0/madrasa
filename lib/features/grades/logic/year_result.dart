@@ -3,11 +3,6 @@ import '../../exams/models/exam_model.dart';
 import '../../institution/models/term_model.dart';
 import '../../subjects/models/subject_model.dart';
 
-/// A subject's year result, the Iraqi way (all marks out of 100): 1st term work
-/// = average of the monthly exams of the first semester 2nd term work = average
-/// of the monthly exams of the second semester year work (السعي السنوي) = (1st
-/// term + mid-year exam + 2nd term) ÷ 3 result = (year work + final exam) ÷ 2 →
-/// pass from 50 Quizzes show in Grades but don't count here.
 class YearResultModel {
   final SubjectModel subject;
   final double? firstTerm;
@@ -23,21 +18,18 @@ class YearResultModel {
     this.finalExam,
   });
 
-  /// السعي السنوي, once its three parts are known.
   double? get yearWork {
     final (a, b, c) = (firstTerm, midYear, secondTerm);
     if (a == null || b == null || c == null) return null;
     return (a + b + c) / 3;
   }
 
-  /// The average of the year-work parts known so far, for an early idea.
   double? get yearWorkSoFar {
     final known = [?firstTerm, ?midYear, ?secondTerm];
     if (known.isEmpty) return null;
     return known.reduce((a, b) => a + b) / known.length;
   }
 
-  /// The final mark for the year, once the final exam is marked.
   double? get result {
     final (work, last) = (yearWork, finalExam);
     if (work == null || last == null) return null;
@@ -47,8 +39,6 @@ class YearResultModel {
   bool? get passed => result == null ? null : result! >= GradeScale.passMark;
 }
 
-/// One result per subject that has at least one counted mark, by name.
-/// [terms] are the study year's semesters (the first two count).
 List<YearResultModel> yearResults(
   List<ExamModel> exams,
   List<TermModel> terms,
@@ -68,7 +58,6 @@ List<YearResultModel> yearResults(
     return list.map((e) => e.percentage).reduce((a, b) => a + b) / list.length;
   }
 
-  /// The latest exam of [type] (a retake replaces the first try).
   double? latest(List<ExamModel> list, ExamType type) {
     final of = list.where((e) => e.type == type).toList()
       ..sort((a, b) => a.start.compareTo(b.start));

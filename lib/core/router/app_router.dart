@@ -68,19 +68,15 @@ import '../../features/transport/pages/transport_admin_page.dart';
 import '../../features/transport/pages/transport_settings_page.dart';
 import 'app_routes.dart';
 
-/// Pages pushed on this navigator cover the bottom bar.
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
-/// "?date=2026-11-08" in the address, or null.
 DateTime? _dateParam(GoRouterState state) =>
     DateTime.tryParse(state.uri.queryParameters['date'] ?? '');
 
-/// Shortcut for a simple full-screen route.
 GoRoute _page(String path, Widget Function(GoRouterState state) build) =>
     GoRoute(path: path, builder: (context, state) => build(state));
 
 final routerProvider = Provider<GoRouter>((ref) {
-  // Tells GoRouter to re-check `redirect` whenever the user signs in or out.
   final authChanges = ValueNotifier<int>(0);
   ref.listen(authProvider, (_, _) => authChanges.value++);
   ref.onDispose(authChanges.dispose);
@@ -99,7 +95,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (!signedIn && !onAuthPage) return AppRoutes.login;
       if (signedIn && onAuthPage) return AppRoutes.home;
 
-      // A temporary password from the school: choose your own first.
       final mustChange = ref.read(authProvider)?.mustChangePassword ?? false;
       if (mustChange && state.matchedLocation != AppRoutes.changePassword) {
         return AppRoutes.changePassword;
@@ -109,11 +104,9 @@ final routerProvider = Provider<GoRouter>((ref) {
     },
 
     routes: [
-      // ---------- Signed out ----------
       _page(AppRoutes.login, (_) => const LoginPage()),
       _page(AppRoutes.forgotPassword, (_) => const ForgotPasswordPage()),
 
-      // ---------- Tabs with the bottom bar (content depends on role) ----------
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => MainShell(navigationShell: shell),
         branches: [
@@ -154,7 +147,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                   teacher: ClassesPage(),
                   parent: ProgressPage(),
                   admin: PeoplePage(),
-                  // Drivers have no third tab; links here show their line.
                   driver: RouteDetailsPage(),
                 ),
               ),
@@ -182,7 +174,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
 
-      // ---------- Full-screen pages ----------
       _page(
         '${AppRoutes.assignments}/:id',
         (s) => AssignmentDetailsPage(assignmentId: s.pathParameters['id']!),
@@ -191,7 +182,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.announcements,
         builder: (context, state) => const AnnouncementsPage(),
         routes: [
-          // "new" must come before ":id", or it would be read as an ID.
           GoRoute(
             path: 'new',
             builder: (context, state) => const NewAnnouncementPage(),
@@ -226,7 +216,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.transport,
         builder: (context, state) => const TransportAdminPage(),
         routes: [
-          // Fixed words before ":id", or they would be read as an ID.
           GoRoute(
             path: 'new',
             builder: (context, state) => const RouteEditPage(),
@@ -274,7 +263,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       _page(AppRoutes.changePassword, (_) => const ChangePasswordPage()),
       _page(AppRoutes.settings, (_) => const SettingsPage()),
 
-      // ---------- Administrator ----------
       _page(AppRoutes.addPerson, (_) => const AddPersonPage()),
       _page(
         '${AppRoutes.people}/:id',
@@ -299,7 +287,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       _page(AppRoutes.bellTimes, (_) => const BellTimesPage()),
       _page(AppRoutes.schoolSettings, (_) => const SchoolSettingsPage()),
 
-      // ---------- Teacher ----------
       _page(
         '${AppRoutes.classes}/:id',
         (s) => ClassDetailsPage(classId: s.pathParameters['id']!),

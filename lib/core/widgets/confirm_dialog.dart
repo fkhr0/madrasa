@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../l10n/language.dart';
 
-/// Asks before anything is deleted or removed.
 Future<bool> confirmDelete(
   BuildContext context, {
   required String title,

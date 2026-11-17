@@ -3,14 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../core/utils/day_json.dart';
 
 enum HolidayType {
-  /// Set by the school: mid-year break, exam-preparation days...
   schoolBreak,
 
-  /// Official national days (e.g. Iraqi National Day, Army Day).
   national,
 
-  /// Eids and other religious occasions; dates follow the moon sighting,
-  /// so the school confirms them shortly before.
   religious;
 
   IconData get icon {
@@ -25,19 +21,14 @@ enum HolidayType {
   }
 }
 
-/// A day or range of days with no classes.
 class HolidayModel {
-  /// Set by the server (null for a holiday not saved yet).
   final String? id;
   final String name;
   final HolidayType type;
   final DateTime start;
 
-  /// Last day off, for holidays longer than one day.
   final DateTime? end;
 
-  /// On Iraq's official list: the school can move its dates but not
-  /// delete it or change its name.
   final bool isOfficial;
 
   const HolidayModel({

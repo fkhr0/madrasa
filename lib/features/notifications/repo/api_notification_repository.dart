@@ -8,8 +8,6 @@ import '../data/demo_notifier.dart';
 import '../models/notification_model.dart';
 import 'notification_repository.dart';
 
-/// Notifications from the school API (server/src/features/notifications),
-/// plus the reminders this device fires itself (they live on the phone).
 class ApiNotificationRepository implements NotificationRepository {
   final ApiClient _api;
   final DemoNotifier _local;
@@ -46,14 +44,12 @@ class ApiNotificationRepository implements NotificationRepository {
 
   @override
   Future<bool> turnOnPhoneNotifications() async {
-    // The Android app: Firebase.
     if (PhonePush.supported) {
       final id = await PhonePush.askAndGetId();
       if (id == null) return false;
       await registerThisPhone(id);
       return true;
     }
-    // The browser: Web Push.
     final key = await _api.get('/notifications/push-key') as Map;
     final subscription = await subscribeToWebPush(key['publicKey'] as String);
     if (subscription == null) return false;
@@ -66,8 +62,6 @@ class ApiNotificationRepository implements NotificationRepository {
 
   @override
   Future<void> registerThisPhone([String? id]) async {
-    // The browser, already allowed: the same subscription again, with the
-    // app's language now (the server sends pushes in it).
     if (kIsWeb) {
       if (webPushPermission == 'granted') await turnOnPhoneNotifications();
       return;

@@ -25,12 +25,6 @@ import '../providers/day_provider.dart';
 import '../widgets/period_card.dart';
 import '../../../core/l10n/language.dart';
 
-/// A day at school, for any date, as the signed-in person needs it: office the
-/// whole school: totals, what's on now, every period and whether its attendance
-/// was taken (by whom, when) teacher  their lessons with attendance, homework
-/// due, exams student  their lessons with their own marks, homework, exams, bus
-/// parent   the same for the selected child Then "What happened" that day, from
-/// the activity log.
 class DayPage extends ConsumerStatefulWidget {
   final DateTime? date;
 
@@ -67,7 +61,6 @@ class _DayPageState extends ConsumerState<DayPage> {
       UserRole.teacher => (DayView.teacher, null),
       UserRole.student => (DayView.student, user.id),
       UserRole.parent => (DayView.student, ref.watch(activeStudentIdProvider)),
-      // Drivers: only what they did (their trips are in the activity).
       UserRole.driver => (null, null),
     };
     final day = view == null
@@ -266,7 +259,6 @@ class _DayBody extends StatelessWidget {
   }
 }
 
-/// The office's numbers for the day, in two rows of tiles.
 class _Totals extends StatelessWidget {
   final DayTotalsModel totals;
 
@@ -372,7 +364,6 @@ class _Items extends StatelessWidget {
   }
 }
 
-/// The day's activity (the first lines; "See all" opens the full list).
 class _WhatHappened extends ConsumerWidget {
   final ActivityFilter filter;
 

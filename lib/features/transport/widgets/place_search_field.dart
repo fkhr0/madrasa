@@ -7,7 +7,6 @@ import '../providers/transport_provider.dart';
 import '../repo/transport_repository.dart';
 import '../../../core/l10n/language.dart';
 
-/// "Search a place": type a name, pick one of the matches.
 class PlaceSearchField extends ConsumerStatefulWidget {
   final ValueChanged<PlaceModel> onPicked;
 

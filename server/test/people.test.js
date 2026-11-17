@@ -25,7 +25,6 @@ test("lists one role of the admin's own school", async () => {
   const ids = res.body.map((u) => u.id);
 
   assert.ok(ids.includes("STU-2026-0142"));
-  // Ali is in the intermediate school: not this admin's student.
   assert.ok(!ids.includes("STU-2026-0388"));
   assert.ok(res.body.some((u) => u.isActive === false));
 });
@@ -49,7 +48,6 @@ test("creating an account generates the ID and a temporary password", async () =
   assert.equal(first.body.temporaryPassword.length, 8);
   assert.equal(first.body.user.mustChangePassword, true);
 
-  // The new student can sign in with the temporary password.
   await signIn(app, first.body.user.id, first.body.temporaryPassword);
 });
 
@@ -105,7 +103,6 @@ test("deactivate, reset password, delete", async () => {
     .set(admin)
     .send({ isActive: false })
     .expect(200);
-  // Signed out everywhere, and can't sign in.
   await request(app).post("/auth/refresh").send({ refreshToken }).expect(401);
   await request(app)
     .post("/auth/login")
@@ -126,6 +123,5 @@ test("deactivate, reset password, delete", async () => {
   await request(app).delete("/people/TCH-2019-0040").set(admin).expect(204);
   await request(app).get("/people/TCH-2019-0040").set(admin).expect(404);
 
-  // Not yourself.
   await request(app).delete("/people/ADM-2020-0001").set(admin).expect(400);
 });

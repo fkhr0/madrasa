@@ -5,7 +5,6 @@ import '../../../core/utils/context_extensions.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/icon_box.dart';
 
-/// A small number with a label, e.g. "5 · Classes today".
 class StatTile extends StatelessWidget {
   final IconData icon;
   final Color color;

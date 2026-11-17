@@ -10,7 +10,6 @@ class MockMessages {
         Duration(days: days, hours: hours, minutes: minutes),
       );
 
-  /// Which conversations each demo account takes part in.
   static List<String> conversationIdsOf(String userId) {
     if (userId == MockUsers.teacher.id) return ['t1', 't2', 't3', 't4'];
     if (userId == MockUsers.parent.id) return ['p1', 'p2', 'p3'];

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/l10n/language.dart';
 
-/// Who an announcement was sent to.
 enum AnnouncementAudience {
   school,
   className,
@@ -36,7 +35,6 @@ enum AnnouncementAudience {
     }
   }
 
-  /// The name the server uses ("class" for [className]).
   String get apiName => this == className ? 'class' : name;
 
   static AnnouncementAudience fromApiName(String value) =>
@@ -62,15 +60,12 @@ class AnnouncementModel {
   final String body;
   final String authorName;
 
-  /// The account that wrote it; null for old mock announcements.
   final String? authorId;
   final AnnouncementAudience audience;
 
-  /// The class name when [audience] is a class.
   final String? className;
   final DateTime publishedAt;
 
-  /// Pinned announcements stay at the top of the list.
   final bool isPinned;
 
   const AnnouncementModel({
@@ -122,8 +117,6 @@ class AnnouncementModel {
     );
   }
 
-  /// What the server needs to publish or edit it. The server fills in the
-  /// author; [publishedAt] is sent only when it is in the future (scheduled).
   Map<String, dynamic> toJson() => {
     'title': title,
     'body': body,
@@ -134,10 +127,8 @@ class AnnouncementModel {
       'publishedAt': publishedAt.toUtc().toIso8601String(),
   };
 
-  /// Whether [userId] wrote it ([name] for announcements without an author ID).
   bool isWrittenBy(String userId, String name) =>
       authorId == null ? authorName == name : authorId == userId;
 
-  /// "Whole school", "5th Scientific – A", "Parents"...
   String get audienceLabel => className ?? audience.label;
 }

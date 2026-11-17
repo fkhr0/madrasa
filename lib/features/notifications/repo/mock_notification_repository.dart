@@ -3,17 +3,13 @@ import '../data/mock_notifications.dart';
 import '../models/notification_model.dart';
 import 'notification_repository.dart';
 
-/// Sample notifications plus live ones from [DemoNotifier] (test mode).
 class MockNotificationRepository implements NotificationRepository {
   final DemoNotifier demo;
 
   MockNotificationRepository({required this.demo});
 
-  /// User ID → that user's sample notifications (kept so "mark as read" sticks).
   final Map<String, List<NotificationModel>> _byUser = {};
 
-  /// The user whose list was loaded last. The real API knows the user
-  /// from the session; the mock remembers it here.
   String _currentUserId = '';
 
   List<NotificationModel> get _samples => _byUser.putIfAbsent(
@@ -37,7 +33,6 @@ class MockNotificationRepository implements NotificationRepository {
     demo.markRead(_currentUserId, id);
   }
 
-  /// Test mode has no server to send them from.
   @override
   Future<bool> turnOnPhoneNotifications() async => false;
 

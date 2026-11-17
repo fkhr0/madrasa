@@ -67,10 +67,8 @@ test("refresh tokens rotate and can't be used twice", async () => {
     .expect(200);
   assert.notEqual(first.body.refreshToken, refreshToken);
 
-  // The old one is spent.
   await request(app).post("/auth/refresh").send({ refreshToken }).expect(401);
 
-  // Sign out: the new one stops working too.
   await request(app)
     .post("/auth/logout")
     .send({ refreshToken: first.body.refreshToken })

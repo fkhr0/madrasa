@@ -1,7 +1,5 @@
-/// Numbers before nouns, said the way each language says them.
 library;
 
-/// Arabic noun forms: one, two, few (3–10), many (11–99), hundreds.
 class _ArabicNoun {
   final String one, two, few, many, hundred;
 
@@ -13,7 +11,7 @@ class _ArabicNoun {
     final lastTwo = n % 100;
     if (lastTwo >= 3 && lastTwo <= 10) return '$n $few';
     if (lastTwo >= 11) return '$n $many';
-    return '$n $hundred'; // 0, 100, 101, 102, 200…
+    return '$n $hundred';
   }
 }
 
@@ -47,9 +45,7 @@ const _score = _ArabicNoun('درجة واحدة', 'درجتان', 'درجات', 
 const _rider = _ArabicNoun('راكب واحد', 'راكبان', 'ركاب', 'راكباً', 'راكب');
 const _letter = _ArabicNoun('حرف واحد', 'حرفان', 'أحرف', 'حرفاً', 'حرف');
 
-/// The word as written after a number in the translations.
 const _arabicNouns = {
-  // Not "يوم" alone: "الحصة 3 يوم الأحد" is period 3 on Sunday.
   'أيام': _day,
   'يوماً': _day,
   'دقيقة': _minute,
@@ -73,7 +69,6 @@ final _arabicCount = RegExp(
   '(?<![\\d.,])(\\d+) (${_arabicNouns.keys.join('|')})(?![\\u0600-\\u06FF])',
 );
 
-/// English plurals that become singular after "1".
 const _englishSingular = {
   'days': 'day',
   'minutes': 'minute',
@@ -93,7 +88,6 @@ final _englishOne = RegExp(
   '(?<![\\d.,])1 (${_englishSingular.keys.join('|')})\\b',
 );
 
-/// [text] with every "number + noun" said properly.
 String fixCounts(String text, {required bool arabic}) => arabic
     ? text.replaceAllMapped(
         _arabicCount,

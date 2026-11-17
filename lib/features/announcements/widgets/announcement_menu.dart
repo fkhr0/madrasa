@@ -15,8 +15,6 @@ import '../../../core/l10n/language.dart';
 
 enum _Action { edit, pin, delete }
 
-/// Edit / pin / delete for one announcement. Administrators manage every
-/// announcement; teachers only their own. Nothing is shown to others.
 class AnnouncementMenu extends ConsumerWidget {
   final AnnouncementModel announcement;
 

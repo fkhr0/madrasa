@@ -10,14 +10,12 @@ import '../repo/api_exam_repository.dart';
 import '../repo/exam_repository.dart';
 import '../repo/mock_exam_repository.dart';
 
-/// The server when API_URL is set, otherwise the mock exams.
 final examRepositoryProvider = Provider<ExamRepository>(
   (ref) => AppConfig.useApi
       ? ApiExamRepository(watchApi(ref))
       : MockExamRepository(),
 );
 
-/// Any student's exams.
 final studentExamsProvider = FutureProvider.family<List<ExamModel>, String>((
   ref,
   studentId,
@@ -26,28 +24,24 @@ final studentExamsProvider = FutureProvider.family<List<ExamModel>, String>((
   return ref.watch(examRepositoryProvider).getCurrentTerm(studentId);
 });
 
-/// The signed-in student's exams, or the parent's selected child's.
 final examsProvider = FutureProvider<List<ExamModel>>(
   (ref) => ref.watch(
     studentExamsProvider(ref.watch(activeStudentIdProvider)).future,
   ),
 );
 
-/// Earliest first.
 final upcomingExamsProvider = FutureProvider<List<ExamModel>>((ref) async {
   final all = await ref.watch(examsProvider.future);
 
   return all.where((e) => e.isUpcoming).toList();
 });
 
-/// Most recent first.
 final pastExamsProvider = FutureProvider<List<ExamModel>>((ref) async {
   final all = await ref.watch(examsProvider.future);
 
   return all.where((e) => !e.isUpcoming).toList().reversed.toList();
 });
 
-/// A class's exams for the teacher of the subject or the office.
 final classExamsProvider = FutureProvider.family<List<ExamModel>, String>(
   (ref, classId) => ref.watch(examRepositoryProvider).getClassExams(classId),
 );
@@ -59,8 +53,6 @@ final scoreSheetProvider =
 
 final examActionsProvider = Provider<ExamActions>(ExamActions.new);
 
-/// Scheduling exams and publishing scores. Each reloads what it changed.
-/// They throw ApiException with a message to show.
 class ExamActions {
   final Ref _ref;
 
@@ -84,7 +76,6 @@ class ExamActions {
     _reload(exam.classId);
     _ref
       ..invalidate(scoreSheetProvider(exam.id))
-      // The teacher's class list shows averages and "to grade" counts.
       ..invalidate(classStudentsProvider(exam.classId))
       ..invalidate(myClassesProvider);
   }

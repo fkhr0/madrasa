@@ -1,7 +1,4 @@
-// Arabic for the texts found in the final review (see arabic.dart): pop-up
-// messages, tab names, the driver's and families' bus lines, fees, plans.
 const Map<String, String> arabic4 = {
-  // ── Pieces added to a line ──
   ' · full': ' · ممتلئ',
   ' · late': ' · متأخر',
   ' · taken': ' · مسجَّل',
@@ -10,7 +7,6 @@ const Map<String, String> arabic4 = {
   ' · {0} not riding today': ' · {0} لن يركبوا اليوم',
   ' · {0} to grade': ' · {0} بانتظار التصحيح',
 
-  // ── Counts ──
   '1 class left today': 'بقيت حصة واحدة اليوم',
   '{0} classes left today': 'بقيت {0} حصص اليوم',
   '1 day late · late work is still accepted':
@@ -26,7 +22,6 @@ const Map<String, String> arabic4 = {
   '{0} MB': '{0} ميغابايت',
   '{0} h {1} min': '{0} س {1} د',
 
-  // ── Home, day and timetable ──
   'Good morning': 'صباح الخير',
   'Good afternoon': 'مساء الخير',
   'Good evening': 'مساء الخير',
@@ -60,7 +55,6 @@ const Map<String, String> arabic4 = {
   '{0} has {1} overdue assignments': 'لدى {0} {1} واجبات متأخرة',
   '{0} – {1} · {2} days off': '{0} – {1} · {2} أيام عطلة',
 
-  // ── Exams, homework, grades ──
   'Needs scores': 'بحاجة إلى درجات',
   'No results yet': 'لا توجد نتائج بعد',
   'No upcoming exams': 'لا توجد امتحانات قادمة',
@@ -81,14 +75,12 @@ const Map<String, String> arabic4 = {
   'Your work was handed in.': 'تم تسليم عملك.',
   'Write what the exam is out of': 'اكتب الدرجة الكاملة للامتحان',
 
-  // ── Attendance ──
   'Attendance saved': 'تم حفظ الحضور',
   'Attendance saved. Families of absent students are told.':
       'تم حفظ الحضور. تم إبلاغ عوائل الطلاب الغائبين.',
   '{0} present · {1} late · {2} absent': '{0} حاضر · {1} متأخر · {2} غائب',
   '{0} is excused': '{0} بعذر',
 
-  // ── Pop-up messages ──
   'Saved': 'تم الحفظ',
   'Deleted': 'تم الحذف',
   'Required': 'مطلوب',
@@ -165,7 +157,6 @@ const Map<String, String> arabic4 = {
   "Can't reach the server. Check your internet connection.":
       'تعذّر الوصول إلى الخادم. تحقق من اتصالك بالإنترنت.',
 
-  // ── Fees ──
   'Tuition': 'القسط الدراسي',
   'Tuition for the year': 'القسط الدراسي للسنة',
   'School bus for the year': 'أجور الباص للسنة',
@@ -187,7 +178,6 @@ const Map<String, String> arabic4 = {
   'Add at least one due date': 'أضف موعد استحقاق واحداً على الأقل',
   'IQD received': 'د.ع مستلمة',
 
-  // ── Statistics ──
   'Attendance is up {0} points from the previous period.':
       'ارتفع الحضور {0} نقطة عن الفترة السابقة.',
   'Attendance dropped {0} points from the previous period.':
@@ -204,7 +194,6 @@ const Map<String, String> arabic4 = {
   'Buses were on time on {0} of trips.':
       'كانت الباصات في الوقت في {0} من الرحلات.',
 
-  // ── Bus: families ──
   'Bus leaves': 'ينطلق الباص',
   'Leaves school': 'يغادر المدرسة',
   'Picks you up at {0} · {1}': 'يأخذك الساعة {0} · {1}',
@@ -225,7 +214,6 @@ const Map<String, String> arabic4 = {
   'Nothing found. Try another name, or tap the map.':
       'لم يُعثر على شيء. جرّب اسماً آخر، أو اضغط على الخريطة.',
 
-  // ── Bus: driver ──
   'Last stop reached': 'تم الوصول إلى آخر موقف',
   'You can end the trip': 'يمكنك إنهاء الرحلة',
   'At {0}': 'في {0}',
@@ -252,7 +240,6 @@ const Map<String, String> arabic4 = {
   'Accident': 'حادث',
   'Told by the school': 'بطلب من المدرسة',
 
-  // ── Bus: office ──
   'Line created. Now add its stops.': 'تم إنشاء الخط. أضف مواقفه الآن.',
   'Stops saved and drawn on the streets': 'تم حفظ المواقف ورسمها على الشوارع',
   'Save to draw the line on the streets.': 'احفظ لرسم الخط على الشوارع.',
@@ -323,7 +310,6 @@ const Map<String, String> arabic4 = {
   'Ask to delete': 'اطلب الحذف',
   'Your school office was asked to delete your account':
       'تم إرسال طلب حذف حسابك إلى إدارة المدرسة',
-  // Labels under the school day's numbers.
   'present': 'نسبة الحضور',
   'absent': 'غائب',
   'excused': 'بعذر',
@@ -347,7 +333,6 @@ const Map<String, String> arabic4 = {
   'Trips, stops and who is on board': 'الرحلات والمواقف ومن في الباص',
   'Demo school · it goes back to how it was every night':
       'مدرسة تجريبية · تعود كما كانت كل ليلة',
-  // Second phone test: empty schools, help contacts, location.
   'Attendance not taken yet': 'لم يُسجَّل الحضور بعد',
   'It fills in as teachers take each lesson.':
       'يكتمل كلما سجّل المدرسون حضور كل حصة.',

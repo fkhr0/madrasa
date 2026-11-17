@@ -4,7 +4,6 @@ import '../../schedule/models/lesson_model.dart';
 import '../models/day_model.dart';
 import 'day_repository.dart';
 
-/// Mock mode: the day's lessons from the mock timetable, nothing taken yet.
 class MockDayRepository implements DayRepository {
   const MockDayRepository();
 

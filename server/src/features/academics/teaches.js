@@ -1,8 +1,5 @@
-// "Only the subject's teacher or the school office": who may manage a
-// subject's exams and homework in a class.
 const { HttpError } = require("../../common/http");
 
-/** (subjectId) → may [user] manage that subject in [schoolClass]? */
 function taughtBy(user, schoolClass) {
   if (user.role === "admin") return () => true;
   const mine = new Set(

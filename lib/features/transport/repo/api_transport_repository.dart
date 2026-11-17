@@ -16,14 +16,11 @@ import '../models/transport_settings_model.dart';
 import '../models/trip_model.dart';
 import 'transport_repository.dart';
 
-/// School buses on the school API (server/src/features/transport).
 class ApiTransportRepository implements TransportRepository {
   final ApiClient _api;
 
-  /// Why there is no school on a date, or null on school days.
   final String? Function(DateTime day) dayOffReason;
 
-  /// The live connection: the trip reloads the moment it changes.
   final RealtimeClient? realtime;
 
   ApiTransportRepository(
@@ -32,12 +29,8 @@ class ApiTransportRepository implements TransportRepository {
     this.realtime,
   });
 
-  /// Without the live connection. With it, the trip still reloads every
-  /// [backupEvery], in case an update was missed.
   static const refreshEvery = Duration(seconds: 3);
   static const backupEvery = Duration(seconds: 15);
-
-  // ---------- Reading ----------
 
   @override
   Future<StudentTransportModel?> getStudentTransport(String studentId) async {
@@ -83,7 +76,6 @@ class ApiTransportRepository implements TransportRepository {
 
   @override
   Future<BusRouteModel?> getDriverRoute(String driverId) async {
-    // The server knows the signed-in driver.
     final json = await _api.get('/transport/driver-route');
     return json == null
         ? null
@@ -121,7 +113,6 @@ class ApiTransportRepository implements TransportRepository {
     Map<String, dynamic>? running;
     var loaded = false;
     var loads = 0;
-    // How far the server's clock is from this phone's.
     var clockOffset = Duration.zero;
 
     void emit() {
@@ -140,7 +131,6 @@ class ApiTransportRepository implements TransportRepository {
           ),
         );
       } else {
-        // No driver reporting: follow the timetable.
         controller.add(
           simulateTrip(
             route: r,
@@ -153,8 +143,6 @@ class ApiTransportRepository implements TransportRepository {
 
     Future<void> load() async {
       try {
-        // The line changes rarely: ask again every fifth time (15 s), so
-        // new stops and roads reach every map without a reload.
         if (route == null || loads % 5 == 0) route = await getRoute(routeId);
         loads++;
         if (!loaded) settings = await getSettings();
@@ -162,8 +150,6 @@ class ApiTransportRepository implements TransportRepository {
         final json =
             await _api.get('/transport/routes/$routeId/trip')
                 as Map<String, dynamic>;
-        // The server read its clock about halfway through the request.
-        // (Not from a copy saved while offline: that clock is old.)
         if (json['serverTime'] case final String serverTime
             when !_api.offline.value) {
           final halfway = asked.add(DateTime.now().difference(asked) ~/ 2);
@@ -173,10 +159,7 @@ class ApiTransportRepository implements TransportRepository {
         loaded = true;
         emit();
       } on ApiException catch (e) {
-        // Signed out (session ended): stop asking. The app goes back to the
-        // sign-in page; the next user opens a new map.
         if (e.status == 401) refresh?.cancel();
-        // Keep showing the last trip; report only if nothing came yet.
         if (!loaded && !controller.isClosed) controller.addError(e);
       }
     }
@@ -214,16 +197,12 @@ class ApiTransportRepository implements TransportRepository {
     return controller.stream;
   }
 
-  // ---------- Parent ----------
-
   @override
   Future<void> setNotRidingToday(String studentId, bool notRiding) => _act(
     () => _api.post('/transport/students/$studentId/not-riding', {
       'notRiding': notRiding,
     }),
   );
-
-  // ---------- Driver ----------
 
   @override
   Future<void> startTrip(String routeId, TripDirection direction) => _act(
@@ -284,8 +263,6 @@ class ApiTransportRepository implements TransportRepository {
       'earlyReason': earlyReason,
     }),
   );
-
-  // ---------- Administrator ----------
 
   @override
   Future<BusRouteModel> saveRoute(BusRouteModel route) => _act(() async {
@@ -350,8 +327,6 @@ class ApiTransportRepository implements TransportRepository {
     );
   });
 
-  /// The screens show [TransportException] messages; the server's refusals
-  /// ("Bus 12 is full", "too early for this trip") arrive as those.
   Future<T> _act<T>(Future<T> Function() request) async {
     try {
       return await request();

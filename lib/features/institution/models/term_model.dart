@@ -1,6 +1,5 @@
 import '../../../core/utils/day_json.dart';
 
-/// A semester (school) or course term (university).
 class TermModel {
   final String name;
   final DateTime start;

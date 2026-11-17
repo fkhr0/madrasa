@@ -1,6 +1,5 @@
 import '../models/user_model.dart';
 
-/// Fake accounts used until the backend is connected.
 class MockUsers {
   MockUsers._();
 
@@ -14,7 +13,6 @@ class MockUsers {
     className: '5th Scientific – A',
   );
 
-  /// Zainab's younger brother (a second child for the parent account).
   static const secondStudent = UserModel(
     id: 'STU-2026-0388',
     name: 'Ali Haider',
@@ -63,6 +61,5 @@ class MockUsers {
     schoolName: 'Al-Noor Preparatory School',
   );
 
-  /// Shown on the login page in this demo build only.
   static const demoAccounts = [student, teacher, parent, admin, driver];
 }

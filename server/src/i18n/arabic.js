@@ -1,6 +1,4 @@
-// Arabic for the server's texts.
 module.exports = {
-  // ── Errors ──────────────────────────────────────────────────────
   'A student already has {0}. "Out of" can\'t be lower.': 'لدى أحد الطلاب {0}. لا يمكن أن تكون الدرجة الكاملة أقل.',
   "Account not found.": "الحساب غير موجود.",
   "Bus {0} started the morning trip": "بدأ الباص {0} رحلة الصباح",
@@ -138,7 +136,6 @@ module.exports = {
   "{0} lessons are placed after period {1}. Remove them too?": "توجد {0} حصص بعد الحصة {1}. حذفها أيضاً؟",
   "{0}: {1} is more than {2}.": "{0}: {1} أكثر من {2}.",
 
-  // ── Form checks ─────────────────────────────────────────────────
   "add at least one due date": "أضف موعد قسط واحداً على الأقل",
   "at least 8 characters": "8 أحرف على الأقل",
   "childIds: children must be students of your school": "الأبناء: يجب أن يكونوا طلاباً في مدرستك",
@@ -158,7 +155,6 @@ module.exports = {
   "the holiday must be inside the study year": "يجب أن تكون العطلة ضمن السنة الدراسية",
   "use YYYY-MM-DD": "استخدم الصيغة YYYY-MM-DD",
   "write a message": "اكتب رسالة",
-  // Field names ("field: problem").
   name: "الاسم", title: "العنوان", date: "التاريخ", text: "النص", note: "الملاحظة",
   reason: "السبب", amount: "المبلغ", email: "البريد الإلكتروني", phone: "الهاتف",
   password: "كلمة المرور", newPassword: "كلمة المرور الجديدة", start: "البداية", end: "النهاية",
@@ -168,7 +164,6 @@ module.exports = {
   longitude: "خط الطول", percent: "النسبة", tuition: "القسط", busFee: "أجرة الباص",
   body: "النص", url: "الرابط",
 
-  // ── Words used inside other texts ───────────────────────────────
   ", ": "، ",
   "{0} IQD": "{0} د.ع",
   Weekend: "عطلة نهاية الأسبوع",
@@ -207,7 +202,6 @@ module.exports = {
   Teacher: "مدرّس",
   "{0} teacher": "مدرّس {0}",
 
-  // ── Notifications ───────────────────────────────────────────────
   "Arriving at {0}": "يصل إلى {0}",
   "Attendance missing: {0}": "لم يُسجَّل الحضور: {0}",
   "Attendance: {0} of {1} days": "الحضور: {0} من {1} أيام",
@@ -264,7 +258,6 @@ module.exports = {
   "{0}'s week": "أسبوع {0}",
   "{0}, period {1} ({2}).": "{0}، الحصة {1} ({2}).",
 
-  // ── Activity lines ({actor} = who did it) ───────────────────────
   "activated {0}'s account ({1})": "فعّل {actor} حساب {0} ({1})",
   "deactivated {0}'s account ({1})": "أوقف {actor} حساب {0} ({1})",
   "added the class {0}": "أضاف {actor} الصف {0}",
@@ -295,9 +288,7 @@ module.exports = {
   absent: "غائب",
   late: "متأخر",
   present: "حاضر",
-  // Roles, as in "added the teacher account".
   student: "طالب", teacher: "مدرّس", parent: "وليّ أمر", admin: "إداري", driver: "سائق",
-  // Roles, as in "added the teacher account".
   student: "طالب", teacher: "مدرّس", parent: "وليّ أمر", admin: "إداري", driver: "سائق",
   'posted "{0}"': 'نشر {actor} "{0}"',
   "published {0} scores ({1}) for {2}": "نشر {actor} درجات {0} ({1}) لـ {2}",

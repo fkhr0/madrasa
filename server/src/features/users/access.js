@@ -1,5 +1,3 @@
-// Who may see one person's school data (timetable, attendance...): the
-// person, their parents, and the administrator of their school.
 const { queryOne } = require("../../db/database");
 const { HttpError } = require("../../common/http");
 
@@ -26,7 +24,6 @@ async function canSee(user, person) {
   return false;
 }
 
-/** The person, or 404 when they don't exist or [user] may not see them. */
 async function personOr404(user, id) {
   const person = await findPerson(id);
   if (!person || !(await canSee(user, person))) {

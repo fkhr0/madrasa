@@ -10,7 +10,7 @@ before(async () => {
     ["admin", "ADM-2020-0001"],
     ["zainab", "STU-2026-0142"],
     ["fatima", "STU-2026-0150"],
-    ["ali", "STU-2026-0153"], // 5th B
+    ["ali", "STU-2026-0153"],
     ["ahmed", "TCH-2019-0031"],
     ["sara", "TCH-2019-0040"],
     ["parent", "PAR-2026-0142"],
@@ -32,7 +32,6 @@ async function upload(who, name, text) {
   return res.body;
 }
 
-/** Downloads through a short-lived link, as the phone does. */
 async function download(who, fileId) {
   const { url } = (await request(app).get(`/files/${fileId}/link`).set(who).expect(200)).body;
   return request(app).get(url);
@@ -70,7 +69,6 @@ test("teacher sets work with a file; the student hands in hers; the teacher grad
     fileIds: [sheet.id],
   };
   await request(app).post("/assignments/classes/cls-5a").set(as.sara).send(work).expect(403);
-  // Someone else's file can't be attached.
   const notMine = await upload(as.sara, "x.txt", "x");
   await request(app)
     .post("/assignments/classes/cls-5a")
@@ -81,10 +79,8 @@ test("teacher sets work with a file; the student hands in hers; the teacher grad
   const created = (await request(app).post("/assignments/classes/cls-5a").set(as.ahmed).send(work).expect(201)).body;
   assert.equal(created.attachments[0].name, "Worksheet 5.txt");
 
-  // The class and its parents can open the worksheet; another school's can't.
   assert.equal((await download(as.parent, sheet.id)).text, "Solve x² = 4");
 
-  // Zainab hands in: files are required here, and must be hers.
   const url = `/assignments/${created.id}/submission`;
   await request(app).post(url).set(as.zainab).send({ fileIds: [] }).expect(400);
   await request(app).post(url).set(as.zainab).send({ fileIds: [sheet.id] }).expect(400);
@@ -94,12 +90,10 @@ test("teacher sets work with a file; the student hands in hers; the teacher grad
   const handedIn = (await request(app).post(url).set(as.zainab).send({ fileIds: [answer.id] }).expect(200)).body;
   assert.equal(handedIn.submission.files[0].name, "My answers.txt");
 
-  // Her work: her teacher and parent can open it, a classmate can't.
   assert.equal((await download(as.ahmed, answer.id)).text, "x = 2 or x = -2");
   await request(app).get(`/files/${answer.id}/link`).set(as.parent).expect(200);
   await request(app).get(`/files/${answer.id}/link`).set(as.fatima).expect(404);
 
-  // The teacher sees who handed in, and grades.
   const subs = (await request(app).get(`/assignments/${created.id}/submissions`).set(as.ahmed).expect(200)).body;
   assert.ok(subs.students.find((s) => s.id === "STU-2026-0142").submission.submittedAt);
 
@@ -112,7 +106,6 @@ test("teacher sets work with a file; the student hands in hers; the teacher grad
   assert.equal(graded.submission.grade, 9);
   assert.equal(graded.submission.feedback, "Well done");
 
-  // Graded work can't be handed in again.
   await request(app).post(url).set(as.zainab).send({ fileIds: [answer.id] }).expect(409);
 
   const told = (await request(app).get("/notifications").set(as.parent)).body;
@@ -138,7 +131,6 @@ test("late work only when the teacher allows it", async () => {
     .expect(200);
   await request(app).post(`/assignments/${late.id}/submission`).set(as.zainab).send({}).expect(200);
 
-  // The office can manage any subject; the teacher deletes his own.
   const all = (await request(app).get("/assignments/classes/cls-5a").set(as.admin).expect(200)).body;
   assert.ok(all.some((a) => a.subjectId !== "math"));
   const his = (await request(app).get("/assignments/classes/cls-5a").set(as.ahmed).expect(200)).body;

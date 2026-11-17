@@ -23,7 +23,6 @@ import '../providers/people_provider.dart';
 import '../widgets/credentials_sheet.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator's view of one account: details and account actions.
 class PersonDetailsPage extends ConsumerWidget {
   final String personId;
 
@@ -61,7 +60,6 @@ class PersonDetailsPage extends ConsumerWidget {
   }
 }
 
-/// "Bus 12 · Al-Mansour line", or a hint when the driver has no bus.
 String _busOf(WidgetRef ref, String driverId) {
   for (final r in ref.watch(busRoutesProvider).valueOrNull ?? const []) {
     if (r.driverId == driverId) {

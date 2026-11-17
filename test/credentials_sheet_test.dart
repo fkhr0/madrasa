@@ -45,7 +45,6 @@ void main() {
 
     expect(clipboard, contains('School ID: TCH-2019-0031'));
     expect(clipboard, contains('Temporary password: aB3dEf7h'));
-    // The confirmation shows on the button, inside the sheet.
     expect(find.textContaining('Copied'), findsOneWidget);
 
     await tester.tap(find.text('Copy').first);

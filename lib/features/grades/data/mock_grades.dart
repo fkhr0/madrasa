@@ -12,7 +12,6 @@ class MockGrades {
   static List<SubjectGradesModel> forStudent(String studentId) =>
       studentId == MockUsers.secondStudent.id ? _ali : _zainab;
 
-  /// A younger student with a weaker term, so the parent view has contrast.
   static List<SubjectGradesModel> get _ali => [
     SubjectGradesModel(
       subject: MockSubjects.math,

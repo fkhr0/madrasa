@@ -1,5 +1,3 @@
-/// Spacing scale used for padding, margins and gaps.
-/// Always pick from here instead of typing numbers in widgets.
 class AppSpacing {
   AppSpacing._();
 
@@ -11,6 +9,5 @@ class AppSpacing {
   static const double xxl = 32;
   static const double xxxl = 40;
 
-  /// Horizontal padding of every page.
   static const double page = 20;
 }

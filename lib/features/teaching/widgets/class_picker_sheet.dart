@@ -8,8 +8,6 @@ import '../../../core/widgets/menu_tile.dart';
 import '../providers/teaching_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Asks "Which class?" and then opens [routeFor] of the chosen class.
-/// Used by the teacher's quick actions on the home page.
 Future<void> showClassPicker(
   BuildContext context, {
   required String title,

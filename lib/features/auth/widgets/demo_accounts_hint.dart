@@ -6,7 +6,6 @@ import '../../../core/widgets/app_card.dart';
 import '../data/mock_users.dart';
 import '../../../core/l10n/language.dart';
 
-/// Mock mode only (no server). Lists the test accounts; tapping one fills the ID field.
 class DemoAccountsHint extends StatelessWidget {
   final ValueChanged<String> onPick;
 

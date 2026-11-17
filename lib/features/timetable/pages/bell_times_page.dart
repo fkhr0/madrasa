@@ -12,8 +12,6 @@ import '../models/period_model.dart';
 import '../providers/timetable_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator: the school's bell times, the same for every class.
-/// Changes are kept here until Save.
 class BellTimesPage extends ConsumerWidget {
   const BellTimesPage({super.key});
 
@@ -94,7 +92,6 @@ class _BellTimesEditorState extends ConsumerState<_BellTimesEditor> {
     if (sure) setState(() => _periods.removeLast());
   }
 
-  /// The first problem in the list, or null when it can be saved.
   String? get _problem {
     for (var i = 0; i < _periods.length; i++) {
       final (start, end) = _periods[i];
@@ -122,7 +119,6 @@ class _BellTimesEditorState extends ConsumerState<_BellTimesEditor> {
       try {
         await actions.savePeriods(periods);
       } on ApiException catch (e) {
-        // Lessons sit in the periods being cut: ask, then save again.
         if (e.status != 409 || !mounted) rethrow;
         final sure = await confirmDelete(
           context,
@@ -232,7 +228,6 @@ class _BellTimesEditorState extends ConsumerState<_BellTimesEditor> {
   }
 }
 
-/// The break between two periods, e.g. "20 min break".
 class _Gap extends StatelessWidget {
   final int minutes;
 

@@ -13,8 +13,6 @@ import '../../../core/l10n/language.dart';
 class CalendarEventTile extends StatelessWidget {
   final CalendarEventModel event;
 
-  /// Replaces the default tap (opening [CalendarEventModel.route]),
-  /// e.g. the administrator editing a school event.
   final VoidCallback? onTap;
 
   const CalendarEventTile({super.key, required this.event, this.onTap});

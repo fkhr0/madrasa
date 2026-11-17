@@ -15,8 +15,6 @@ import '../models/timetable_lesson_model.dart';
 import '../providers/timetable_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator: choose the subject (and room) of one period of a class,
-/// or free the period.
 Future<void> showLessonSheet(
   BuildContext context, {
   required SchoolClassModel schoolClass,
@@ -69,10 +67,8 @@ class _LessonSheetState extends ConsumerState<_LessonSheet> {
     super.dispose();
   }
 
-  /// The room filled in by [_pick], so a typed room is never overwritten.
   String? _suggestedRoom;
 
-  /// Picking a subject fills in the room it usually has in this class.
   void _pick(String subjectId) {
     setState(() => _subjectId = subjectId);
     if (_room.text.isNotEmpty && _room.text != _suggestedRoom) return;
@@ -229,7 +225,6 @@ class _LessonSheetState extends ConsumerState<_LessonSheet> {
     );
   }
 
-  /// A hint when the chosen subject has no teacher in this class yet.
   String? _teacherNote() {
     for (final s in widget.schoolClass.subjects) {
       if (s.subjectId == _subjectId && !s.hasTeacher) {

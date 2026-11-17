@@ -7,8 +7,6 @@ import '../../../core/utils/context_extensions.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/l10n/language.dart';
 
-/// Light / Dark switch. Until the user picks one, the app follows the
-/// phone, and the switch shows what the phone is using.
 class ThemeSelector extends ConsumerWidget {
   const ThemeSelector({super.key});
 

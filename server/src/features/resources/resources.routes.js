@@ -1,5 +1,3 @@
-// Study material: a teacher (or the office) shares a file or a link with a
-// class for a subject; its students (and their parents) see it.
 const express = require("express");
 const { HttpError, validate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");
@@ -23,7 +21,6 @@ const RESOURCE = `
   JOIN classes c ON c.id = r.class_id
   LEFT JOIN files f ON f.id = r.file_id`;
 
-// GET /resources/students/:id -> [resource]  (newest first)
 router.get("/students/:id", async (req, res) => {
   const student = await personOr404(req.user, req.params.id);
   if (student.role !== "student" || !student.className) return res.json([]);
@@ -37,8 +34,6 @@ router.get("/students/:id", async (req, res) => {
 
 const staff = requireRole("teacher", "admin");
 
-// GET /resources/teaching -> [resource]  (newest first)
-// A teacher: what they share in all their classes. The office: the school's.
 router.get("/teaching", staff, async (req, res) => {
   const mine =
     req.user.role === "admin"
@@ -51,7 +46,6 @@ router.get("/teaching", staff, async (req, res) => {
   res.json(await query(`${RESOURCE} WHERE ${mine[0]} ORDER BY r.created_at DESC`, [mine[1]]));
 });
 
-// GET /resources/classes/:id -> [resource]  (a teacher: their subjects)
 router.get("/classes/:id", staff, async (req, res) => {
   const schoolClass = await classOr404(req);
   const mine = taughtBy(req.user, schoolClass);
@@ -61,7 +55,6 @@ router.get("/classes/:id", staff, async (req, res) => {
   res.json(all.filter((r) => mine(r.subjectId)));
 });
 
-// POST /resources/classes/:id { subjectId, title, type, fileId | url } -> resource
 router.post("/classes/:id", staff, async (req, res) => {
   const schoolClass = await classOr404(req);
   const body = validate(
@@ -101,7 +94,6 @@ router.post("/classes/:id", staff, async (req, res) => {
   res.status(201).json(await queryOne(`${RESOURCE} WHERE r.id = $1`, [id]));
 });
 
-// DELETE /resources/:id -> 204  (the app asks first)
 router.delete("/:id", staff, async (req, res) => {
   const resource = await queryOne(
     "SELECT id, class_id, subject_id, title FROM resources WHERE id = $1 AND institution_id = $2",

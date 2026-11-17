@@ -1,12 +1,7 @@
-// The one door to PostgreSQL.
 const config = require("../config");
 
 let engine = null;
 
-/**
- * Opens the database. `dataDir` overrides the PGlite folder
- * ("memory://" gives an empty in-memory database, used by the tests).
- */
 async function connect({ dataDir } = {}) {
   if (engine) return engine;
 
@@ -33,7 +28,6 @@ async function connect({ dataDir } = {}) {
       },
       exec: (text) => pool.query(text),
       async withLock(name, work) {
-        // A PostgreSQL "advisory lock": a named lock that other servers wait on.
         const client = await pool.connect();
         try {
           await client.query("BEGIN");
@@ -53,7 +47,6 @@ async function connect({ dataDir } = {}) {
   } else {
     const { PGlite } = require("@electric-sql/pglite");
     const folder = dataDir || config.localDataDir;
-    // PGlite creates its own folder but not the ones above it (.data/).
     if (!folder.includes("://")) {
       require("fs").mkdirSync(require("path").dirname(folder), {
         recursive: true,
@@ -66,9 +59,7 @@ async function connect({ dataDir } = {}) {
       transaction: (work) =>
         db.transaction((tx) => work(helpers((t, p) => tx.query(t, p)))),
       exec: (text) => db.exec(text),
-      // Only one process can open a PGlite folder: nothing to wait for.
       withLock: (_name, work) => work(),
-      // The whole database as one compressed file, for the nightly backup.
       dump: () => db.dumpDataDir("gzip"),
       close: () => db.close(),
     };
@@ -77,7 +68,6 @@ async function connect({ dataDir } = {}) {
   return engine;
 }
 
-/** `pg` reads a few types differently from PGlite; make it read them the same, so the code behaves the same on this PC and online. */
 function readValuesLikePglite(types) {
   const INT8 = 20, INT8_ARRAY = 1016, DATE = 1082, DATE_ARRAY = 1182, TEXT_ARRAY = 1009;
   const asDate = (v) => (v === null ? null : new Date(`${v}T00:00:00Z`));
@@ -88,10 +78,6 @@ function readValuesLikePglite(types) {
   types.setTypeParser(DATE_ARRAY, (v) => textArray(v).map(asDate));
 }
 
-/**
- * What a transaction gives its work function: the same query() and
- * queryOne() as this module, but running inside the transaction.
- */
 function helpers(run) {
   const txQuery = async (text, params = []) => (await run(text, params)).rows;
   return {
@@ -106,26 +92,19 @@ function db() {
   return engine;
 }
 
-/** Runs one statement. Returns the rows. */
 async function query(text, params = []) {
   return (await db().query(text, params)).rows;
 }
 
-/** The first row, or null. */
 async function queryOne(text, params = []) {
   const rows = await query(text, params);
   return rows[0] ?? null;
 }
 
-/**
- * Runs `work(tx)` in one transaction: all of it is saved, or none of it.
- * `tx` has query() and queryOne(), like this module.
- */
 function transaction(work) {
   return db().transaction(work);
 }
 
-/** Runs `work` while no other server runs work under the same name. */
 function withLock(name, work) {
   return db().withLock(name, work);
 }

@@ -18,8 +18,6 @@ import '../providers/exam_provider.dart';
 import '../widgets/exam_sheet.dart';
 import '../../../core/l10n/language.dart';
 
-/// A class's exams for the subject's teacher (or every subject for the
-/// office): schedule, change, delete, and enter scores after the exam.
 class ClassExamsPage extends ConsumerWidget {
   final String classId;
 
@@ -69,7 +67,7 @@ class ClassExamsPage extends ConsumerWidget {
               AppSpacing.page,
               AppSpacing.sm,
               AppSpacing.page,
-              96, // room for the button
+              96,
             ),
             children: [
               if (past.isNotEmpty) ...[

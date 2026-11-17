@@ -2,7 +2,6 @@ import '../../../core/utils/grade_scale.dart';
 import '../models/insights_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Something worth the administrator's attention, in plain words.
 class Highlight {
   final bool isGood;
   final String text;
@@ -10,8 +9,6 @@ class Highlight {
   const Highlight(this.text, {this.isGood = false});
 }
 
-/// Reads the numbers so the administrator doesn't have to: the weakest class,
-/// the hardest subject, the day students skip, late buses...
 List<Highlight> highlightsFor(InsightsModel data) {
   LabeledValue lowest(List<LabeledValue> list) =>
       list.reduce((a, b) => a.value <= b.value ? a : b);
@@ -21,9 +18,7 @@ List<Highlight> highlightsFor(InsightsModel data) {
 
   final highlights = <Highlight>[];
 
-  // Attendance trend.
   if (!data.hasAttendance) {
-    // Nothing to compare yet.
   } else if (data.attendanceChange >= 1) {
     highlights.add(
       Highlight(
@@ -43,7 +38,6 @@ List<Highlight> highlightsFor(InsightsModel data) {
     );
   }
 
-  // The weakest class, when it is clearly below the school.
   final weakClass = data.attendanceByClass.isEmpty
       ? null
       : lowest(data.attendanceByClass);
@@ -58,7 +52,6 @@ List<Highlight> highlightsFor(InsightsModel data) {
     );
   }
 
-  // A day students skip more than others (often Thursday).
   final days = data.attendanceByDay;
   final weakDay = days.isEmpty ? null : lowest(days);
   final bestDay = days.isEmpty ? null : highest(days);
@@ -77,7 +70,6 @@ List<Highlight> highlightsFor(InsightsModel data) {
     );
   }
 
-  // The hardest subject.
   final weakSubject = data.hasGrades ? lowest(data.gradeBySubject) : null;
   if (weakSubject != null && weakSubject.value < GradeScale.passMark + 15) {
     highlights.add(
@@ -90,7 +82,6 @@ List<Highlight> highlightsFor(InsightsModel data) {
     );
   }
 
-  // Homework.
   if (data.hasHomework && data.submissionRate < 0.8) {
     highlights.add(
       Highlight(
@@ -99,9 +90,7 @@ List<Highlight> highlightsFor(InsightsModel data) {
     );
   }
 
-  // Buses.
   if (!data.hasTrips) {
-    // No trips yet: nothing to say about buses.
   } else if (data.onTimeRate < 0.85) {
     highlights.add(
       Highlight(
@@ -120,7 +109,6 @@ List<Highlight> highlightsFor(InsightsModel data) {
     );
   }
 
-  // Bad news first.
   highlights.sort((a, b) => (a.isGood ? 1 : 0) - (b.isGood ? 1 : 0));
   return highlights;
 }

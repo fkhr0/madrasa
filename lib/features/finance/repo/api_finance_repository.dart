@@ -5,7 +5,6 @@ import '../models/payment_model.dart';
 import '../models/student_account_model.dart';
 import 'finance_repository.dart';
 
-/// Fees on the school API (server/src/features/finance).
 class ApiFinanceRepository implements FinanceRepository {
   final ApiClient _api;
 
@@ -72,7 +71,6 @@ class ApiFinanceRepository implements FinanceRepository {
   Future<void> saveSettings(FinanceSettingsModel settings) =>
       _act(() => _api.put('/finance/settings', settings.toJson()));
 
-  /// The server's message as a [FinanceException], like the mock throws.
   Future<T> _act<T>(Future<T> Function() call) async {
     try {
       return await call();

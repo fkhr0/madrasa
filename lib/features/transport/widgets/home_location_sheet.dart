@@ -16,7 +16,6 @@ import '../repo/transport_repository.dart';
 import 'place_search_field.dart';
 import '../../../core/l10n/language.dart';
 
-/// "Where is Zainab's home?", for door-to-door pick-up.
 Future<StudentHomeModel?> showHomeLocationSheet(
   BuildContext context, {
   required String studentId,
@@ -69,8 +68,6 @@ class _HomeLocationSheetState extends ConsumerState<_HomeLocationSheet> {
     final text = _link.text.trim();
     if (text.isEmpty) return;
 
-    // Links with the numbers inside are read here at once; short links
-    // (maps.app.goo.gl) are followed by the server.
     final quick = coordinatesIn(text);
     if (quick != null && IraqMap.contains(quick)) {
       setState(() => _point = quick);
@@ -88,7 +85,6 @@ class _HomeLocationSheetState extends ConsumerState<_HomeLocationSheet> {
     }
   }
 
-  /// Pastes the copied link and reads it.
   Future<void> _paste() async {
     final copied = (await Clipboard.getData(Clipboard.kTextPlain))?.text;
     if (copied == null || copied.trim().isEmpty) {
@@ -125,7 +121,6 @@ class _HomeLocationSheetState extends ConsumerState<_HomeLocationSheet> {
   @override
   Widget build(BuildContext context) {
     final saved = ref.watch(studentHomeProvider(widget.studentId)).valueOrNull;
-    // Start from the home already on file, once.
     if (!_filled && saved != null) {
       _filled = true;
       _point ??= saved.point;
@@ -191,7 +186,6 @@ class _HomeLocationSheetState extends ConsumerState<_HomeLocationSheet> {
             ),
 
           if (!widget.isFamily) ...[
-            // The location link the family sent (WhatsApp, Google Maps...).
             TextField(
               controller: _link,
               minLines: 1,
@@ -213,7 +207,6 @@ class _HomeLocationSheetState extends ConsumerState<_HomeLocationSheet> {
                         icon: const Icon(Icons.content_paste),
                       ),
               ),
-              // Pasted by hand: read it straight away.
               onChanged: (text) {
                 if (text.contains('http') || coordinatesIn(text) != null) {
                   _readLink();

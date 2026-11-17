@@ -1,4 +1,3 @@
-# Grafana's data sources, ready on first start.
 apiVersion: 1
 datasources:
   - name: Prometheus

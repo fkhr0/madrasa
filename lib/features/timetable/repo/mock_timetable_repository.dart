@@ -6,7 +6,6 @@ import '../models/period_model.dart';
 import '../models/timetable_lesson_model.dart';
 import 'timetable_repository.dart';
 
-/// In-memory timetable for mock mode (lost on reload).
 class MockTimetableRepository implements TimetableRepository {
   List<PeriodModel> _periods = const [
     PeriodModel(number: 1, start: '08:00', end: '08:45'),
@@ -19,7 +18,6 @@ class MockTimetableRepository implements TimetableRepository {
 
   static const _workingDays = [7, 1, 2, 3, 4];
 
-  /// (class, weekday, period) → (subject, room)
   final Map<(String, int, int), (String, String)> _slots = {
     ('cls-5a', 7, 1): ('islamic', 'Room 204'),
     ('cls-5a', 7, 2): ('math', 'Room 204'),

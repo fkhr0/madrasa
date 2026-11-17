@@ -11,7 +11,6 @@ import '../models/subject_style.dart';
 import '../providers/academics_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator: add a subject, or rename / restyle / delete one.
 Future<void> showSubjectSheet(
   BuildContext context, {
   SchoolSubjectModel? subject,

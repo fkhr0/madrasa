@@ -1,4 +1,3 @@
-// Web Push: notifications on the phone even when the app is closed.
 const fs = require("fs");
 const path = require("path");
 const webPush = require("web-push");
@@ -6,7 +5,6 @@ const config = require("../../config");
 const { query } = require("../../db/database");
 const { chunks } = require("../../common/chunks");
 
-/** Pushes sent at the same time. */
 const SEND_AT_ONCE = 50;
 
 const KEYS_FILE =
@@ -15,7 +13,6 @@ const KEYS_FILE =
 
 let keys = null;
 
-/** The server's key pair, made the first time it is needed. */
 function pushKeys() {
   if (keys) return keys;
   if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
@@ -23,15 +20,10 @@ function pushKeys() {
   } else {
     keys = readOrMakeKeys();
   }
-  // Push services ask for a contact for the sender.
   webPush.setVapidDetails("mailto:admin@school.local", keys.publicKey, keys.privateKey);
   return keys;
 }
 
-/**
- * The saved keys, or new ones. Read directly (no "exists?" check first) and
- * written only if no file is there ("wx"), so two starts can't race.
- */
 function readOrMakeKeys() {
   try {
     return JSON.parse(fs.readFileSync(KEYS_FILE, "utf8"));
@@ -45,7 +37,7 @@ function readOrMakeKeys() {
     return made;
   } catch (e) {
     if (e.code !== "EEXIST") throw e;
-    return JSON.parse(fs.readFileSync(KEYS_FILE, "utf8")); // the other one won
+    return JSON.parse(fs.readFileSync(KEYS_FILE, "utf8"));
   }
 }
 
@@ -65,10 +57,6 @@ function removeSubscription(userId, endpoint) {
   ]);
 }
 
-/**
- * Sends to every phone of [userIds] that turned notifications on.
- * Phones that turned them off (410 / 404) are forgotten.
- */
 async function sendPush(userIds, { texts, route }) {
   const subscriptions = await query(
     "SELECT endpoint, p256dh, auth, language FROM push_subscriptions WHERE user_id = ANY($1)",
@@ -77,13 +65,10 @@ async function sendPush(userIds, { texts, route }) {
   if (subscriptions.length === 0) return;
   pushKeys();
 
-  // Each phone in its app's language.
   const payloads = {
     en: JSON.stringify({ ...texts.en, route }),
     ar: JSON.stringify({ ...texts.ar, route }),
   };
-  // 50 at a time: a message to the whole school doesn't open thousands of
-  // connections at once.
   for (const part of chunks(subscriptions, SEND_AT_ONCE)) {
     await Promise.all(part.map((s) => sendOne(s, payloads[s.language] ?? payloads.ar)));
   }
@@ -97,7 +82,6 @@ async function sendOne(s, payload) {
       { TTL: 60 * 60 },
     );
   } catch (e) {
-    // The phone turned notifications off or the app was removed.
     if (e.statusCode === 404 || e.statusCode === 410) {
       await query("DELETE FROM push_subscriptions WHERE endpoint = $1", [s.endpoint]);
     }

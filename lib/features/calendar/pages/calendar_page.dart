@@ -82,7 +82,7 @@ class _Content extends ConsumerWidget {
         AppSpacing.page,
         AppSpacing.sm,
         AppSpacing.page,
-        96, // room for the button
+        96,
       ),
       children: [
         YearProgressCard(year: year, day: year.clamp(DateTime.now())),
@@ -118,7 +118,6 @@ class _Content extends ConsumerWidget {
         for (final item in dayItems) ...[
           CalendarEventTile(
             event: item,
-            // The administrator taps a school event to change or delete it.
             onTap: isAdmin && item.schoolEvent != null
                 ? () => showEventEditor(
                     context,

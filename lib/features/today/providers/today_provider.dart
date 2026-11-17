@@ -8,7 +8,6 @@ import '../models/day_status.dart';
 
 DateTime _dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);
 
-/// The next school day after today, with its lessons (null at year end).
 final nextSchoolDayProvider = FutureProvider<UpcomingDay?>((ref) async {
   final today = _dateOnly(ref.watch(nowProvider));
   final year = await ref.watch(academicYearProvider.future);
@@ -20,8 +19,6 @@ final nextSchoolDayProvider = FutureProvider<UpcomingDay?>((ref) async {
   return UpcomingDay(date: candidate, lessons: lessons);
 });
 
-/// Where the signed-in user (or the parent's selected child) is in the
-/// school day right now. Refreshes with [nowProvider].
 final dayStatusProvider = FutureProvider<DayStatus>((ref) async {
   final now = ref.watch(nowProvider);
   final year = await ref.watch(academicYearProvider.future);

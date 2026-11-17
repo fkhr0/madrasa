@@ -1,7 +1,5 @@
 import '../models/insights_model.dart';
 
-/// Fake school statistics until reports come from the server
-/// (the server works them out from attendance, grades and trips).
 class MockInsights {
   MockInsights._();
 

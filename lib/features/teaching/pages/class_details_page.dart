@@ -38,7 +38,6 @@ class ClassDetailsPage extends ConsumerWidget {
             );
           }
 
-          // Only students with grades count (none before the first test).
           final graded = [for (final s in students) ?s.average];
           final average = graded.isEmpty
               ? null
@@ -53,7 +52,6 @@ class ClassDetailsPage extends ConsumerWidget {
               AppSpacing.xl,
             ),
             children: [
-              // ---------- Summary ----------
               AppCard(
                 child: Row(
                   children: [
@@ -81,7 +79,6 @@ class ClassDetailsPage extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.lg),
 
-              // ---------- Actions ----------
               Row(
                 children: [
                   Expanded(
@@ -119,7 +116,6 @@ class ClassDetailsPage extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.xl),
 
-              // ---------- Students ----------
               SectionHeader(title: tr('Students')),
               AppCard(
                 padding: EdgeInsets.zero,

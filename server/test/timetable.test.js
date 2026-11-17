@@ -82,7 +82,6 @@ test("only the person, their parents and their school's admin can read a week", 
 });
 
 test("admin places, moves and removes a lesson; a busy teacher is refused", async () => {
-  // Monday period 1: Mr. Ahmed teaches maths in 6th C.
   const clash = await request(app)
     .put(`/timetable/classes/cls-5a/lessons/${MONDAY}/1`)
     .set(as.admin)
@@ -90,7 +89,6 @@ test("admin places, moves and removes a lesson; a busy teacher is refused", asyn
     .expect(409);
   assert.match(clash.body.error, /Ahmed Kareem already teaches 6th Scientific – C/);
 
-  // Not a study day / not a period / not a subject of the class.
   await request(app)
     .put("/timetable/classes/cls-5a/lessons/5/1")
     .set(as.admin)
@@ -107,7 +105,6 @@ test("admin places, moves and removes a lesson; a busy teacher is refused", asyn
     .send({ subjectId: "history" })
     .expect(400);
 
-  // Thursday period 5 is free in 5th A.
   const placed = await request(app)
     .put("/timetable/classes/cls-5a/lessons/4/5")
     .set(as.admin)
@@ -121,8 +118,6 @@ test("admin places, moves and removes a lesson; a busy teacher is refused", asyn
 });
 
 test("giving a subject to a teacher who is busy at its times is refused", async () => {
-  // A teacher who teaches another class at the time of one of 5th A's
-  // physics lessons can't take 5th A's physics.
   const fiveA = (await request(app).get("/timetable/classes/cls-5a").set(as.admin)).body;
   const physics = fiveA.lessons.filter((l) => l.subjectId === "physics");
   let busyTeacher = null;
@@ -142,7 +137,6 @@ test("giving a subject to a teacher who is busy at its times is refused", async 
     .expect(409);
   assert.match(refused.body.error, /Move one of the lessons first/);
 
-  // 5th B's computer lessons have no teacher yet; Mr. Bilal is free then.
   const fiveB = (await request(app).get("/timetable/classes/cls-5b").set(as.admin)).body;
   assert.ok(fiveB.lessons.some((l) => l.subjectId === "computer" && !l.teacherId));
 
@@ -197,7 +191,7 @@ test("the cached week changes the moment the office changes the timetable", asyn
     (await request(app).get("/timetable/people/STU-2026-0142/week").set(as.zainab).expect(200)).body;
   const roomOf = (body) => body.lessons.find((l) => l.weekday === SUNDAY && l.period === 2)?.room;
 
-  const before = await week(); // now cached
+  const before = await week();
   const lesson = before.lessons.find((l) => l.weekday === SUNDAY && l.period === 2);
   await request(app)
     .put(`/timetable/classes/cls-5a/lessons/${SUNDAY}/2`)

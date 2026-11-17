@@ -1,5 +1,3 @@
-// SQL for the school and its study year. Dates are returned as "YYYY-MM-DD"
-// text (::text), so no time zone can move a holiday to the day before.
 const { query, queryOne } = require("../../db/database");
 
 const INSTITUTION = "id, name, city, address, phone, email, whatsapp, latitude, longitude";
@@ -80,7 +78,6 @@ function updateHoliday(yearId, holidayId, { name, type, start, end }) {
   );
 }
 
-/** Deletes only inside the given year, so one school can't touch another's. */
 async function deleteHoliday(yearId, holidayId) {
   const rows = await query(
     "DELETE FROM holidays WHERE id = $1 AND academic_year_id = $2 RETURNING id",

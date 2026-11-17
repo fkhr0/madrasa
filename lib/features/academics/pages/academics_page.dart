@@ -15,7 +15,6 @@ import '../widgets/school_class_tile.dart';
 import '../widgets/year_tab.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator's second tab: the study year, classes and subjects.
 class AcademicsPage extends StatelessWidget {
   const AcademicsPage({super.key});
 
@@ -80,7 +79,7 @@ class _ClassesTab extends ConsumerWidget {
             AppSpacing.page,
             AppSpacing.page,
             AppSpacing.page,
-            96, // room for the button
+            96,
           ),
           itemCount: items.length,
           separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
@@ -112,7 +111,7 @@ class _SubjectsTab extends ConsumerWidget {
             AppSpacing.page,
             AppSpacing.page,
             AppSpacing.page,
-            96, // room for the button
+            96,
           ),
           itemCount: items.length,
           separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),

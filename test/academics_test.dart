@@ -24,7 +24,6 @@ void main() {
         (s) => s.name == 'Geography',
       );
 
-      // Same name twice is refused.
       expect(
         () => repo.saveSubject(
           const SchoolSubjectModel(id: '', name: 'geography'),
@@ -82,10 +81,7 @@ void main() {
       expect(updated.subjects.single.teacherName, 'Ahmed Kareem');
 
       await repo.deleteClass(added.id);
-      expect(
-        () => repo.deleteClass('cls-5a'), // has students
-        throwsA(isA<ApiException>()),
-      );
+      expect(() => repo.deleteClass('cls-5a'), throwsA(isA<ApiException>()));
     });
   });
 
@@ -110,7 +106,6 @@ void main() {
     expect(find.text('Delete this task?'), findsOneWidget);
     await tester.tap(find.text('Cancel'));
     await tester.pumpAndSettle();
-    // Still there.
     expect(find.text('Revise chapter 3'), findsOneWidget);
   });
 }

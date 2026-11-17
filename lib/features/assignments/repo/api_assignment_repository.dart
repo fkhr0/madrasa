@@ -3,7 +3,6 @@ import '../models/assignment_model.dart';
 import '../models/attachment_model.dart';
 import 'assignment_repository.dart';
 
-/// Homework on the school API (server/src/features/assignments).
 class ApiAssignmentRepository implements AssignmentRepository {
   final ApiClient _api;
 

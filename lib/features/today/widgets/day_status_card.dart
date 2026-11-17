@@ -13,7 +13,6 @@ import '../models/day_status.dart';
 import '../providers/today_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// The hero card of every home page.
 class DayStatusCard extends ConsumerWidget {
   final String? who;
 
@@ -60,7 +59,6 @@ class DayStatusCard extends ConsumerWidget {
     );
   }
 
-  /// Turns the status into the words shown on the card.
   static _CardContent _contentFor(DayStatus status, DateTime now) {
     switch (status) {
       case BeforeSchool(:final firstLesson, :final lessonCount):
@@ -151,7 +149,6 @@ class DayStatusCard extends ConsumerWidget {
     }
   }
 
-  /// "6 classes · first: Mathematics at 08:00".
   static List<String> _upcomingLines(UpcomingDay? next) {
     final first = next?.firstLesson;
     if (next == null || first == null) return const [];
@@ -172,7 +169,6 @@ class DayStatusCard extends ConsumerWidget {
         : DateFormatter.weekday(date);
   }
 
-  /// Teachers see the class, students and parents the subject.
   static String _title(LessonModel lesson) =>
       lesson.className ?? lesson.subject.name;
 
@@ -180,14 +176,12 @@ class DayStatusCard extends ConsumerWidget {
       '${_title(lesson)} · ${lesson.room}';
 }
 
-/// What the card shows, decided by [DayStatusCard._contentFor].
 class _CardContent {
   final IconData icon;
   final String label;
   final String title;
   final List<String> lines;
 
-  /// 0–1 while a class is running.
   final double? progress;
   final String? progressLabel;
 

@@ -2,8 +2,7 @@ name: school
 description: "School ecosystem app for students, teachers, parents and administrators."
 publish_to: "none"
 
-# versionName+versionCode on Android. Bump the number after + for every Play Store upload.
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ^3.12.2
@@ -12,14 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # State management
   flutter_riverpod: ^2.6.1
-  # Navigation
   go_router: ^17.5.0
-  # Typography
-  # Calendar
   table_calendar: ^3.2.1
-  # Bus map (OpenStreetMap tiles, no API key or billing)
   flutter_map: ^8.3.2
   latlong2: ^0.10.1
 
@@ -46,8 +40,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # Bundled (not downloaded at runtime): works offline, loads at once, and
-  # the server's security rules only allow fonts from the app itself.
   assets:
     - assets/fonts/OFL-Cairo.txt
     - assets/fonts/OFL-PlusJakartaSans.txt
@@ -71,15 +63,12 @@ flutter:
         - asset: assets/fonts/PlusJakartaSans-Bold.ttf
           weight: 700
 
-# App icons (from assets/icon, drawn from the sign-in page's book and
-# gradient). Remake after changing them: dart run flutter_launcher_icons
 flutter_launcher_icons:
   android: true
   ios: false
   image_path: assets/icon/icon.png
   adaptive_icon_background: assets/icon/background.png
   adaptive_icon_foreground: assets/icon/foreground.png
-  # Android 13 "themed icons": the phone colours the book itself.
   adaptive_icon_monochrome: assets/icon/foreground.png
   web:
     generate: true

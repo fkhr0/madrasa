@@ -13,8 +13,6 @@ import '../models/exam_model.dart';
 import '../providers/exam_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Teacher or office: schedule an exam for a class, or change / delete one.
-/// [subjects] are the (id, name) the user may choose from.
 Future<void> showExamSheet(
   BuildContext context, {
   required String classId,
@@ -79,7 +77,6 @@ class _ExamSheetState extends ConsumerState<_ExamSheet> {
     super.dispose();
   }
 
-  /// "November monthly exam", "Mathematics quiz"... while the title is empty.
   String get _suggestedTitle {
     final month = DateFormatter.monthName(_start);
     final subject = widget.subjects

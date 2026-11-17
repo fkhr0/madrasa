@@ -6,7 +6,6 @@ import '../../notifications/providers/notification_provider.dart';
 import '../providers/auth_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Asks before signing out. The router returns to the login page by itself.
 Future<void> showSignOutDialog(BuildContext context, WidgetRef ref) async {
   final confirmed = await showDialog<bool>(
     context: context,
@@ -28,12 +27,10 @@ Future<void> showSignOutDialog(BuildContext context, WidgetRef ref) async {
   );
 
   if (confirmed == true) {
-    // First, while still signed in: this phone stops getting their
-    // notifications.
     try {
       await ref.read(notificationRepositoryProvider).forgetThisPhone();
     } catch (_) {
-      // Offline: the phone's ID was still cancelled with Firebase.
+      // offline
     }
     await ref.read(authProvider.notifier).signOut();
   }

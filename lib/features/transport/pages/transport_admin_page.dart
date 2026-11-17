@@ -21,8 +21,6 @@ import '../models/trip_model.dart';
 import '../providers/transport_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator: every bus line with its live status, and the tools to
-/// manage lines, drivers, stops, riders and trip rules.
 class TransportAdminPage extends ConsumerWidget {
   const TransportAdminPage({super.key});
 
@@ -56,7 +54,7 @@ class TransportAdminPage extends ConsumerWidget {
               AppSpacing.page,
               AppSpacing.sm,
               AppSpacing.page,
-              96, // room for the button
+              96,
             ),
             children: [
               Row(

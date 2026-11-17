@@ -11,7 +11,6 @@ import '../../auth/providers/auth_provider.dart';
 import '../models/bus_route_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Bus number, plate, and the people to call (never the viewer themself).
 class BusInfoCard extends ConsumerWidget {
   final BusRouteModel route;
 

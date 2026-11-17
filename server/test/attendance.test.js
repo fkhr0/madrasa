@@ -28,7 +28,6 @@ before(async () => {
 });
 after(close);
 
-/** The latest school day, [from] days ago or earlier, with a maths lesson in 5th A. */
 async function mathsDay(from = 0) {
   const week = (await request(app).get("/timetable/classes/cls-5a").set(as.admin)).body;
   for (let back = from; back < from + 14; back++) {
@@ -112,7 +111,6 @@ test("the teacher marks a lesson; parents of an absent student are told", async 
   const marks = Object.fromEntries(sheet.students.map((s) => [s.id, "present"]));
   marks["STU-2026-0142"] = "absent";
 
-  // Everyone must be marked; only the lesson's teacher marks it.
   const { "STU-2026-0150": _, ...withoutFatima } = marks;
   await request(app).put(url).set(as.ahmed).send({ marks: withoutFatima }).expect(400);
   await request(app).put(url).set(as.sara).send({ marks }).expect(403);
@@ -126,8 +124,6 @@ test("the teacher marks a lesson; parents of an absent student are told", async 
 
   const day = (await request(app).get("/attendance/students/STU-2026-0142").set(as.zainab)).body
     .days.find((d) => d.date === date);
-  // Absent only when she missed every lesson marked that day; otherwise the
-  // day counts as attended and the note names the missed lesson.
   if (day.lessons.every((l) => l.status === "absent")) {
     assert.equal(day.status, "absent");
   } else {
@@ -148,7 +144,6 @@ test("no marking ahead or on days off; a teacher can't go back more than a week"
   const old = await mathsDay(8);
   const url = `/attendance/classes/cls-5a/lessons/${old.date}/${old.period}`;
   await request(app).get(url).set(as.ahmed).expect(403);
-  // The office can still correct it.
   await request(app).get(url).set(as.admin).expect(200);
 });
 
@@ -181,14 +176,13 @@ test("a teacher's classes and students with their attendance", async () => {
 
   const students = (await request(app).get("/teaching/classes/cls-5a/students").set(as.ahmed).expect(200)).body;
   const zainab = students.find((s) => s.id === "STU-2026-0142");
-  assert.ok(zainab.attendanceRate < 100); // absent in maths above
+  assert.ok(zainab.attendanceRate < 100);
 
   await request(app).get("/teaching/classes/cls-5a/students").set(as.sara).expect(200);
   await request(app).get("/teaching/classes/cls-5a/students").set(as.admin).expect(403);
 });
 
 test("a planned absence: excused ahead, listed, and no absence alert that day", async () => {
-  // The next school day after today.
   let day = addDays(today(), 1);
   while (!calendar.isSchoolDay(day)) day = addDays(day, 1);
 
@@ -202,7 +196,6 @@ test("a planned absence: excused ahead, listed, and no absence alert that day", 
   assert.deepEqual(planned.map((p) => [p.date, p.note]), [[day, "Doctor's appointment"]]);
   await request(app).get("/attendance/students/STU-2026-0150/excuses/planned").set(as.parent).expect(404);
 
-  // Today with an excuse: marking her absent doesn't alert her family.
   const { date, period } = await mathsDay();
   await request(app).put(`/attendance/students/STU-2026-0150/excuses/${date}`).set(as.admin).send({ note: "Travel" }).expect(204);
   const url = `/attendance/classes/cls-5a/lessons/${date}/${period}`;

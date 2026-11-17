@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../constants/app_spacing.dart';
 import '../utils/context_extensions.dart';
 
-/// Friendly placeholder shown when a list has nothing to show.
 class EmptyState extends StatelessWidget {
   final IconData icon;
   final String title;

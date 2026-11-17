@@ -1,15 +1,12 @@
 import '../l10n/language.dart';
 
-/// Iraqi dinar amounts. Fees are whole dinars (no fils in practice).
 class MoneyFormatter {
   MoneyFormatter._();
 
   static bool get _ar => AppLanguage.current.isArabic;
 
-  /// 1250000 → "1,250,000 IQD" / "1,250,000 د.ع"
   static String iqd(int amount) => '${grouped(amount)} ${_ar ? 'د.ع' : 'IQD'}';
 
-  /// 1250000 → "1,250,000"
   static String grouped(int amount) {
     final digits = amount.abs().toString();
     final buffer = StringBuffer(amount < 0 ? '-' : '');
@@ -22,8 +19,6 @@ class MoneyFormatter {
     return buffer.toString();
   }
 
-  /// Short form for tight spaces: 1250000 → "1.25M" / "1.25 مليون",
-  /// 750000 → "750K" / "750 ألف".
   static String compact(int amount) {
     if (amount >= 1000000) {
       final m = amount / 1000000;

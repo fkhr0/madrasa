@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import '../l10n/language.dart';
 import '../location/device_location.dart';
 
-/// Why the location can't be read, with a button to the setting that fixes
-/// it. A dialog, not a snackbar: it shows above bottom sheets too.
 Future<void> showLocationProblem(BuildContext context, LocationException e) {
   final action = switch (e.fix) {
     LocationFix.turnOn => tr('Turn on location'),

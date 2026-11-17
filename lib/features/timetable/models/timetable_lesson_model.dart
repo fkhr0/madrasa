@@ -3,32 +3,25 @@ import 'package:flutter/material.dart';
 import '../../academics/models/subject_style.dart';
 import 'period_model.dart';
 
-/// One lesson in the weekly timetable: a class has a subject in a period of
-/// a study day. The teacher is whoever teaches that subject in that class.
 class TimetableLessonModel {
-  /// DateTime.monday (1) ... DateTime.sunday (7).
   final int weekday;
   final int period;
 
-  /// "08:50", from the bell times.
   final String start;
   final String end;
 
   final String subjectId;
   final String subjectName;
 
-  /// Keys from [SubjectStyle], e.g. "math" and "purple".
   final String iconKey;
   final String colorKey;
 
-  /// Null while the class has no teacher for the subject.
   final String? teacherId;
   final String? teacherName;
 
   final String classId;
   final String className;
 
-  /// Empty when not set.
   final String room;
 
   const TimetableLessonModel({
@@ -47,7 +40,6 @@ class TimetableLessonModel {
     this.room = '',
   });
 
-  /// Its bell period, e.g. to get the start time on a given day.
   PeriodModel get bell => PeriodModel(number: period, start: start, end: end);
 
   IconData get icon => SubjectStyle.icon(iconKey);

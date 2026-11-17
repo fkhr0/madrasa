@@ -8,8 +8,6 @@ import '../../../core/widgets/app_card.dart';
 import '../logic/year_result.dart';
 import '../../../core/l10n/language.dart';
 
-/// The year result of every subject: the parts so far (1st term, mid-year,
-/// 2nd term, final) and, once complete, the final mark with pass / fail.
 class YearResultCard extends StatelessWidget {
   final List<YearResultModel> results;
 

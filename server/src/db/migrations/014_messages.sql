@@ -1,6 +1,3 @@
--- Messages: private chats between two people, and one group chat per class
--- (its students and teachers; membership follows the class, not a list).
-
 CREATE TABLE conversations (
   id              TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
   institution_id  TEXT NOT NULL REFERENCES institutions(id) ON DELETE CASCADE,
@@ -10,7 +7,6 @@ CREATE TABLE conversations (
   CHECK ((kind = 'class') = (class_id IS NOT NULL))
 );
 
--- The two people of a private chat.
 CREATE TABLE conversation_members (
   conversation_id  TEXT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
   user_id          TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -27,7 +23,6 @@ CREATE TABLE messages (
 );
 CREATE INDEX messages_conversation ON messages (conversation_id, sent_at);
 
--- Up to when each person has read each chat (for unread counts).
 CREATE TABLE conversation_reads (
   conversation_id  TEXT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
   user_id          TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,

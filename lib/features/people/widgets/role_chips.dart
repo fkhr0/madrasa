@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_spacing.dart';
 import '../../auth/models/user_model.dart';
 
-/// The roles an administrator manages, as chips that scroll sideways
-/// (four labels don't fit a segmented button on small phones).
 class RoleChips extends StatelessWidget {
   static const roles = [
     UserRole.student,
@@ -16,7 +14,6 @@ class RoleChips extends StatelessWidget {
   final UserRole selected;
   final ValueChanged<UserRole> onSelected;
 
-  /// "Students" instead of "Student".
   final bool plural;
 
   const RoleChips({

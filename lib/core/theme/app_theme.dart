@@ -6,8 +6,6 @@ import 'app_colors.dart';
 import 'app_palette.dart';
 import 'app_text_theme.dart';
 
-/// Builds the light and dark ThemeData from the same recipe,
-/// so both modes always look like the same app.
 class AppTheme {
   AppTheme._();
 

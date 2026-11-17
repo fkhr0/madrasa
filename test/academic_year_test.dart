@@ -14,18 +14,15 @@ void main() {
     });
 
     test('Friday, Saturday and holidays are not school days', () {
-      expect(year.isSchoolDay(DateTime(2026, 11, 4)), isTrue); // Wednesday
-      expect(year.isSchoolDay(DateTime(2026, 11, 6)), isFalse); // Friday
-      expect(year.isSchoolDay(DateTime(2026, 11, 7)), isFalse); // Saturday
-      expect(year.isSchoolDay(DateTime(2027, 1, 6)), isFalse); // Army Day
+      expect(year.isSchoolDay(DateTime(2026, 11, 4)), isTrue);
+      expect(year.isSchoolDay(DateTime(2026, 11, 6)), isFalse);
+      expect(year.isSchoolDay(DateTime(2026, 11, 7)), isFalse);
+      expect(year.isSchoolDay(DateTime(2027, 1, 6)), isFalse);
     });
 
     test('next school day skips the weekend and the mid-year break', () {
-      // Friday → Sunday
       expect(year.nextSchoolDay(DateTime(2026, 11, 6)), DateTime(2026, 11, 8));
-      // During the break → first day of the second semester
       expect(year.nextSchoolDay(DateTime(2027, 1, 27)), DateTime(2027, 2, 7));
-      // Before the year starts → the first day
       expect(year.nextSchoolDay(DateTime(2026, 8, 1)), DateTime(2026, 9, 20));
     });
 

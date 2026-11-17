@@ -2,7 +2,6 @@ import '../../auth/data/mock_users.dart';
 import '../../auth/models/user_model.dart';
 import '../../subjects/data/mock_subjects.dart';
 
-/// The school's directory for the admin "People" tab.
 class MockPeople {
   MockPeople._();
 
@@ -22,13 +21,11 @@ class MockPeople {
     ('Ruqaya Salman', '4th Scientific – A'),
     ('Zahraa Jaafar', '5th Scientific – B'),
     ('Aya Ahmed', '5th Scientific – B'),
-    // Not on a bus yet: the administrator can add them in Transport.
     ('Abbas Naji', '5th Scientific – A'),
     ('Rusul Hadi', '6th Scientific – C'),
     ('Tabarak Qasim', '4th Scientific – A'),
   ];
 
-  /// Bus drivers. Kadhim drives bus 12 and Salam bus 7; Abbas is spare.
   static const _drivers = [
     ('DRV-2024-0019', 'Salam Hameed', '+964 780 222 7070'),
     ('DRV-2025-0027', 'Abbas Fadhil', '+964 771 640 3030'),
@@ -60,13 +57,11 @@ class MockPeople {
           phone: '',
           schoolName: _school,
           className: className,
-          // One account not activated yet, so the screen shows that state.
           isActive: i != 4,
         ),
       );
     }
 
-    // One teacher per subject (except maths, which is Mr. Ahmed).
     final otherSubjects = MockSubjects.all.where(
       (s) => s.id != MockSubjects.math.id,
     );

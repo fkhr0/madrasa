@@ -13,7 +13,6 @@ import '../widgets/credentials_sheet.dart';
 import '../widgets/role_chips.dart';
 import '../../../core/l10n/language.dart';
 
-/// Creates an account, or edits one when [personId] is given.
 class AddPersonPage extends ConsumerStatefulWidget {
   final String? personId;
 
@@ -35,12 +34,10 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
   final Set<String> _childIds = {};
   bool _isSaving = false;
 
-  /// The account being edited, once loaded.
   UserModel? _editing;
 
   bool get _isNew => widget.personId == null;
 
-  /// Fills the form with the account, once.
   void _fill(UserModel user) {
     _editing = user;
     _role = user.role;
@@ -163,7 +160,6 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
             TextFormField(
               controller: _phone,
               keyboardType: TextInputType.phone,
-              // Families and the office call drivers, so they need a phone.
               validator: (v) =>
                   _role == UserRole.driver && (v == null || v.trim().isEmpty)
                   ? tr('Drivers need a phone number')
@@ -197,10 +193,8 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
             ),
             const SizedBox(height: AppSpacing.xl),
 
-            // ---------- Role-specific fields ----------
             if (_role == UserRole.student)
               DropdownButtonFormField<String>(
-                // The app's card look, not the default grey strip.
                 dropdownColor: context.palette.card,
 
                 borderRadius: BorderRadius.circular(AppRadius.md),
@@ -225,7 +219,6 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
 
             if (_role == UserRole.teacher)
               DropdownButtonFormField<String>(
-                // The app's card look, not the default grey strip.
                 dropdownColor: context.palette.card,
 
                 borderRadius: BorderRadius.circular(AppRadius.md),
@@ -239,7 +232,6 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
                   prefixIcon: Icon(Icons.menu_book_outlined),
                 ),
                 items: [
-                  // The school's own subjects (Academic › Subjects).
                   for (final name in _withCurrent(
                     subjects.map((s) => s.name),
                     _subjectName,
@@ -300,8 +292,6 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
     );
   }
 
-  /// The choices, plus the person's current value if it is no longer in
-  /// the list (a class or subject renamed or deleted since).
   static List<String> _withCurrent(Iterable<String> names, String? current) {
     final list = names.toList();
     if (current != null && !list.contains(current)) list.add(current);

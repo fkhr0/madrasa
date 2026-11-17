@@ -4,9 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/language.dart';
 
-/// Google Play's "prominent disclosure": before the phone asks for location,
-/// the driver reads what is collected, why, and that it goes on with the app
-/// closed.
 Future<bool> confirmBusLocationSharing(BuildContext context) async {
   if (kIsWeb) return true;
   const key = 'bus_location_disclosure_accepted';

@@ -2,8 +2,6 @@ import '../../subjects/data/mock_subjects.dart';
 import '../models/assignment_model.dart';
 import '../models/attachment_model.dart';
 
-/// Fake assignments. Dates are relative to today so the app always
-/// has something due soon, something late and something graded.
 class MockAssignments {
   MockAssignments._();
 

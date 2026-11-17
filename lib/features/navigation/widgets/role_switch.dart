@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/models/user_model.dart';
 import '../../auth/providers/auth_provider.dart';
 
-/// Shows a different page for each role at the same place in the app, e.g.
 class RoleSwitch extends ConsumerWidget {
   final Widget student;
   final Widget teacher;

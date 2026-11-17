@@ -9,7 +9,6 @@ import '../../announcements/providers/announcement_provider.dart';
 import '../../announcements/widgets/announcement_tile.dart';
 import '../../../core/l10n/language.dart';
 
-/// The 2 most important announcements (pinned first).
 class LatestAnnouncementsSection extends ConsumerWidget {
   const LatestAnnouncementsSection({super.key});
 

@@ -2,8 +2,6 @@ import 'package:flutter/foundation.dart';
 
 import '../models/notification_model.dart';
 
-/// TEST MODE ONLY, stands in for the server's notification jobs (BullMQ + push,
-/// see docs/PLATFORM_PLAN.md §3).
 class DemoNotifier extends ChangeNotifier {
   final Map<String, List<NotificationModel>> _byUser = {};
 

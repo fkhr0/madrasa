@@ -2,13 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-/// What keeps someone signed in after the app is closed: the refresh token and
-/// the last copy of their profile.
 abstract class SessionStore {
   Future<SavedSession?> read();
   Future<void> save(String refreshToken, Map<String, dynamic> user);
 
-  /// The server gives a new refresh token each time it is used.
   Future<void> saveToken(String refreshToken);
   Future<void> clear();
 }
@@ -33,7 +30,6 @@ class SecureSessionStore implements SessionStore {
       if (token == null || user == null) return null;
       return SavedSession(token, jsonDecode(user) as Map<String, dynamic>);
     } catch (_) {
-      // Unreadable (e.g. the phone's keys were reset): sign in again.
       await clear();
       return null;
     }
@@ -56,7 +52,6 @@ class SecureSessionStore implements SessionStore {
   }
 }
 
-/// Remembers nothing (tests).
 class NoSessionStore implements SessionStore {
   const NoSessionStore();
 

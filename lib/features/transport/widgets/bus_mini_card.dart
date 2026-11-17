@@ -12,8 +12,6 @@ import '../logic/trip_text.dart';
 import '../providers/transport_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Small bus card on the student / parent home page.
-/// Appears only around trip time, so it never clutters the screen.
 class BusMiniCard extends ConsumerWidget {
   const BusMiniCard({super.key});
 

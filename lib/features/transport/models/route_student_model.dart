@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/l10n/language.dart';
 
-/// A student registered on a bus route, as the driver sees them.
 class RouteStudentModel {
   final String id;
   final String name;
@@ -13,7 +12,6 @@ class RouteStudentModel {
   final String parentName;
   final String parentPhone;
 
-  /// The parent said the child won't ride today.
   final bool notRidingToday;
 
   const RouteStudentModel({
@@ -54,7 +52,6 @@ class RouteStudentModel {
   }
 }
 
-/// Where a student is on today's trip.
 enum BoardingStatus {
   waiting,
   onBoard,

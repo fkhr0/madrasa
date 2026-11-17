@@ -1,8 +1,6 @@
-// SQL for fees, discounts and payments.
 const { query, queryOne } = require("../../db/database");
 const institution = require("../institution/institution.repository");
 
-/** The school's fee settings, created empty the first time. */
 async function settings(institutionId) {
   await query(
     "INSERT INTO finance_settings (institution_id) VALUES ($1) ON CONFLICT DO NOTHING",
@@ -48,10 +46,6 @@ async function saveSettings(tx, institutionId, { tuition, busFee, dueDates, clas
   }
 }
 
-/**
- * Students' accounts as the app reads them (StudentAccountModel): every
- * active student of the school, or just [studentId].
- */
 async function accounts(institutionId, studentId = null) {
   const fees = await settings(institutionId);
   const students = await query(
@@ -107,7 +101,6 @@ async function setDiscount(studentId, { percent, reason }) {
   );
 }
 
-/** Records a payment with the school's next receipt number, e.g. RCP-2026-0042. */
 async function insertPayment(tx, institutionId, studentId, { amount, method, note }, recordedBy) {
   const year = new Date().getFullYear();
   const { n } = await tx.queryOne(

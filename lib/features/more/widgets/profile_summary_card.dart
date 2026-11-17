@@ -10,7 +10,6 @@ import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/user_avatar.dart';
 import '../../auth/providers/auth_provider.dart';
 
-/// Avatar, name and class at the top of the More page.
 class ProfileSummaryCard extends ConsumerWidget {
   const ProfileSummaryCard({super.key});
 

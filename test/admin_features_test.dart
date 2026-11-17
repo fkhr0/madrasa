@@ -27,7 +27,6 @@ void main() {
   DateTime at(int hour, int minute) => DateTime(2026, 11, 4, hour, minute);
 
   group('Trip rules', () {
-    // Morning: first stop 06:50, school 07:45 → window 06:05–08:45.
     TripAvailability morning(DateTime now, {DateTime? doneAt}) => checkTrip(
       route: route,
       direction: TripDirection.toSchool,
@@ -216,20 +215,19 @@ void main() {
 
   group('Stop planning', () {
     test('a new stop goes where it adds the least driving', () {
-      // Between Al-Ghazaliya (s1) and Al-Adel (s2).
       final index = bestInsertIndex(route.stops, 33.334, 44.285);
       expect(index, 1);
     });
 
     test('wrong times are found and fixed', () {
       final stops = [...route.stops];
-      stops[2] = stops[2].copyWith(morningMinute: 400); // before stop 1
+      stops[2] = stops[2].copyWith(morningMinute: 400);
       expect(timetableProblem(stops), isNotNull);
       expect(timetableProblem(evenTimes(stops)), isNull);
     });
 
     test('afternoon mirrors the morning', () {
-      const school = MockTransport.school; // 07:45 / 13:20
+      const school = MockTransport.school;
       expect(afternoonFor(school, 7 * 60 + 25), 13 * 60 + 40);
       expect(school.id, BusStopModel.schoolId);
     });

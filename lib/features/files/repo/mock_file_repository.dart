@@ -1,7 +1,6 @@
 import '../../assignments/models/attachment_model.dart';
 import 'file_repository.dart';
 
-/// Mock mode: files are only remembered by name and can't be opened.
 class MockFileRepository implements FileRepository {
   int _nextId = 1;
 

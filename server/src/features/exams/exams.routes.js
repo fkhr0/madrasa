@@ -1,5 +1,3 @@
-// Exams: a teacher schedules them for the subjects they teach and publishes the
-// scores; the administrator can do it for any subject.
 const express = require("express");
 const { HttpError, validate, isoDate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");
@@ -36,21 +34,14 @@ const examFields = z.object({
   maxScore: z.number().positive().max(1000).default(100),
 });
 
-// ---------- A student's exams ----------
-
-// GET /exams/students/:id -> [exam + { score | null }]  (score once published)
 router.get("/students/:id", async (req, res) => {
   const student = await personOr404(req.user, req.params.id);
   if (student.role !== "student" || !student.className) return res.json([]);
   res.json(await repo.studentExams(student.institutionId, student.className, student.id));
 });
 
-// ---------- A class's exams (teacher of the subject, or administrator) ----------
-
 const staff = requireRole("teacher", "admin");
 
-// GET /exams/classes/:id?subjectId= -> [exam + { scoredCount }]
-// A teacher sees the exams of the subjects they teach there.
 router.get("/classes/:id", staff, async (req, res) => {
   const schoolClass = await classOr404(req);
   const subjectId = req.query.subjectId ? String(req.query.subjectId) : null;
@@ -60,8 +51,6 @@ router.get("/classes/:id", staff, async (req, res) => {
   res.json(exams.filter((e) => mine(e.subjectId)));
 });
 
-// POST /exams/classes/:id { subjectId, type, title, date, ... } -> exam
-// The class's students and their parents are told.
 router.post("/classes/:id", staff, async (req, res) => {
   const schoolClass = await classOr404(req);
   const body = validate(examFields, req.body);
@@ -88,7 +77,6 @@ router.post("/classes/:id", staff, async (req, res) => {
   res.status(201).json(exam);
 });
 
-// PATCH /exams/:examId { ... same fields } -> exam
 router.patch("/:examId", staff, async (req, res) => {
   const exam = await examOr404(req);
   const schoolClass = await academics.findClass(req.user.institutionId, exam.classId);
@@ -112,7 +100,6 @@ router.patch("/:examId", staff, async (req, res) => {
   res.json(changed);
 });
 
-// DELETE /exams/:examId -> 204  (its scores go too; the app asks first)
 router.delete("/:examId", staff, async (req, res) => {
   const exam = await examOr404(req);
   const schoolClass = await academics.findClass(req.user.institutionId, exam.classId);
@@ -127,9 +114,6 @@ router.delete("/:examId", staff, async (req, res) => {
   res.status(204).end();
 });
 
-// ---------- Scores ----------
-
-// GET /exams/:examId/scores -> { exam, students: [{ id, name, score | null }] }
 router.get("/:examId/scores", staff, async (req, res) => {
   const exam = await examOr404(req);
   const schoolClass = await academics.findClass(req.user.institutionId, exam.classId);
@@ -137,8 +121,6 @@ router.get("/:examId/scores", staff, async (req, res) => {
   res.json(await scoreSheet(exam));
 });
 
-// PUT /exams/:examId/scores { scores: { studentId: number | null } } -> same as GET
-// Saves and publishes. Students whose score is new or changed are told.
 router.put("/:examId/scores", staff, async (req, res) => {
   const exam = await examOr404(req);
   const schoolClass = await academics.findClass(req.user.institutionId, exam.classId);
@@ -184,8 +166,6 @@ router.put("/:examId/scores", staff, async (req, res) => {
   res.json(await scoreSheet(await repo.findExam(req.user.institutionId, exam.id)));
 });
 
-// ---------- helpers ----------
-
 async function classOr404(req) {
   const schoolClass = await academics.findClass(req.user.institutionId, req.params.id);
   if (!schoolClass) throw new HttpError(404, "Class not found.");
@@ -198,7 +178,6 @@ async function examOr404(req) {
   return exam;
 }
 
-/** The subject is studied in the class, taught by this user, on a school day. */
 async function checkExam(req, schoolClass, body) {
   if (!schoolClass.subjects.some((s) => s.subjectId === body.subjectId)) {
     throw new HttpError(400, "{0} doesn't study this subject.", [schoolClass.name]);

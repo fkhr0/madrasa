@@ -14,8 +14,6 @@ import '../../notifications/providers/notification_provider.dart';
 import '../widgets/profile_summary_card.dart';
 import '../../../core/l10n/language.dart';
 
-/// Everything that does not fit in the bottom bar. The first groups
-/// depend on the role; "Stay informed" and "App" are the same for everyone.
 class MorePage extends ConsumerWidget {
   const MorePage({super.key});
 
@@ -136,7 +134,6 @@ class MorePage extends ConsumerWidget {
         ),
       ],
       UserRole.driver => [
-        // Holidays decide the days without trips.
         MenuGroup(title: tr('School days'), children: [calendar]),
       ],
       UserRole.student => [

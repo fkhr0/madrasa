@@ -1,8 +1,4 @@
 #!/usr/bin/env bash
-# Updates the app with no downtime: one API copy at a time, each must answer
-# its health check before the next; if the new version fails, the old one
-# comes back. GitHub Actions runs this after every push to main:
-#   bash scripts/deploy.sh ghcr.io/<owner>/madrasa-api:<commit>
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -39,11 +35,8 @@ echo "Deploying $NEW_IMAGE"
 set_image "$NEW_IMAGE"
 docker compose pull api1 api2 worker
 
-# The rest of the stack (Redis, monitoring) when its config changed.
 docker compose up -d redis prometheus alertmanager grafana loki promtail node-exporter cadvisor
 
-# Nginx: check the new config in a throwaway copy (same certificates) and
-# only then restart; a bad config (e.g. a missing certificate) keeps the old one.
 NGINX_SUM="$(cat nginx/nginx.conf nginx/templates/* | sha256sum | cut -d' ' -f1)"
 if [[ "$NGINX_SUM" != "$(cat .nginx-config-sum 2>/dev/null || true)" ]]; then
   if docker compose run --rm --no-deps nginx nginx -t >/dev/null 2>&1; then
@@ -57,13 +50,10 @@ else
   docker compose up -d nginx
 fi
 
-# One copy at a time: Nginx sends everyone to the other meanwhile.
 for service in api1 api2; do
   docker compose up -d --no-deps "$service"
   healthy "$service" || rollback
   echo "$service is healthy"
-  # Nginx skips a copy for 10 s after it failed (fail_timeout): let it take
-  # this one back before the other restarts, or both look down at once.
   sleep 12
 done
 docker compose up -d --no-deps worker

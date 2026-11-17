@@ -1,7 +1,3 @@
-# The AWS setup as code (sized for the free plan's credits): one ARM server
-# (Ubuntu 24.04) with a fixed IP, the cloud firewall, the bucket for off-site
-# backups, and a budget alert by email.
-#   tofu init && tofu apply        (or terraform)
 terraform {
   required_version = ">= 1.6"
   required_providers {
@@ -12,7 +8,6 @@ terraform {
   }
 }
 
-# Keys come from the AWS CLI's profile (aws configure), never from here.
 provider "aws" {
   region  = var.region
   profile = var.profile
@@ -21,7 +16,6 @@ provider "aws" {
   }
 }
 
-# The newest Ubuntu 24.04 for ARM, from Canonical's public list.
 data "aws_ssm_parameter" "ubuntu" {
   name = "/aws/service/canonical/ubuntu/server/24.04/stable/current/arm64/hvm/ebs-gp3/ami-id"
 }
@@ -37,8 +31,6 @@ resource "aws_key_pair" "admin" {
   public_key = file(var.ssh_public_key_path)
 }
 
-# The cloud firewall: the web, Tailscale's direct connections, and SSH only
-# while ssh_allowed_cidr isn't empty (empty it once Tailscale works).
 resource "aws_security_group" "server" {
   name        = "madrasa"
   description = "madrasa server"
@@ -54,7 +46,6 @@ resource "aws_security_group" "server" {
     }
   }
 
-  # Tailscale's direct path (it works without, slower).
   ingress {
     from_port   = 41641
     to_port     = 41641
@@ -80,7 +71,6 @@ resource "aws_security_group" "server" {
   }
 }
 
-# ── The server ──
 resource "aws_instance" "server" {
   ami                    = data.aws_ssm_parameter.ubuntu.value
   instance_type          = var.instance_type
@@ -94,32 +84,27 @@ resource "aws_instance" "server" {
     encrypted   = true
   }
 
-  # IMDSv2 only; 2 hops so the containers can reach it (backup credentials).
   metadata_options {
     http_tokens                 = "required"
     http_put_response_hop_limit = 2
   }
 
-  # Credits run out instead of a bill: no "unlimited" CPU bursting.
   credit_specification {
     cpu_credits = "standard"
   }
 
   tags = { Name = "madrasa" }
 
-  # A new Ubuntu image later must not rebuild the server.
   lifecycle {
     ignore_changes = [ami]
   }
 }
 
-# A fixed address: stays the same through stops and restarts (DuckDNS).
 resource "aws_eip" "server" {
   instance = aws_instance.server.id
   domain   = "vpc"
 }
 
-# ── Off-site backups ──
 resource "aws_s3_bucket" "backups" {
   bucket = "madrasa-backups-${data.aws_caller_identity.me.account_id}"
 }
@@ -132,7 +117,6 @@ resource "aws_s3_bucket_public_access_block" "backups" {
   restrict_public_buckets = true
 }
 
-# The server reaches the bucket with a role: no keys stored anywhere.
 resource "aws_iam_role" "server" {
   name = "madrasa-server"
   assume_role_policy = jsonencode({
@@ -170,7 +154,6 @@ resource "aws_iam_instance_profile" "server" {
   role = aws_iam_role.server.name
 }
 
-# ── An email before money runs out ──
 resource "aws_budgets_budget" "monthly" {
   name         = "madrasa"
   budget_type  = "COST"

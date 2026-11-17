@@ -10,8 +10,6 @@ import '../../../core/widgets/user_avatar.dart';
 import '../../auth/models/user_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// One row in the People list: name, ID, class / subject, and a badge
-/// when the account is deactivated.
 class PersonTile extends StatelessWidget {
   final UserModel person;
 

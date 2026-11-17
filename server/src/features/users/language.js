@@ -1,8 +1,5 @@
-// Each person's language, saved so that notifications sent to them later
-// (alerts, reminders, summaries) are in the language their app shows.
 const { query } = require("../../db/database");
 
-/** User ID → the language last saved (to skip needless writes). */
 const known = new Map();
 
 function rememberLanguage(userId, language) {
@@ -12,7 +9,6 @@ function rememberLanguage(userId, language) {
     .catch(() => known.delete(userId));
 }
 
-/** User ID → "ar" | "en" for the given people. */
 async function languagesOf(userIds) {
   if (userIds.length === 0) return new Map();
   const rows = await query("SELECT id, language FROM users WHERE id = ANY($1)", [userIds]);

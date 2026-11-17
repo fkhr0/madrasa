@@ -1,8 +1,5 @@
-// SQL for school buses. Always limited to one institution.
 const config = require("../../config");
 const { query, queryOne, transaction } = require("../../db/database");
-
-// ---------- Settings ----------
 
 async function findSettings(institutionId) {
   const row = await queryOne(
@@ -11,8 +8,6 @@ async function findSettings(institutionId) {
      FROM transport_settings WHERE institution_id = $1`,
     [institutionId],
   );
-  // Test mode (trips at any hour) is for trying the app on this PC; a real
-  // school starts with it off.
   return row ?? { opensBeforeMinutes: 45, closesAfterMinutes: 60, testMode: !config.isProduction };
 }
 
@@ -27,15 +22,8 @@ function saveSettings(institutionId, s) {
   );
 }
 
-// ---------- Lines ----------
-
-/** Where a line ends when the school hasn't put itself on the map yet. */
 const BAGHDAD = { latitude: 33.3152, longitude: 44.3661 };
 
-/**
- * Lines with their stops in morning order, ending at the school.
- * [where] filters bus_routes (alias r), e.g. "r.id = $2".
- */
 async function findRoutes(institutionId, where = "true", params = []) {
   const routes = await query(
     `SELECT r.id, r.name, r.bus_number AS "busNumber", r.plate_number AS "plateNumber",
@@ -99,13 +87,8 @@ async function findDriverRoute(institutionId, driverId) {
   return route ?? null;
 }
 
-/**
- * Creates or updates a line and its stops in one go. Stops keep their IDs,
- * so riders stay on them; stops left out are deleted with their riders.
- */
 async function saveRoute(institutionId, routeId, r) {
   return transaction(async (tx) => {
-    // A driver drives one bus: take them off any other line.
     if (r.driverId) {
       await tx.query(
         `UPDATE bus_routes SET driver_id = NULL
@@ -173,7 +156,6 @@ async function saveRoute(institutionId, routeId, r) {
   });
 }
 
-/** The roads worked out for both trips of a line (null = straight lines). */
 function saveRoads(routeId, toSchool, toHome) {
   return query(
     "UPDATE bus_routes SET road_to_school = $2, road_to_home = $3 WHERE id = $1",
@@ -181,7 +163,6 @@ function saveRoads(routeId, toSchool, toHome) {
   );
 }
 
-/** Lines whose roads were never worked out, in every school. */
 function findRoutesWithoutRoads() {
   return query(
     "SELECT id, institution_id AS \"institutionId\" FROM bus_routes WHERE road_to_school IS NULL",
@@ -196,15 +177,12 @@ async function deleteRoute(institutionId, routeId) {
   return rows.length > 0;
 }
 
-// ---------- Riders ----------
-
 const RIDER = `rs.student_id AS id, u.name, rs.stop_id AS "stopId",
   COALESCE(u.class_name, '') AS "className",
   COALESCE(p.id, '') AS "parentId", COALESCE(p.name, 'No parent linked') AS "parentName",
   COALESCE(p.phone, '') AS "parentPhone",
   rs.not_riding_on::text AS "notRidingOn"`;
 
-// The first parent on file for the child.
 const RIDER_FROM = `FROM route_students rs
   JOIN users u ON u.id = rs.student_id
   LEFT JOIN LATERAL (
@@ -228,7 +206,6 @@ function findRiding(studentId) {
   );
 }
 
-/** Adds the student, moves them to another stop, or to this bus from another. */
 function saveRider(routeId, studentId, stopId) {
   return query(
     `INSERT INTO route_students (student_id, route_id, stop_id) VALUES ($1, $2, $3)
@@ -245,7 +222,6 @@ async function removeRider(routeId, studentId) {
   return rows.length > 0;
 }
 
-/** [day] is the school's date ("2026-11-05"), or null when they ride again. */
 function setNotRidingOn(studentId, day) {
   return query("UPDATE route_students SET not_riding_on = $2 WHERE student_id = $1", [
     studentId,
@@ -253,7 +229,6 @@ function setNotRidingOn(studentId, day) {
   ]);
 }
 
-/** Students of the school who don't ride any bus. */
 function findStudentsWithoutBus(institutionId) {
   return query(
     `SELECT u.id, u.name, u.class_name AS "className",
@@ -265,8 +240,6 @@ function findStudentsWithoutBus(institutionId) {
     [institutionId],
   );
 }
-
-// ---------- Homes (door-to-door) ----------
 
 const HOME = `latitude, longitude, note, set_by AS "setBy", updated_at AS "updatedAt"`;
 
@@ -285,8 +258,6 @@ function saveHome(studentId, h, setBy) {
   );
 }
 
-// ---------- Trips ----------
-
 const TRIP = `id, direction, started_at AS "startedAt", ended_at AS "endedAt",
   early_reason AS "earlyReason", stop_ids AS "stopIds", reached_at AS "reachedAt",
   reached_index AS "reachedIndex", left_stop_at AS "leftStopAt",
@@ -294,7 +265,6 @@ const TRIP = `id, direction, started_at AS "startedAt", ended_at AS "endedAt",
   latitude, longitude, position_at AS "positionAt",
   boarded_ids AS "boardedIds", absent_ids AS "absentIds", alerts_sent AS "alertsSent"`;
 
-/** Today's trips of a line, the running one first. */
 function findTodaysTrips(routeId, day) {
   return query(
     `SELECT ${TRIP} FROM bus_trips WHERE route_id = $1 AND trip_date = $2
@@ -304,13 +274,10 @@ function findTodaysTrips(routeId, day) {
 }
 
 async function startTrip(routeId, day, direction, stopIds) {
-  // Test mode may drive a trip twice in a day: the new one replaces it.
   await query(
     "DELETE FROM bus_trips WHERE route_id = $1 AND trip_date = $2 AND direction = $3",
     [routeId, day, direction],
   );
-  // The bus starts wherever the driver is, on its way to the first stop
-  // (reached_index -1); GPS or the driver says when it gets there.
   return queryOne(
     `INSERT INTO bus_trips (route_id, direction, trip_date, stop_ids, reached_at,
                             reached_index, left_stop_at)
@@ -319,11 +286,6 @@ async function startTrip(routeId, day, direction, stopIds) {
   );
 }
 
-/** Saves the fields of [trip] that move during a trip. */
-/**
- * Who watches a line's trip: its riders, their parents, the driver and the
- * school office.
- */
 async function tripWatchers(institutionId, route) {
   const rows = await query(
     `SELECT student_id AS id FROM route_students WHERE route_id = $1

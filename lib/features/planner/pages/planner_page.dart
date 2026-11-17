@@ -12,7 +12,6 @@ import '../providers/planner_provider.dart';
 import '../widgets/plan_tip_tile.dart';
 import '../../../core/l10n/language.dart';
 
-/// The full plan, grouped Today / Tomorrow / This week (doc §3.21).
 class PlannerPage extends ConsumerWidget {
   const PlannerPage({super.key});
 

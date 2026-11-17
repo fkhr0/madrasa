@@ -1,7 +1,3 @@
--- Times kept to the millisecond, like JavaScript and the app. PostgreSQL keeps
--- microseconds, so "messages after 10:20:34.876" (the app's last message)
--- would find that same message again (it is really .876588).
--- Columns added later: write them as TIMESTAMPTZ(3).
 DO $$
 DECLARE
   col record;

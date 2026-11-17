@@ -1,7 +1,4 @@
 @echo off
-rem Stops the school server started by start-school.bat.
-rem It asks the server to stop by itself (stop.flag), so the database closes
-rem cleanly; only if it doesn't answer is it forced.
 cd /d "%~dp0server"
 echo stop > stop.flag
 echo Stopping the server...

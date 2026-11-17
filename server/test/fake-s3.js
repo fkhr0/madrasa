@@ -1,8 +1,5 @@
-// A tiny S3 server in memory for the storage tests: the calls the app makes
-// (put, get with Range, head, delete, list), path style (/bucket/key).
 const http = require("http");
 
-/** The body without aws-chunked framing ("size\r\ndata\r\n...0\r\ntrailers"). */
 function unchunk(raw) {
   const parts = [];
   let at = 0;
@@ -26,7 +23,7 @@ function notFound(req, res) {
 }
 
 async function startFakeS3() {
-  const objects = new Map(); // "bucket/key" -> Buffer
+  const objects = new Map();
 
   const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, "http://s3");

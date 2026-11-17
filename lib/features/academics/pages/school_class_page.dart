@@ -22,8 +22,6 @@ import '../widgets/class_sheet.dart';
 import '../widgets/teacher_picker_sheet.dart';
 import '../../../core/l10n/language.dart';
 
-/// One class, fully managed here: its head teacher, the subjects it
-/// studies and who teaches each one. The pencil renames or deletes it.
 class SchoolClassPage extends ConsumerWidget {
   final String classId;
 
@@ -69,7 +67,6 @@ class _ClassBody extends ConsumerWidget {
 
   const _ClassBody({required this.schoolClass});
 
-  /// Runs an action and shows the server's message if it fails.
   Future<void> _run(
     BuildContext context,
     Future<void> Function() action,
@@ -378,7 +375,6 @@ class _ClassBody extends ConsumerWidget {
   }
 }
 
-/// Opens the class's weekly timetable.
 class _TimetableCard extends ConsumerWidget {
   final SchoolClassModel schoolClass;
 
@@ -420,7 +416,6 @@ class _TimetableCard extends ConsumerWidget {
 class _SubjectTeacherTile extends StatelessWidget {
   final ClassSubjectModel subject;
 
-  /// The subject's icon and colour, from the school's list.
   final SchoolSubjectModel? style;
   final VoidCallback onChangeTeacher;
   final VoidCallback onRemove;

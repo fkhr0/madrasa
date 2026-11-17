@@ -15,7 +15,7 @@ test("classes come with head teacher, students and subject teachers", async () =
   const fiveA = res.body.find((c) => c.id === "cls-5a");
 
   assert.equal(fiveA.homeroomTeacherName, "Huda Jaber");
-  assert.ok(fiveA.studentCount >= 1); // Zainab and others
+  assert.ok(fiveA.studentCount >= 1);
   const maths = fiveA.subjects.find((s) => s.subjectId === "math");
   assert.equal(maths.teacherName, "Ahmed Kareem");
 
@@ -67,7 +67,6 @@ test("classes: add with subjects, head teacher, rename moves students, delete", 
   assert.equal(created.body.homeroomTeacherName, "Noor Abbas");
   assert.equal(created.body.subjects.length, 2);
 
-  // Assign a subject teacher, then remove a subject.
   const assigned = await request(app)
     .put(`/academics/classes/${created.body.id}/subjects/math`)
     .set(admin)
@@ -82,7 +81,6 @@ test("classes: add with subjects, head teacher, rename moves students, delete", 
     .set(admin)
     .expect(200);
 
-  // Only teachers can teach.
   await request(app)
     .put(`/academics/classes/${created.body.id}/subjects/math`)
     .set(admin)
@@ -91,7 +89,6 @@ test("classes: add with subjects, head teacher, rename moves students, delete", 
 
   await request(app).delete(`/academics/classes/${created.body.id}`).set(admin).expect(204);
 
-  // Renaming a class keeps its students in it.
   const renamed = await request(app)
     .patch("/academics/classes/cls-6c")
     .set(admin)
@@ -99,7 +96,6 @@ test("classes: add with subjects, head teacher, rename moves students, delete", 
     .expect(200);
   assert.ok(renamed.body.studentCount > 0);
 
-  // A class with students can't be deleted.
   await request(app).delete("/academics/classes/cls-6c").set(admin).expect(409);
 });
 

@@ -1,6 +1,5 @@
 import 'package:latlong2/latlong.dart';
 
-/// Iraq's borders, roughly. Maps stay inside; places outside are refused.
 class IraqMap {
   IraqMap._();
 
@@ -16,14 +15,12 @@ class IraqMap {
       p.longitude <= east;
 }
 
-/// Finds a place in what a family sent: a WhatsApp / Google Maps link with the
-/// coordinates inside, "geo:33.3,44.3", or "33.3121, 44.3612".
 LatLng? coordinatesIn(String text) {
   final decoded = Uri.decodeFull(text).replaceAll('+', ' ');
   const number = r'(-?\d+\.\d+)';
   final patterns = [
-    RegExp('!3d$number!4d$number'), // the pin itself
-    RegExp('@$number,\\s*$number'), // the map's centre
+    RegExp('!3d$number!4d$number'),
+    RegExp('@$number,\\s*$number'),
     RegExp(
       '[?&](?:q|ll|query|destination|center)=(?:loc:)?$number,\\s*$number',
     ),

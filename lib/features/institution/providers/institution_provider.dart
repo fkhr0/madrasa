@@ -11,14 +11,12 @@ import '../repo/api_institution_repository.dart';
 import '../repo/institution_repository.dart';
 import '../repo/mock_institution_repository.dart';
 
-/// The server when API_URL is set, otherwise the mock school.
 final institutionRepositoryProvider = Provider<InstitutionRepository>(
   (ref) => AppConfig.useApi
       ? ApiInstitutionRepository(watchApi(ref))
       : MockInstitutionRepository(),
 );
 
-/// Reloads when another user signs in (they may be in another school).
 final institutionProvider = FutureProvider<InstitutionModel>((ref) {
   ref.watch(authProvider.select((user) => user?.id));
   return ref.watch(institutionRepositoryProvider).getInstitution();
@@ -29,7 +27,6 @@ final academicYearProvider = FutureProvider<AcademicYearModel>((ref) {
   return ref.watch(institutionRepositoryProvider).getCurrentAcademicYear();
 });
 
-/// Administrator actions. Each one saves, then reloads what depends on it.
 final institutionActionsProvider = Provider<InstitutionActions>(
   InstitutionActions.new,
 );

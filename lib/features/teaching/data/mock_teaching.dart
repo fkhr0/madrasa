@@ -2,8 +2,6 @@ import '../../subjects/data/mock_subjects.dart';
 import '../models/class_student_model.dart';
 import '../models/teaching_class_model.dart';
 
-/// Mr. Ahmed Kareem's classes and students.
-/// (Prep schools in Iraq are usually girls-only or boys-only per class.)
 class MockTeaching {
   MockTeaching._();
 
@@ -79,7 +77,6 @@ class MockTeaching {
         ClassStudentModel(
           id: '$classId-s$i',
           name: names[i],
-          // Varied but repeatable numbers.
           average: 48 + (i * 37 + classId.length * 11) % 50,
           attendanceRate: 82 + (i * 7) % 18,
         ),

@@ -1,4 +1,3 @@
-// Attendance.
 const express = require("express");
 const { HttpError, validate, isoDate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");
@@ -17,14 +16,8 @@ const { msg } = require("../../i18n");
 const router = express.Router();
 router.use(requireAuth);
 
-/** How far back a teacher may still mark or correct a lesson. */
 const TEACHER_DAYS_BACK = 7;
 
-// ---------- A class's lessons (teacher of the lesson, or administrator) ----------
-
-// GET /attendance/classes/:id/lessons?date=YYYY-MM-DD
-//   -> { date, className, isSchoolDay, lessons: [{ period, start, end, subjectName, teacherName, taken }] }
-// The lessons of that day this user may mark.
 router.get("/classes/:id/lessons", requireRole("teacher", "admin"), async (req, res) => {
   const schoolClass = await classOr404(req);
   const date = req.query.date ? validate(isoDate, req.query.date) : today();
@@ -55,8 +48,6 @@ router.get("/classes/:id/lessons", requireRole("teacher", "admin"), async (req, 
   });
 });
 
-// GET /attendance/classes/:id/lessons/:date/:period
-//   -> { lesson, students: [{ id, name, status | null }] }  (null = not marked yet)
 router.get(
   "/classes/:id/lessons/:date/:period",
   requireRole("teacher", "admin"),
@@ -66,10 +57,6 @@ router.get(
   },
 );
 
-// PUT /attendance/classes/:id/lessons/:date/:period
-//   { marks: { studentId: "present" | "late" | "absent" } } -> same as GET
-// Every student of the class must be marked. Families of newly absent
-// students are told.
 router.put(
   "/classes/:id/lessons/:date/:period",
   requireRole("teacher", "admin"),
@@ -107,8 +94,6 @@ router.put(
       ),
     );
 
-    // Students the office excused that day (a planned absence) are absent
-    // as expected: their families aren't alerted.
     const excused = await repo.excusedOn(students.map((s) => s.id), date);
     const newlyAbsent = students.filter(
       (s) =>
@@ -139,7 +124,6 @@ router.put(
       classId: schoolClass.id,
       route: `/classes/${schoolClass.id}/attendance`,
     });
-    // One line per student who was late or absent, for them and their parents.
     for (const s of students) {
       const status = marks[s.id];
       if (status === "present" || status === before.get(s.id)) continue;
@@ -157,10 +141,6 @@ router.put(
   },
 );
 
-// ---------- A student's days ----------
-
-// GET /attendance/students/:id -> { from, to, days: [{ date, status, note, lessons }] }
-// The current term up to today (the whole year so far between terms).
 router.get("/students/:id", async (req, res) => {
   const student = await personOr404(req.user, req.params.id);
   if (student.role !== "student") throw new HttpError(404, "Person not found.");
@@ -183,8 +163,6 @@ router.get("/students/:id", async (req, res) => {
   });
 });
 
-// GET /attendance/students/:id/excuses/planned -> [{ date, note }]
-// Excused days still to come (planned absences), soonest first.
 router.get("/students/:id/excuses/planned", async (req, res) => {
   const student = await personOr404(req.user, req.params.id);
   if (student.role !== "student") throw new HttpError(404, "Person not found.");
@@ -193,8 +171,6 @@ router.get("/students/:id/excuses/planned", async (req, res) => {
   res.json(year ? await repo.studentExcuses(student.id, from, year.end) : []);
 });
 
-// PUT /attendance/students/:id/excuses/:date { note } -> 204  (administrator)
-// Also for a day ahead (a planned absence).
 router.put("/students/:id/excuses/:date", requireRole("admin"), async (req, res) => {
   const student = await studentOfMySchool(req);
   const date = validate(isoDate, req.params.date);
@@ -217,7 +193,6 @@ router.put("/students/:id/excuses/:date", requireRole("admin"), async (req, res)
   res.status(204).end();
 });
 
-// DELETE /attendance/students/:id/excuses/:date -> 204  (administrator)
 router.delete("/students/:id/excuses/:date", requireRole("admin"), async (req, res) => {
   const student = await studentOfMySchool(req);
   const date = validate(isoDate, req.params.date);
@@ -234,8 +209,6 @@ router.delete("/students/:id/excuses/:date", requireRole("admin"), async (req, r
   res.status(204).end();
 });
 
-// ---------- helpers ----------
-
 async function classOr404(req) {
   const schoolClass = await academics.findClass(req.user.institutionId, req.params.id);
   if (!schoolClass) throw new HttpError(404, "Class not found.");
@@ -248,10 +221,6 @@ async function calendarOr404(req) {
   return calendar;
 }
 
-/**
- * The lesson in the URL, checked: a past or present school day, a lesson of
- * the timetable, taught by this teacher and not too long ago.
- */
 async function lessonOr4xx(req) {
   const schoolClass = await classOr404(req);
   const date = validate(isoDate, req.params.date);

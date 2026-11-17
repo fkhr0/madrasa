@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
-# Checks .env and writes the files made from it (Alertmanager's, with the
-# Telegram bot's token). Run in /opt/madrasa/deploy after editing .env.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 [[ -f .env ]] || { echo "No .env: copy .env.example to .env and fill it in." >&2; exit 1; }
-# Read as plain text, not run: values may hold & or $ (database addresses).
 while IFS='=' read -r key value; do
   if [[ $key =~ ^[A-Z_][A-Z0-9_]*$ ]]; then export "$key=$value"; fi
 done < .env
@@ -26,7 +23,6 @@ if [[ -n "${TELEGRAM_BOT_TOKEN:-}" && -n "${TELEGRAM_CHAT_ID:-}" ]]; then
     > monitoring/alertmanager/alertmanager.yml
   chmod 600 monitoring/alertmanager/alertmanager.yml
 else
-  # No Telegram yet: alerts are kept in Alertmanager (see them in Grafana).
   printf 'route:\n  receiver: none\nreceivers:\n  - name: none\n' > monitoring/alertmanager/alertmanager.yml
 fi
 chmod 600 .env

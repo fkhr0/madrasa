@@ -13,16 +13,13 @@ import '../../tasks/widgets/reminder_sheet.dart';
 import '../models/exam_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Upcoming exam: date, subject, time, room, countdown and topics.
 class ExamCard extends StatelessWidget {
   final ExamModel exam;
 
-  /// Students get a "Remind me to study" button.
   final bool showReminder;
 
   const ExamCard({super.key, required this.exam, this.showReminder = false});
 
-  /// Closer exams get a warmer colour.
   Color get _countdownColor {
     if (exam.daysLeft <= 2) return AppColors.danger;
     if (exam.daysLeft <= 6) return AppColors.warning;

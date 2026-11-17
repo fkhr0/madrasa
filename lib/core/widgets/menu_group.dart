@@ -4,7 +4,6 @@ import '../constants/app_spacing.dart';
 import '../utils/context_extensions.dart';
 import 'app_card.dart';
 
-/// A titled card that stacks MenuTiles with thin dividers between them.
 class MenuGroup extends StatelessWidget {
   final String? title;
   final List<Widget> children;

@@ -1,11 +1,9 @@
 import 'period_model.dart';
 import 'timetable_lesson_model.dart';
 
-/// A class's whole week, as the administrator edits it.
 class ClassTimetableModel {
   final List<PeriodModel> periods;
 
-  /// The school's study days, e.g. [7, 1, 2, 3, 4] (Sunday to Thursday).
   final List<int> workingDays;
   final List<TimetableLessonModel> lessons;
 
@@ -15,10 +13,8 @@ class ClassTimetableModel {
     required this.lessons,
   });
 
-  /// Study days in the order of the week, Sunday first (the Iraqi week).
   List<int> get days => [...workingDays]..sort((a, b) => a % 7 - b % 7);
 
-  /// The lesson in [period] of [weekday], or null for a free period.
   TimetableLessonModel? lessonAt(int weekday, int period) {
     for (final lesson in lessons) {
       if (lesson.weekday == weekday && lesson.period == period) return lesson;
@@ -43,7 +39,6 @@ class ClassTimetableModel {
       );
 }
 
-/// Someone's week: a student's class lessons, or a teacher's teaching.
 class WeekTimetableModel {
   final List<PeriodModel> periods;
   final List<TimetableLessonModel> lessons;

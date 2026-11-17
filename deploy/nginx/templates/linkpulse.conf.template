@@ -1,5 +1,3 @@
-# https://linkpulse.duckdns.org -> the linkpulse container (its own repo:
-# github.com/fkhr0/linkpulse). Certificate first, then this file.
 server {
   listen 443 ssl;
   listen [::]:443 ssl;
@@ -13,7 +11,6 @@ server {
 
   limit_conn conn_per_ip 50;
 
-  # resolved per request: nginx starts even while linkpulse is down
   resolver 127.0.0.11 valid=30s ipv6=off;
   set $linkpulse http://linkpulse:4000;
 

@@ -12,13 +12,10 @@ import '../utils/location_link.dart';
 import '../utils/context_extensions.dart';
 import '../l10n/language.dart';
 
-/// A map to choose one place: tap to put the pin, or use this phone's
-/// location. Used for the school gate and for bus stops.
 class LocationPicker extends ConsumerStatefulWidget {
   final LatLng? point;
   final ValueChanged<LatLng> onChanged;
 
-  /// Other places to show for context (e.g. the line's other stops).
   final List<LatLng> nearby;
   final double height;
 
@@ -30,7 +27,6 @@ class LocationPicker extends ConsumerStatefulWidget {
     this.height = 220,
   });
 
-  /// Where the map opens when nothing is chosen yet.
   static const baghdad = LatLng(33.3152, 44.3661);
 
   @override
@@ -44,7 +40,6 @@ class _LocationPickerState extends ConsumerState<LocationPicker> {
   @override
   void initState() {
     super.initState();
-    // Ask now, not on the first tap of "I'm here".
     if (widget.point == null) DeviceLocation.askEarly();
   }
 
@@ -54,8 +49,6 @@ class _LocationPickerState extends ConsumerState<LocationPicker> {
       final here = await DeviceLocation.currentFix();
       widget.onChanged(here.point);
       _map.move(here.point, 16);
-      // Indoors the phone may only know the area: say so, so the pin gets
-      // moved onto the right house.
       if (here.accuracy > 50 && mounted) {
         context.showMessage(
           tr('This may be up to {0} m off. Move the pin to the exact place.', [
@@ -87,7 +80,6 @@ class _LocationPickerState extends ConsumerState<LocationPicker> {
               options: MapOptions(
                 initialCenter: point ?? LocationPicker.baghdad,
                 initialZoom: point == null ? 11 : 15,
-                // The map of Iraq only.
                 cameraConstraint: CameraConstraint.contain(
                   bounds: LatLngBounds(
                     const LatLng(IraqMap.south, IraqMap.west),

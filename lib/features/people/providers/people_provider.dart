@@ -10,19 +10,16 @@ import '../repo/api_people_repository.dart';
 import '../repo/mock_people_repository.dart';
 import '../repo/people_repository.dart';
 
-/// The server when API_URL is set, otherwise the mock directory.
 final peopleRepositoryProvider = Provider<PeopleRepository>(
   (ref) => AppConfig.useApi
       ? ApiPeopleRepository(watchApi(ref))
       : MockPeopleRepository(),
 );
 
-/// The role chosen at the top of the People tab.
 final peopleRoleProvider = StateProvider<UserRole>((ref) => UserRole.student);
 
 final peopleSearchProvider = StateProvider<String>((ref) => '');
 
-/// Reloads when another user signs in (another school's directory).
 final peopleByRoleProvider = FutureProvider.family<List<UserModel>, UserRole>((
   ref,
   role,
@@ -31,7 +28,6 @@ final peopleByRoleProvider = FutureProvider.family<List<UserModel>, UserRole>((
   return ref.watch(peopleRepositoryProvider).getByRole(role);
 });
 
-/// People of the selected role matching the search (name, ID or class).
 final filteredPeopleProvider = FutureProvider<List<UserModel>>((ref) async {
   final role = ref.watch(peopleRoleProvider);
   final query = ref.watch(peopleSearchProvider).trim().toLowerCase();
@@ -50,7 +46,6 @@ final filteredPeopleProvider = FutureProvider<List<UserModel>>((ref) async {
 });
 
 final personByIdProvider = FutureProvider.family<UserModel?, String>((ref, id) {
-  // Reload when any list changes (e.g. after deactivating).
   for (final role in UserRole.values) {
     ref.watch(peopleByRoleProvider(role));
   }
@@ -59,7 +54,6 @@ final personByIdProvider = FutureProvider.family<UserModel?, String>((ref, id) {
 
 final peopleActionsProvider = Provider<PeopleActions>(PeopleActions.new);
 
-/// Administrator actions on accounts. Each one reloads the lists.
 class PeopleActions {
   final Ref _ref;
 

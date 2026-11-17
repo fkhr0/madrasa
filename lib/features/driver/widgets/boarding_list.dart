@@ -12,8 +12,6 @@ import '../../transport/models/trip_model.dart';
 import '../../transport/providers/transport_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Students to pick up (or drop off) at the current stop.
-/// The driver taps ✓ on board or ✗ absent; parents are told right away.
 class BoardingList extends ConsumerWidget {
   final String routeId;
   final TripModel trip;

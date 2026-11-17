@@ -5,7 +5,6 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/utils/context_extensions.dart';
 import '../../../core/l10n/language.dart';
 
-/// Text box + send button pinned to the bottom of the chat.
 class MessageInput extends StatefulWidget {
   final ValueChanged<String> onSend;
 

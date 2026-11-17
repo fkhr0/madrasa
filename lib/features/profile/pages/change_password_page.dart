@@ -54,7 +54,6 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
           );
       if (!mounted) return;
       context.showMessage(tr('Password changed'));
-      // After a first sign-in there is no page behind this one.
       if (context.canPop()) {
         context.pop();
       } else {
@@ -76,7 +75,6 @@ class _ChangePasswordPageState extends ConsumerState<ChangePasswordPage> {
         title: Text(
           firstTime ? tr('Choose your password') : tr('Change password'),
         ),
-        // After a first sign-in this is the only way forward.
         automaticallyImplyLeading: !firstTime,
       ),
       body: Form(

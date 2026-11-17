@@ -8,7 +8,6 @@ import '../../../core/widgets/user_avatar.dart';
 import '../../auth/providers/active_student_provider.dart';
 import '../../auth/providers/auth_provider.dart';
 
-/// One chip per child.
 class ChildSwitcher extends ConsumerWidget {
   const ChildSwitcher({super.key});
 

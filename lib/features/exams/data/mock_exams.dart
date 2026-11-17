@@ -55,7 +55,6 @@ class MockExams {
       room: 'Hall A',
       topics: const ['Grammar', 'Poetry', 'Reading comprehension'],
     ),
-    // Mid-year exams: fixed dates set by the school for January.
     ExamModel(
       id: 'm1',
       subject: MockSubjects.arabic,

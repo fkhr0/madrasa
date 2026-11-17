@@ -1,9 +1,5 @@
-// SQL for bell times and the weekly timetable.
 const { query, queryOne } = require("../../db/database");
 
-// ---------- Bell times ----------
-
-/** [{ number, start: "08:00", end: "08:45" }] in order. */
 function listPeriods(institutionId) {
   return query(
     `SELECT number, to_char(start_time, 'HH24:MI') AS start,
@@ -13,7 +9,6 @@ function listPeriods(institutionId) {
   );
 }
 
-/** Replaces all bell times; numbers follow the list order (1, 2, 3…). */
 async function replacePeriods(tx, institutionId, periods) {
   await tx.query("DELETE FROM periods WHERE institution_id = $1", [institutionId]);
   for (const [i, { start, end }] of periods.entries()) {
@@ -25,7 +20,6 @@ async function replacePeriods(tx, institutionId, periods) {
   }
 }
 
-/** Lessons placed in periods after [count] (they'd be lost if cut). */
 async function countLessonsAfter(institutionId, count) {
   const row = await queryOne(
     `SELECT COUNT(*)::int AS n FROM timetable_slots t
@@ -44,10 +38,6 @@ function deleteLessonsAfter(tx, institutionId, count) {
   );
 }
 
-// ---------- Lessons ----------
-
-// One lesson with everything the app shows. Joined to the bell times, so a
-// lesson in a period that no longer exists is simply not listed.
 const LESSONS = `
   SELECT t.weekday, t.period, t.room,
          to_char(p.start_time, 'HH24:MI') AS start,
@@ -68,7 +58,6 @@ function classWeek(classId) {
   return query(`${LESSONS} WHERE t.class_id = $1 ${ORDER}`, [classId]);
 }
 
-/** A student's week: the lessons of the class they are in. */
 function studentWeek(institutionId, className) {
   return query(
     `${LESSONS} WHERE c.institution_id = $1 AND c.name = $2 ${ORDER}`,
@@ -76,12 +65,10 @@ function studentWeek(institutionId, className) {
   );
 }
 
-/** A teacher's week: every lesson of a subject they teach in a class. */
 function teacherWeek(teacherId) {
   return query(`${LESSONS} WHERE cs.teacher_id = $1 ${ORDER}`, [teacherId]);
 }
 
-/** Adds the lesson, or changes its subject or room. */
 function setLesson(classId, weekday, period, { subjectId, room }) {
   return query(
     `INSERT INTO timetable_slots (class_id, weekday, period, subject_id, room)
@@ -101,10 +88,6 @@ async function deleteLesson(classId, weekday, period) {
   return rows.length > 0;
 }
 
-/**
- * Lessons the teacher already has in another class at the same time as
- * [slots] ([{ weekday, period }]). Empty when the teacher is free.
- */
 function teacherClashes(teacherId, classId, slots) {
   if (!teacherId || slots.length === 0) return Promise.resolve([]);
   return query(
@@ -117,7 +100,6 @@ function teacherClashes(teacherId, classId, slots) {
   );
 }
 
-/** Where [subjectId] is placed in the class's week: [{ weekday, period }]. */
 function subjectSlots(classId, subjectId) {
   return query(
     `SELECT weekday, period FROM timetable_slots

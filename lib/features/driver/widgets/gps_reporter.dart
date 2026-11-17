@@ -13,24 +13,17 @@ import '../../transport/providers/transport_provider.dart';
 import '../../transport/repo/transport_repository.dart';
 import '../../../core/l10n/language.dart';
 
-/// While a trip runs, sends this phone's GPS position to the server so
-/// families see the bus move. Shows one line saying whether it works.
 class GpsReporter extends ConsumerStatefulWidget {
   final String routeId;
 
   const GpsReporter({super.key, required this.routeId});
 
-  /// At most one point this often (the phone may report more).
   static const sendEvery = Duration(seconds: 5);
 
-  /// A reading older than this is not repeated: families would see a bus that
-  /// looks live but stopped moving.
   static const repeatFor = kIsWeb
       ? Duration(minutes: 2)
       : Duration(seconds: 25);
 
-  /// Not moved more than [stillWithin] metres for [stillAfter]: standing at
-  /// a stop or a light (said plainly, not as a problem).
   static const stillAfter = Duration(minutes: 1);
   static const stillWithin = 25.0;
 
@@ -46,12 +39,10 @@ class _GpsReporterState extends ConsumerState<GpsReporter>
   DateTime? _lastReadAt;
   DateTime? _lastSent;
 
-  /// Where and when the bus last really moved.
   GpsFix? _movedFrom;
   DateTime? _movedAt;
   String? _problem;
 
-  /// The phone setting that fixes [_problem], if one does.
   LocationFix _fix = LocationFix.none;
   bool _sending = false;
 
@@ -62,7 +53,6 @@ class _GpsReporterState extends ConsumerState<GpsReporter>
     _start();
   }
 
-  /// Back from the phone settings: try again by itself.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed && _fix != LocationFix.none) {
@@ -78,8 +68,6 @@ class _GpsReporterState extends ConsumerState<GpsReporter>
       _fix = LocationFix.none;
     });
 
-    // One reading straight away: it also makes the browser ask for
-    // permission, and shows a problem at once instead of never.
     try {
       _read(await DeviceLocation.currentFix());
     } on LocationException catch (e) {
@@ -93,8 +81,6 @@ class _GpsReporterState extends ConsumerState<GpsReporter>
     }
     if (!mounted) return;
 
-    // keepRunning: the Android app keeps sending with the screen off.
-    // distanceFilter 0: a reading every few seconds, moving or not.
     _subscription = DeviceLocation.watch(distanceFilter: 0, keepRunning: true)
         .listen(
           _read,
@@ -106,9 +92,6 @@ class _GpsReporterState extends ConsumerState<GpsReporter>
             });
           },
         );
-    // A bus waiting at a light doesn't move, so the phone reports nothing new:
-    // repeat the last point so families still see it live, but only a recent
-    // one.
     _keepAlive = Timer.periodic(const Duration(seconds: 10), (_) {
       final readAt = _lastReadAt;
       if (_last == null || readAt == null) return;
@@ -126,7 +109,6 @@ class _GpsReporterState extends ConsumerState<GpsReporter>
     });
   }
 
-  /// A new reading from the phone.
   void _read(GpsFix fix) {
     final now = DateTime.now();
     _lastReadAt = now;
@@ -140,7 +122,6 @@ class _GpsReporterState extends ConsumerState<GpsReporter>
     _send(fix, force: _last == null);
   }
 
-  /// Standing still for a while (a stop, a light, traffic).
   bool get _standing {
     final movedAt = _movedAt;
     return movedAt != null &&

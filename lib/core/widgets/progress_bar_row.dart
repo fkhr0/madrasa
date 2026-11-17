@@ -3,15 +3,11 @@ import 'package:flutter/material.dart';
 import '../constants/app_spacing.dart';
 import '../utils/context_extensions.dart';
 
-/// A labelled horizontal bar: "5th Scientific – A ▓▓▓▓░░ 72%".
-/// Used for simple charts (statistics, fee collection).
 class ProgressBarRow extends StatelessWidget {
   final String label;
 
-  /// Shown at the end, e.g. "72%" or "1.2M IQD".
   final String value;
 
-  /// 0–1.
   final double fraction;
   final Color color;
 

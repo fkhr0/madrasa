@@ -13,8 +13,6 @@ import '../models/plan_tip_model.dart';
 import 'common_rules.dart';
 import '../../../core/l10n/language.dart';
 
-/// What a parent may want to know or act on for one child.
-/// Calm on purpose: only things worth a parent's attention.
 List<PlanTipModel> parentTips({
   required DateTime now,
   required String childName,
@@ -26,7 +24,6 @@ List<PlanTipModel> parentTips({
 }) {
   final tips = <PlanTipModel>[];
 
-  // School fees: overdue, or the next installment within a week.
   if (fees != null) {
     final overdue = fees.overdueAmount(now);
     final next = fees.nextDue();
@@ -62,7 +59,6 @@ List<PlanTipModel> parentTips({
     }
   }
 
-  // Absences in the last 7 days.
   final recentAbsences = attendance.where(
     (r) => r.status == AttendanceStatus.absent && daysUntil(r.date, now) <= 7,
   );
@@ -81,7 +77,6 @@ List<PlanTipModel> parentTips({
     );
   }
 
-  // Exams in the next 3 days.
   for (final exam in exams.where((e) => now.isBefore(e.end))) {
     final days = daysUntil(now, exam.start);
     if (days > 3) continue;
@@ -107,8 +102,6 @@ List<PlanTipModel> parentTips({
     );
   }
 
-  // Overdue work.
-  // Judged at [now], not the phone's clock.
   final overdue = assignments
       .where(
         (a) => a.status == AssignmentStatus.pending && now.isAfter(a.dueDate),
@@ -134,7 +127,6 @@ List<PlanTipModel> parentTips({
     );
   }
 
-  // Subjects in the "Average" band or lower.
   for (final g in grades.where((g) => g.average < 60)) {
     tips.add(
       PlanTipModel(

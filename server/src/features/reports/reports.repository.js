@@ -1,9 +1,6 @@
-// School numbers for the office, worked out from the real data: attendance
-// marks, published exam scores, homework hand-ins and bus trips.
 const { query, queryOne } = require("../../db/database");
 const config = require("../../config");
 
-/** How many students, teachers, parents and classes the school has. */
 function counts(institutionId) {
   return queryOne(
     `SELECT
@@ -16,10 +13,6 @@ function counts(institutionId) {
   );
 }
 
-/**
- * Today's students: present (at least one lesson not absent) and absent
- * (absent from every lesson marked so far).
- */
 async function presentToday(institutionId, date) {
   return queryOne(
     `SELECT COUNT(*) FILTER (WHERE NOT all_absent)::int AS present,
@@ -34,7 +27,6 @@ async function presentToday(institutionId, date) {
   );
 }
 
-/** Classes with a lesson that already started today but has no attendance. */
 async function classesMissingAttendance(institutionId, date, weekday, time) {
   const rows = await query(
     `SELECT DISTINCT c.name FROM timetable_slots t
@@ -49,9 +41,6 @@ async function classesMissingAttendance(institutionId, date, weekday, time) {
   return rows.map((r) => r.name);
 }
 
-// ---------- Insights for a date range [from, to] ----------
-
-/** Rate (0–1) of lesson marks that weren't absent, overall and by day / class. */
 async function attendance(institutionId, from, to) {
   const marks = `FROM attendance_marks m JOIN classes c ON c.id = m.class_id
                  WHERE c.institution_id = $1 AND m.date BETWEEN $2 AND $3`;
@@ -59,7 +48,6 @@ async function attendance(institutionId, from, to) {
   const params = [institutionId, from, to];
 
   const total = await queryOne(`SELECT ${rate} AS rate ${marks}`, params);
-  // ISO day of week: 1 = Monday ... 7 = Sunday, like Dart.
   const byDay = await query(
     `SELECT EXTRACT(ISODOW FROM m.date)::int AS weekday, ${rate} AS rate ${marks}
      GROUP BY 1 ORDER BY 1`,
@@ -72,7 +60,6 @@ async function attendance(institutionId, from, to) {
   return { rate: total.rate, byDay, byClass };
 }
 
-/** Published scores as percentages: average, pass rate (≥ 50) and by subject. */
 async function grades(institutionId, from, to) {
   const scores = `FROM exam_scores es JOIN exams e ON e.id = es.exam_id
                   JOIN subjects s ON s.id = e.subject_id
@@ -95,7 +82,6 @@ async function grades(institutionId, from, to) {
   return { ...total, bySubject };
 }
 
-/** Homework due in the range and the share of it handed in. */
 function homework(institutionId, from, to) {
   return queryOne(
     `SELECT COUNT(*)::int AS given,
@@ -114,7 +100,6 @@ function homework(institutionId, from, to) {
   );
 }
 
-/** Finished bus trips; on time = at most 5 minutes late. */
 function trips(institutionId, from, to) {
   return queryOne(
     `SELECT COUNT(*)::int AS done,

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../constants/app_sizes.dart';
 import '../theme/app_colors.dart';
 
-/// Circle with the person's initials.
 class UserAvatar extends StatelessWidget {
   final String name;
   final double size;
@@ -33,7 +32,6 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Sum of the letters, so the same name gives the same colour on every run.
     final seed = name.codeUnits.fold<int>(0, (sum, c) => sum + c);
     final color = _colors[seed % _colors.length];
 

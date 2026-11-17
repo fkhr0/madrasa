@@ -1,4 +1,3 @@
-# When to send a message (Alertmanager → Telegram).
 groups:
   - name: madrasa
     rules:

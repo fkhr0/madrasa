@@ -23,7 +23,6 @@ import '../repo/api_transport_repository.dart';
 import '../repo/mock_transport_repository.dart';
 import '../repo/transport_repository.dart';
 
-/// The school server when API_URL is set, otherwise test mode on this device.
 final transportRepositoryProvider = Provider<TransportRepository>((ref) {
   String? dayOffReason(DateTime day) =>
       ref.read(academicYearProvider).valueOrNull?.dayOffReason(day);
@@ -40,15 +39,12 @@ final transportRepositoryProvider = Provider<TransportRepository>((ref) {
         );
 });
 
-/// The active student's bus (the student themself, or the parent's child).
 final myTransportProvider = FutureProvider<StudentTransportModel?>(
   (ref) => ref
       .watch(transportRepositoryProvider)
       .getStudentTransport(ref.watch(activeStudentIdProvider)),
 );
 
-/// Live trip of a route. A new one for each signed-in user: signing out ends
-/// the old one's live updates and checks.
 final tripProvider = StreamProvider.family<TripModel, String>((ref, routeId) {
   ref.watch(authProvider.select((user) => user?.id));
   return ref.watch(transportRepositoryProvider).watchTrip(routeId);
@@ -68,7 +64,6 @@ final routeStudentsProvider =
           ref.watch(transportRepositoryProvider).getRouteStudents(routeId),
     );
 
-/// The signed-in driver's line (null when none is assigned).
 final driverRouteProvider = FutureProvider<BusRouteModel?>(
   (ref) => ref
       .watch(transportRepositoryProvider)
@@ -85,8 +80,6 @@ final finishedTripsProvider =
           ref.watch(transportRepositoryProvider).getFinishedTrips(routeId),
     );
 
-/// Morning and afternoon trip of a route: can they start now, and when.
-/// Empty while loading.
 final tripAvailabilityProvider =
     Provider.family<List<TripAvailability>, String>((ref, routeId) {
       final route = ref.watch(busRouteProvider(routeId)).valueOrNull;
@@ -112,7 +105,6 @@ final tripAvailabilityProvider =
       ];
     });
 
-/// Every student registered on any bus, by student ID → route ID.
 final busRidersProvider = FutureProvider<Map<String, String>>((ref) async {
   final routes = await ref.watch(busRoutesProvider.future);
   final repository = ref.watch(transportRepositoryProvider);
@@ -124,7 +116,6 @@ final busRidersProvider = FutureProvider<Map<String, String>>((ref) async {
   };
 });
 
-/// Students of the school who are not on any bus yet.
 final studentsWithoutBusProvider = FutureProvider<List<UserModel>>((ref) async {
   final riders = await ref.watch(busRidersProvider.future);
   final students = await ref.watch(
@@ -134,7 +125,6 @@ final studentsWithoutBusProvider = FutureProvider<List<UserModel>>((ref) async {
   return students.where((s) => !riders.containsKey(s.id)).toList();
 });
 
-/// Where a student lives (door-to-door pick-up), or null.
 final studentHomeProvider = FutureProvider.family<StudentHomeModel?, String>(
   (ref, studentId) =>
       ref.watch(transportRepositoryProvider).getStudentHome(studentId),
@@ -144,8 +134,6 @@ final transportActionsProvider = Provider<TransportActions>(
   TransportActions.new,
 );
 
-/// What drivers, parents and administrators can change. Trip screens update
-/// by themselves through [tripProvider]; everything else is reloaded here.
 class TransportActions {
   final Ref _ref;
 
@@ -153,8 +141,6 @@ class TransportActions {
 
   TransportRepository get _repository => _ref.read(transportRepositoryProvider);
 
-  // ---------- Driver ----------
-  /// Throws [TransportException] when the trip rules don't allow it.
   Future<void> startTrip(String routeId, TripDirection direction) =>
       _repository.startTrip(routeId, direction);
 
@@ -184,7 +170,6 @@ class TransportActions {
     _ref.invalidate(finishedTripsProvider(routeId));
   }
 
-  // ---------- Parent ----------
   Future<void> setNotRidingToday(String studentId, bool notRiding) async {
     await _repository.setNotRidingToday(studentId, notRiding);
     _ref
@@ -192,20 +177,17 @@ class TransportActions {
       ..invalidate(routeStudentsProvider);
   }
 
-  // ---------- Administrator ----------
   Future<BusRouteModel> saveRoute(BusRouteModel route) async {
     final saved = await _repository.saveRoute(route);
     _reloadRoutes();
     return saved;
   }
 
-  /// Throws [TransportException] while the bus is on a trip.
   Future<void> deleteRoute(String routeId) async {
     await _repository.deleteRoute(routeId);
     _reloadRoutes();
   }
 
-  /// Throws [TransportException] when the bus is full.
   Future<void> saveRouteStudent(
     String routeId,
     RouteStudentModel student,
