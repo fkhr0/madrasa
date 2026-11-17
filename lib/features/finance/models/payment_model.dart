@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/l10n/language.dart';
 
-/// How a family paid. Most pay cash at the school office.
 enum PaymentMethod {
   cash,
   bankTransfer,
@@ -35,9 +34,7 @@ enum PaymentMethod {
   }
 }
 
-/// One payment, with the receipt number the office gives the family.
 class PaymentModel {
-  /// The server's ID (to void it); empty in mock data.
   final String id;
   final String receiptNumber;
   final String studentId;

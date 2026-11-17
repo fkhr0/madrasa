@@ -1,4 +1,3 @@
-// Each person's own tasks and reminders. Nobody else can see them.
 const express = require("express");
 const { HttpError, validate, z } = require("../../common/http");
 const { requireAuth } = require("../../common/auth-middleware");
@@ -10,14 +9,12 @@ router.use(requireAuth);
 const TASK = `id, title, note, due_at AS "dueAt", priority, repeat,
   is_done AS "isDone", is_reminder AS "isReminder", route`;
 
-// GET /tasks -> [task]  (earliest due first)
 router.get("/", async (req, res) => {
   res.json(
     await query(`SELECT ${TASK} FROM tasks WHERE user_id = $1 ORDER BY due_at`, [req.user.id]),
   );
 });
 
-// POST /tasks { id, title, note?, dueAt, priority, repeat, isReminder, route? } -> task
 router.post("/", async (req, res) => {
   const t = validate(
     z.object({
@@ -44,7 +41,6 @@ router.post("/", async (req, res) => {
   res.status(201).json(saved);
 });
 
-// PATCH /tasks/:id { isDone } -> task
 router.patch("/:id", async (req, res) => {
   const { isDone } = validate(z.object({ isDone: z.boolean() }), req.body);
   const task = await queryOne(
@@ -55,7 +51,6 @@ router.patch("/:id", async (req, res) => {
   res.json(task);
 });
 
-// DELETE /tasks/:id -> 204
 router.delete("/:id", async (req, res) => {
   const rows = await query(
     "DELETE FROM tasks WHERE user_id = $1 AND id = $2 RETURNING id",

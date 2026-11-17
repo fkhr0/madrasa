@@ -4,7 +4,6 @@ import '../models/class_student_model.dart';
 import '../models/teaching_class_model.dart';
 import 'teaching_repository.dart';
 
-/// Mr. Ahmed's mock classes and students.
 class MockTeachingRepository implements TeachingRepository {
   const MockTeachingRepository();
 

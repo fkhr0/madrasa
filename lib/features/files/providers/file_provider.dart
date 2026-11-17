@@ -13,32 +13,43 @@ import '../repo/api_file_repository.dart';
 import '../repo/file_repository.dart';
 import '../repo/mock_file_repository.dart';
 
-/// The server when API_URL is set, otherwise names only.
 final fileRepositoryProvider = Provider<FileRepository>(
   (ref) => AppConfig.useApi
       ? ApiFileRepository(watchApi(ref))
       : MockFileRepository(),
 );
 
-/// The biggest files the server takes (server: MAX_VIDEO_MB, MAX_UPLOAD_MB).
 const maxVideoMb = 50;
 const maxFileMb = 10;
 
 const videoExtensions = ['mp4'];
 
-/// The most, in MB, for a file with this name.
 int maxMbFor(String name) =>
     videoExtensions.contains(name.split('.').last.toLowerCase())
     ? maxVideoMb
     : maxFileMb;
 
-/// The kinds of files the server takes (it checks again).
 const allowedExtensions = [
-  'pdf', 'jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'mp4', 'm4a', 'mp3', //
-  'docx', 'xlsx', 'pptx', 'doc', 'xls', 'ppt', 'txt', 'csv',
+  'pdf',
+  'jpg',
+  'jpeg',
+  'png',
+  'gif',
+  'webp',
+  'heic',
+  'mp4',
+  'm4a',
+  'mp3',
+  'docx',
+  'xlsx',
+  'pptx',
+  'doc',
+  'xls',
+  'ppt',
+  'txt',
+  'csv',
 ];
 
-/// Lets the user pick files ([extensions]: only these kinds) and uploads them.
 Future<List<AttachmentModel>> pickAndUpload(
   BuildContext context,
   WidgetRef ref, {
@@ -51,8 +62,6 @@ Future<List<AttachmentModel>> pickAndUpload(
 
   final uploaded = <AttachmentModel>[];
   for (final file in picked) {
-    // The size the picker already knows: asking with length() may read the
-    // whole file first, which takes very long for a big video.
     final size = file.lengthSync() ?? await file.length() ?? 0;
     final mostMb = maxMbFor(file.name);
     if (size > mostMb * 1024 * 1024) {
@@ -78,7 +87,6 @@ Future<List<AttachmentModel>> pickAndUpload(
   return uploaded;
 }
 
-/// Opens the file in the phone's browser or viewer.
 Future<void> openFile(
   BuildContext context,
   WidgetRef ref,

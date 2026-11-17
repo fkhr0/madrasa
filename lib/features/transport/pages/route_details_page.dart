@@ -22,9 +22,7 @@ import '../widgets/route_timeline.dart';
 import '../widgets/trip_status_card.dart';
 import '../../../core/l10n/language.dart';
 
-/// A whole bus line: map, live status, stops and staff.
 class RouteDetailsPage extends ConsumerWidget {
-  /// Null = the signed-in driver's own line.
   final String? routeId;
 
   const RouteDetailsPage({super.key, this.routeId});
@@ -134,7 +132,6 @@ class _RouteBody extends ConsumerWidget {
     );
   }
 
-  /// The morning timetable, for days without a trip.
   static TripModel _timetable(BusRouteModel route, DateTime now) {
     final day = DateTime(now.year, now.month, now.day);
 

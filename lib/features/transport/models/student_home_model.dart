@@ -1,13 +1,10 @@
 import 'package:latlong2/latlong.dart';
 
-/// Where a student lives, for door-to-door pick-up.
 class StudentHomeModel {
   final LatLng point;
 
-  /// A few words to find the door, e.g. "green gate next to the bakery".
   final String note;
 
-  /// True when the family shared it (false: the school set it).
   final bool sharedByFamily;
   final DateTime? updatedAt;
 

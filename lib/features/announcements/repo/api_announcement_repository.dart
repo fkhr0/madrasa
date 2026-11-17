@@ -2,7 +2,6 @@ import '../../../core/network/api_client.dart';
 import '../models/announcement_model.dart';
 import 'announcement_repository.dart';
 
-/// Announcements on the school API (server/src/features/announcements).
 class ApiAnnouncementRepository implements AnnouncementRepository {
   final ApiClient _api;
 
@@ -10,7 +9,6 @@ class ApiAnnouncementRepository implements AnnouncementRepository {
 
   @override
   Future<List<AnnouncementModel>> getAll() async {
-    // The server filters by the signed-in user and sorts pinned first.
     final list = await _api.get('/announcements') as List;
     return [
       for (final json in list)

@@ -1,4 +1,3 @@
-// SQL for uploaded files, and who may open them.
 const { query, queryOne } = require("../../db/database");
 
 const FILE = `id, name, mime, size_bytes AS size, uploaded_by AS "uploadedBy",
@@ -17,7 +16,6 @@ function findFile(id) {
   return queryOne(`SELECT ${FILE} FROM files WHERE id = $1`, [id]);
 }
 
-/** [{ id, name, mime, size }] for the given IDs uploaded by [userId]. */
 function ownFiles(userId, ids) {
   if (ids.length === 0) return Promise.resolve([]);
   return query(
@@ -27,11 +25,6 @@ function ownFiles(userId, ids) {
   );
 }
 
-/**
- * The uploader and the school office always; a teacher's attachment or study
- * material: anyone at the school and parents of the class; handed-in work: the
- * student, their parents and the subject's teacher.
- */
 async function canSee(user, file) {
   if (file.uploadedBy === user.id) return true;
   if (user.role === "admin" && file.institutionId === user.institutionId) return true;

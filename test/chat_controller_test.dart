@@ -8,7 +8,6 @@ import 'package:school/features/messages/models/message_model.dart';
 import 'package:school/features/messages/providers/message_provider.dart';
 import 'package:school/features/messages/repo/message_repository.dart';
 
-/// A server we control: how slow it answers, and whether it fails.
 class FakeChatServer implements MessageRepository {
   final messages = <MessageModel>[];
   Completer<void>? hold;
@@ -41,7 +40,6 @@ class FakeChatServer implements MessageRepository {
   @override
   Future<MessageModel> sendMessage(String conversationId, String text) async {
     if (offline) throw const ApiException('Can\'t reach the server.');
-    // Like the real server: saved first, the answer may come later.
     final message = _message(text);
     messages.add(message);
     await hold?.future;
@@ -113,17 +111,16 @@ void main() {
     () async {
       server.receive('Are you coming?');
       await controller().fetchNewer();
-      await controller().fetchNewer(); // nothing new: nothing doubled
+      await controller().fetchNewer();
 
       expect(chat().map((m) => m.text), ['Hello', 'Are you coming?']);
-      expect(server.loads, 3); // the first load, then twice "only newer"
+      expect(server.loads, 3);
     },
   );
 
   test('my message coming back live replaces the waiting copy', () async {
     server.hold = Completer();
     final sending = controller().send('See you');
-    // The live connection reports it before the send itself answers.
     await controller().fetchNewer();
     expect(chat().where((m) => m.text == 'See you'), hasLength(1));
     expect(chat().last.isLocal, isFalse);

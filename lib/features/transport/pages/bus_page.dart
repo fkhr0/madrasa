@@ -24,8 +24,6 @@ import '../widgets/route_timeline.dart';
 import '../widgets/trip_status_card.dart';
 import '../../../core/l10n/language.dart';
 
-/// Student / parent: where the bus is, when it reaches their stop,
-/// and (for parents) whether the child is on board.
 class BusPage extends ConsumerWidget {
   const BusPage({super.key});
 
@@ -54,7 +52,6 @@ class BusPage extends ConsumerWidget {
                     [child?.firstName ?? tr('This student')],
                   ),
                 ),
-                // Sharing the home first lets the school plan a stop there.
                 if (isParent && child != null)
                   FamilyHomeCard(
                     studentId: child.id,

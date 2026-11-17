@@ -17,7 +17,6 @@ void main() {
     expect(n.route, '/bus');
     expect(n.isRead, isFalse);
 
-    // A kind this app version doesn't know yet still shows.
     final unknown = NotificationModel.fromJson({
       'id': 'n2',
       'type': 'something-new',

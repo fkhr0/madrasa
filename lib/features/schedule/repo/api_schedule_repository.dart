@@ -5,8 +5,6 @@ import '../models/lesson_model.dart';
 import 'schedule_repository.dart';
 import '../../../core/l10n/language.dart';
 
-/// Day schedules from the weekly timetable on the server. The week is kept
-/// for a minute, so a screen asking for several days makes one request.
 class ApiScheduleRepository implements ScheduleRepository {
   final TimetableRepository _timetable;
 
@@ -33,7 +31,6 @@ class ApiScheduleRepository implements ScheduleRepository {
           room: lesson.room,
           start: lesson.bell.startOn(day),
           end: lesson.bell.endOn(day),
-          // Only a teacher's week spans several classes.
           className: personId.startsWith('TCH') ? lesson.className : null,
         ),
     ];
@@ -46,7 +43,6 @@ class ApiScheduleRepository implements ScheduleRepository {
 
     final week = _timetable.getWeek(personId);
     _weeks[personId] = (now, week);
-    // A failed request isn't kept: the next try asks again.
     week.catchError((Object _) {
       _weeks.remove(personId);
       return const WeekTimetableModel(periods: [], lessons: []);

@@ -1,10 +1,6 @@
-// SQL for chats, their messages and who has read what.
 const { query, queryOne } = require("../../db/database");
 const { t } = require("../../i18n");
 
-// ---------- Who is who ----------
-
-/** Classes a user belongs to: a student's class, a teacher's classes. */
 async function classIdsOf(user) {
   if (user.role === "student") {
     const rows = await query(
@@ -26,10 +22,6 @@ async function classIdsOf(user) {
   return [];
 }
 
-/**
- * Everyone [user] may start a private chat with (see messages.routes.js),
- * as [{ id, name, role, detail }], by name.
- */
 async function contactsOf(user) {
   const rows = await query(
     `WITH me AS (SELECT * FROM users WHERE id = $1),
@@ -61,10 +53,8 @@ async function contactsOf(user) {
      SELECT u.id, u.name, u.role, u.class_name AS "className", u.subject_name AS "subjectName"
      FROM users u, me
      WHERE u.is_active AND u.id <> me.id AND (
-       -- The office talks to everyone at the school, and everyone to the office.
        (me.role = 'admin' AND u.institution_id = me.institution_id) OR
        (u.role = 'admin' AND u.institution_id IN (SELECT id FROM schools)) OR
-       -- Teachers: colleagues, and the students and parents of their classes.
        (me.role = 'teacher' AND u.institution_id = me.institution_id AND u.role = 'teacher') OR
        (me.role = 'teacher' AND u.role = 'student' AND u.institution_id = me.institution_id
          AND u.class_name IN (SELECT name FROM my_classes)) OR
@@ -72,7 +62,6 @@ async function contactsOf(user) {
          SELECT 1 FROM parent_children pc JOIN users k ON k.id = pc.child_id
          WHERE pc.parent_id = u.id AND k.institution_id = me.institution_id
            AND k.class_name IN (SELECT name FROM my_classes))) OR
-       -- Students and parents: the teachers of their (children's) classes.
        (me.role IN ('student', 'parent') AND u.id IN (SELECT id FROM class_teachers))
      )
      ORDER BY u.name`,
@@ -84,7 +73,6 @@ async function contactsOf(user) {
   }));
 }
 
-/** "Mathematics teacher", "Student · 5th A"… in the caller's language. */
 function detailOf(role, className, subjectName) {
   switch (role) {
     case "teacher": return subjectName ? t("{0} teacher", [subjectName]) : t("Teacher");
@@ -96,9 +84,6 @@ function detailOf(role, className, subjectName) {
   }
 }
 
-// ---------- Conversations ----------
-
-/** The class's group chat, created the first time it is needed. */
 async function classConversation(institutionId, classId) {
   await query(
     `INSERT INTO conversations (institution_id, kind, class_id) VALUES ($1, 'class', $2)
@@ -108,9 +93,7 @@ async function classConversation(institutionId, classId) {
   return queryOne("SELECT id FROM conversations WHERE class_id = $1", [classId]);
 }
 
-/** The private chat of two people, created if needed. */
 async function directConversation(tx, institutionId, a, b) {
-  // Two taps at once (a slow network) wait for each other: one chat, not two.
   await tx.query("SELECT pg_advisory_xact_lock(hashtext($1))", [`direct:${[a, b].sort().join(":")}`]);
   const found = await tx.queryOne(
     `SELECT c.id FROM conversations c
@@ -151,10 +134,6 @@ async function isMember(conversationId, userId) {
   );
 }
 
-/**
- * The user's chats with their last message and unread count, newest first.
- * Private chats show the other person; class chats the class.
- */
 function conversationsOf(userId, classIds) {
   return query(
     `SELECT c.id, c.kind = 'class' AS "isGroup",
@@ -197,20 +176,16 @@ function conversationsOf(userId, classIds) {
   );
 }
 
-// ---------- Messages ----------
-
 const MESSAGE = `
   SELECT m.id, m.sender_id AS "senderId", COALESCE(u.name, 'Former member') AS "senderName",
          CASE WHEN m.deleted_at IS NULL THEN m.text ELSE '' END AS text,
          m.sent_at AS "sentAt", m.edited_at IS NOT NULL AS edited,
          m.deleted_at IS NOT NULL AS deleted,
-         -- Seen: someone else in the chat has read up to it (✓✓).
          EXISTS (SELECT 1 FROM conversation_reads r
                  WHERE r.conversation_id = m.conversation_id
                    AND r.user_id IS DISTINCT FROM m.sender_id AND r.read_at >= m.sent_at) AS seen
   FROM messages m LEFT JOIN users u ON u.id = m.sender_id`;
 
-/** Oldest first; with [after] only newer ones (what is new since). */
 function messagesOf(conversationId, after = null) {
   return query(
     `${MESSAGE}
@@ -232,7 +207,6 @@ function editMessage(messageId, text) {
   return query("UPDATE messages SET text = $2, edited_at = now() WHERE id = $1", [messageId, text]);
 }
 
-/** The text is wiped, not kept: deleted means gone. */
 function deleteMessage(messageId) {
   return query("UPDATE messages SET text = '', deleted_at = now() WHERE id = $1", [messageId]);
 }
@@ -261,7 +235,6 @@ async function classNameOf(classId) {
   return (await queryOne("SELECT name FROM classes WHERE id = $1", [classId]))?.name ?? null;
 }
 
-/** Everyone in a chat: the two people, or a class's students and teachers. */
 async function membersOf(conversation) {
   if (conversation.kind === "direct") {
     const rows = await query(

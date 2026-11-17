@@ -2,7 +2,6 @@ import '../data/mock_users.dart';
 import '../models/user_model.dart';
 import 'auth_repository.dart';
 
-/// Accepts any password of 4+ characters.
 class MockAuthRepository implements AuthRepository {
   const MockAuthRepository();
 
@@ -11,7 +10,6 @@ class MockAuthRepository implements AuthRepository {
     required String schoolId,
     required String password,
   }) async {
-    // Pretend we are talking to a server.
     await Future.delayed(const Duration(milliseconds: 700));
 
     if (password.length < 4) {
@@ -30,7 +28,6 @@ class MockAuthRepository implements AuthRepository {
   @override
   Future<void> signOut() async {}
 
-  /// Mock mode lists the demo accounts on the sign-in page instead.
   @override
   Future<List<UserRole>> demoRoles() async => const [];
 

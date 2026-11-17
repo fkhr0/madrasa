@@ -16,8 +16,6 @@ import '../models/trip_model.dart';
 import '../providers/transport_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator: when drivers may start their trips.
-/// Changes apply at once and show today's windows for every line.
 class TransportSettingsPage extends ConsumerWidget {
   const TransportSettingsPage({super.key});
 

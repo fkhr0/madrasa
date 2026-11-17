@@ -9,7 +9,6 @@ import '../models/plan_tip_model.dart';
 import 'common_rules.dart';
 import '../../../core/l10n/language.dart';
 
-/// The teacher's plan: grading, meetings, and what's coming.
 List<PlanTipModel> teacherTips({
   required DateTime now,
   required List<TeachingClassModel> classes,
@@ -17,7 +16,6 @@ List<PlanTipModel> teacherTips({
 }) {
   final tips = <PlanTipModel>[];
 
-  // Work waiting to be graded, biggest pile first.
   for (final c in classes.where((c) => c.toGradeCount > 0)) {
     tips.add(
       PlanTipModel(
@@ -33,7 +31,6 @@ List<PlanTipModel> teacherTips({
     );
   }
 
-  // Meetings in the next 3 days.
   for (final e in events.where((e) => e.type == CalendarEventType.meeting)) {
     final days = daysUntil(now, e.start);
     if (days < 0 || days > 3) continue;

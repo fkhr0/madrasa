@@ -22,8 +22,6 @@ import 'end_early_dialog.dart';
 import 'gps_reporter.dart';
 import '../../../core/l10n/language.dart';
 
-/// During a trip: the map, where the bus is, one big next-step button,
-/// and the students to tick off at the current stop.
 class TripControlPanel extends ConsumerWidget {
   final BusRouteModel route;
   final TripModel trip;
@@ -38,7 +36,6 @@ class TripControlPanel extends ConsumerWidget {
     required this.now,
   });
 
-  /// Runs a driver action; the server's refusal is shown, not lost.
   static Future<void> _run(BuildContext context, Future<void> action) async {
     try {
       await action;
@@ -47,7 +44,6 @@ class TripControlPanel extends ConsumerWidget {
     }
   }
 
-  /// Who gets on or off at the stop the bus is standing at.
   List<RouteStudentModel> _studentsHere() {
     if (trip.lastReachedIndex < 0) return const [];
     final stop = trip.stops[trip.lastReachedIndex];
@@ -62,7 +58,6 @@ class TripControlPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final actions = ref.read(transportActionsProvider);
-    // Before the first stop the bus is still on its way there.
     final current =
         trip.stops[trip.lastReachedIndex.clamp(0, trip.stops.length - 1)];
     final nextIndex = trip.nextStopIndex;
@@ -132,7 +127,6 @@ class TripControlPanel extends ConsumerWidget {
                     color: AppColors.warning,
                   ),
                 ),
-              // Test mode without a server drives the bus by itself.
               if (!finished && AppConfig.useApi) ...[
                 const SizedBox(height: AppSpacing.sm),
                 GpsReporter(routeId: route.id),
@@ -147,7 +141,6 @@ class TripControlPanel extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.lg),
 
-              // One clear next step.
               if (finished)
                 FilledButton.icon(
                   onPressed: () => _run(context, actions.endTrip(route.id)),
@@ -161,7 +154,6 @@ class TripControlPanel extends ConsumerWidget {
                   label: Text(tr('Leave {0}', [current.name])),
                 )
               else
-                // GPS moves the bus on by itself; this is for when it can't.
                 FilledButton.tonalIcon(
                   onPressed: () =>
                       _run(context, actions.arriveAtStop(route.id)),

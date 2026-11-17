@@ -1,15 +1,11 @@
 import 'package:latlong2/latlong.dart';
 import '../../../core/l10n/language.dart';
 
-/// The streets a bus drives on one trip, worked out by the server from the
-/// line's stops (OpenStreetMap roads). One leg per stop-to-stop drive.
 class RoadPathModel {
-  /// legs[i] goes from stop i to stop i + 1, in driving order.
   final List<List<LatLng>> legs;
   final int metres;
   final int seconds;
 
-  /// Driving time of each leg, without traffic.
   final List<int> legSeconds;
 
   const RoadPathModel({
@@ -19,12 +15,10 @@ class RoadPathModel {
     required this.legSeconds,
   });
 
-  /// Every point of the trip, for drawing the line.
   List<LatLng> get points => [for (final leg in legs) ...leg];
 
   int get minutes => (seconds / 60).round();
 
-  /// "15.1 km · 20 min".
   String get summary =>
       tr('{0} km · {1} min', [(metres / 1000).toStringAsFixed(1), minutes]);
 
@@ -49,8 +43,6 @@ class RoadPathModel {
     );
   }
 
-  /// The point [fraction] (0–1) of the way along leg [index], measured
-  /// by distance, so the bus follows the street's bends.
   LatLng along(int index, double fraction) {
     final leg = legs[index];
     if (leg.length == 1 || fraction <= 0) return leg.first;

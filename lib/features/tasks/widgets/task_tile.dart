@@ -12,7 +12,6 @@ import '../models/task_model.dart';
 import '../providers/task_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Tap the circle to tick it off, swipe left to delete.
 class TaskTile extends ConsumerWidget {
   final TaskModel task;
 
@@ -28,7 +27,6 @@ class TaskTile extends ConsumerWidget {
     return Dismissible(
       key: ValueKey(task.id),
       direction: DismissDirection.endToStart,
-      // Swiping only asks; the task goes away after "Delete".
       confirmDismiss: (_) => confirmDelete(
         context,
         title: task.isReminder
@@ -120,7 +118,6 @@ class TaskTile extends ConsumerWidget {
   }
 }
 
-/// Round checkbox in the colour of the task's priority.
 class _CheckCircle extends StatelessWidget {
   final bool checked;
   final Color color;

@@ -19,7 +19,6 @@ import '../widgets/attendance_record_tile.dart';
 import '../widgets/attendance_summary_card.dart';
 import '../../../core/l10n/language.dart';
 
-/// A student's attendance this term.
 class AttendancePage extends ConsumerWidget {
   final String? studentId;
 
@@ -42,8 +41,6 @@ class AttendancePage extends ConsumerWidget {
             ? ref.invalidate(attendanceRecordsProvider)
             : ref.invalidate(studentAttendanceProvider(id)),
         data: (records) {
-          // Days worth listing: not a plain "present" (late, absent,
-          // excused), or present but with missed lessons noted.
           final notable = records
               .where(
                 (r) => r.status != AttendanceStatus.present || r.note != null,
@@ -98,7 +95,6 @@ class AttendancePage extends ConsumerWidget {
     );
   }
 
-  /// Office: excuse any day, also ahead (a planned absence).
   static Future<void> excuseAnyDay(
     BuildContext context,
     WidgetRef ref,
@@ -159,7 +155,6 @@ class AttendancePage extends ConsumerWidget {
     }
   }
 
-  /// The reason for the excuse, or null when cancelled.
   static Future<String?> _askNote(BuildContext context, String day) {
     final note = TextEditingController();
 
@@ -191,7 +186,6 @@ class AttendancePage extends ConsumerWidget {
   }
 }
 
-/// Office: excused days still to come, and the button to excuse a day.
 class _PlannedAbsences extends ConsumerWidget {
   final String studentId;
 

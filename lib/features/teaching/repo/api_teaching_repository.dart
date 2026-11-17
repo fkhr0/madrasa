@@ -4,8 +4,6 @@ import '../models/class_student_model.dart';
 import '../models/teaching_class_model.dart';
 import 'teaching_repository.dart';
 
-/// A teacher's classes and students on the school API
-/// (server/src/features/teaching).
 class ApiTeachingRepository implements TeachingRepository {
   final ApiClient _api;
 

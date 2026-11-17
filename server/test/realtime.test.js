@@ -22,7 +22,6 @@ after(async () => {
   await close();
 });
 
-/** A signed-in socket and the events it receives. */
 function connect(token) {
   return new Promise((resolve, reject) => {
     const socket = new WebSocket(url);
@@ -73,7 +72,6 @@ test("a chat message reaches the other person at once, and a notification too", 
   assert.ok(await until(() => teacher.events.some((e) => e.type === "message.new" && e.conversationId === id)));
   assert.ok(!stranger.events.some((e) => e.type === "message.new"));
 
-  // A homework from the teacher notifies Fatima's class at once.
   const teacherAuth = { Authorization: `Bearer ${tokens["TCH-2019-0031"]}` };
   await request(app)
     .post("/assignments/classes/cls-5a")

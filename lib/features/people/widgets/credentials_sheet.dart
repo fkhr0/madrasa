@@ -9,9 +9,6 @@ import '../../../core/widgets/icon_box.dart';
 import '../models/account_credentials_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Shows the generated ID and temporary password once, so the administrator can
-/// hand them over: copy one, or copy both as a message ready to paste into
-/// WhatsApp or an SMS.
 Future<void> showCredentialsSheet(
   BuildContext context,
   AccountCredentialsModel credentials, {
@@ -35,12 +32,9 @@ class _CredentialsSheet extends StatefulWidget {
 }
 
 class _CredentialsSheetState extends State<_CredentialsSheet> {
-  /// What was copied last ("id", "password", "both"), shown on its button.
-  /// Feedback stays inside the sheet: a snack bar would appear behind it.
   String? _copied;
   bool _copyFailed = false;
 
-  /// The message for "Copy both".
   String get _message {
     final user = widget.credentials.user;
     return tr(
@@ -62,7 +56,6 @@ class _CredentialsSheetState extends State<_CredentialsSheet> {
         _copyFailed = false;
       });
     } catch (_) {
-      // Some browsers block copying on pages opened over plain http.
       setState(() => _copyFailed = true);
     }
   }

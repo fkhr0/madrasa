@@ -4,7 +4,6 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/utils/context_extensions.dart';
 import '../models/calendar_event_model.dart';
 
-/// What each dot colour means (only the kinds this user can see).
 class CalendarLegend extends StatelessWidget {
   final List<CalendarEventType> types;
 

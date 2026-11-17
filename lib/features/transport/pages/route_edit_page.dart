@@ -15,10 +15,7 @@ import '../providers/transport_provider.dart';
 import '../repo/transport_repository.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator: create a bus line or change its bus, driver and staff.
-/// Stops and riders have their own pages.
 class RouteEditPage extends ConsumerStatefulWidget {
-  /// Null = a new line.
   final String? routeId;
 
   const RouteEditPage({super.key, this.routeId});
@@ -58,7 +55,6 @@ class _RouteEditPageState extends ConsumerState<RouteEditPage> {
     super.dispose();
   }
 
-  /// Fills the form once, when the line has loaded.
   void _fill(BusRouteModel route) {
     _original = route;
     _name.text = route.name;
@@ -121,7 +117,6 @@ class _RouteEditPageState extends ConsumerState<RouteEditPage> {
     if (!mounted) return;
 
     if (_isNew) {
-      // The natural next step for a new line: its stops.
       context.showMessage(tr('Line created. Now add its stops.'));
       context.pushReplacement(AppRoutes.routeStops(saved.id));
     } else {
@@ -186,7 +181,6 @@ class _RouteEditPageState extends ConsumerState<RouteEditPage> {
       );
     }
 
-    /// "Drives bus 7" for drivers already on another line.
     String? busOf(UserModel driver) {
       for (final r in routes) {
         if (r.driverId == driver.id && r.id != id) {
@@ -251,7 +245,6 @@ class _RouteEditPageState extends ConsumerState<RouteEditPage> {
             const SizedBox(height: AppSpacing.xl),
             SectionHeader(title: tr('Driver')),
             DropdownButtonFormField<String>(
-              // The app's card look, not the default grey strip.
               dropdownColor: context.palette.card,
 
               borderRadius: BorderRadius.circular(AppRadius.md),

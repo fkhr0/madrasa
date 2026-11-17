@@ -2,7 +2,6 @@ import '../../../core/network/api_client.dart';
 import '../../assignments/models/attachment_model.dart';
 import 'file_repository.dart';
 
-/// Files on the school API (server/src/features/files).
 class ApiFileRepository implements FileRepository {
   final ApiClient _api;
 
@@ -26,7 +25,6 @@ class ApiFileRepository implements FileRepository {
     return _api.resolve(json['url'] as String);
   }
 
-  /// So the phone opens the file with the right app.
   static String _contentType(String name) {
     final ext = name.split('.').last.toLowerCase();
     return switch (ext) {

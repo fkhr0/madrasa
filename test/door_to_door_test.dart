@@ -16,7 +16,6 @@ void main() {
         ),
         const LatLng(33.3121, 44.3612),
       );
-      // The pin (!3d!4d) wins over the map's centre (@).
       expect(
         coordinatesIn(
           'https://www.google.com/maps/place/X/@33.2981,44.3323,17z/'
@@ -33,9 +32,9 @@ void main() {
     });
 
     test('only places in Iraq', () {
-      expect(IraqMap.contains(const LatLng(33.31, 44.36)), isTrue); // Baghdad
-      expect(IraqMap.contains(const LatLng(36.19, 44.01)), isTrue); // Erbil
-      expect(IraqMap.contains(const LatLng(48.85, 2.35)), isFalse); // Paris
+      expect(IraqMap.contains(const LatLng(33.31, 44.36)), isTrue);
+      expect(IraqMap.contains(const LatLng(36.19, 44.01)), isTrue);
+      expect(IraqMap.contains(const LatLng(48.85, 2.35)), isFalse);
     });
   });
 

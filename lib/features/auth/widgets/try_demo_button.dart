@@ -8,8 +8,6 @@ import '../models/user_model.dart';
 import '../providers/auth_provider.dart';
 import '../repo/auth_repository.dart';
 
-/// "Try the app": opens the demo school as a student, parent, teacher, the
-/// office or the bus driver, without an account.
 class TryDemoButton extends ConsumerWidget {
   const TryDemoButton({super.key});
 

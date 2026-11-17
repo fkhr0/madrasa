@@ -4,7 +4,6 @@ import '../../../core/constants/app_radius.dart';
 import '../../../core/utils/context_extensions.dart';
 import '../../attendance/models/attendance_record_model.dart';
 
-/// Three round buttons, P (present), L (late), A (absent), for one student.
 class AttendanceToggle extends StatelessWidget {
   final AttendanceStatus value;
   final ValueChanged<AttendanceStatus> onChanged;

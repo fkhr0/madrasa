@@ -8,8 +8,6 @@ import '../models/payment_model.dart';
 import '../models/student_account_model.dart';
 import 'finance_repository.dart';
 
-/// Keeps accounts in memory; payments and reminders reach the parent
-/// through [DemoNotifier] (push notifications in production).
 class MockFinanceRepository implements FinanceRepository {
   final DemoNotifier notifier;
 

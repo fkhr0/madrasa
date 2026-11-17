@@ -72,7 +72,6 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
             ),
             const SizedBox(height: AppSpacing.xl),
 
-            // Read-only: managed by the school.
             TextFormField(
               initialValue: user.name,
               enabled: false,

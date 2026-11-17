@@ -1,4 +1,3 @@
-// SQL for announcements. Always limited to one institution.
 const { query, queryOne } = require("../../db/database");
 
 const COLUMNS = `a.id, a.title, a.body, a.audience, c.name AS "className",
@@ -7,12 +6,10 @@ const COLUMNS = `a.id, a.title, a.body, a.audience, c.name AS "className",
 
 const FROM = "FROM announcements a LEFT JOIN classes c ON c.id = a.class_id";
 
-/** Classes a teacher teaches a subject in, or is the head teacher of. */
 const TEACHER_CLASSES = `
   SELECT id FROM classes WHERE homeroom_teacher_id = $2
   UNION SELECT class_id FROM class_subjects WHERE teacher_id = $2`;
 
-/** What each role may read. */
 function listFor(user) {
   const visible = {
     admin: "true",
@@ -29,7 +26,6 @@ function listFor(user) {
   return query(
     `SELECT ${COLUMNS} ${FROM}
      WHERE a.institution_id = $1 AND a.published_at <= now()
-       -- Mentions $2 so its type is known even when a rule doesn't use it.
        AND $2::text IS NOT NULL AND (${visible})
      ORDER BY a.is_pinned DESC, a.published_at DESC`,
     [user.institutionId, user.id],
@@ -44,7 +40,6 @@ function find(institutionId, id) {
   );
 }
 
-/** The class with this name in the school, or null. */
 function findClassByName(institutionId, name) {
   return queryOne(
     "SELECT id FROM classes WHERE institution_id = $1 AND name = $2",

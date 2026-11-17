@@ -9,14 +9,12 @@ import '../repo/api_task_repository.dart';
 import '../repo/mock_task_repository.dart';
 import '../repo/task_repository.dart';
 
-/// The server when API_URL is set, otherwise the in-memory mock.
 final taskRepositoryProvider = Provider<TaskRepository>(
   (ref) => AppConfig.useApi
       ? ApiTaskRepository(watchApi(ref))
       : MockTaskRepository(),
 );
 
-/// The task list plus the actions that change it.
 final tasksProvider = AsyncNotifierProvider<TasksController, List<TaskModel>>(
   TasksController.new,
 );
@@ -26,13 +24,9 @@ class TasksController extends AsyncNotifier<List<TaskModel>> {
 
   @override
   Future<List<TaskModel>> build() {
-    // Someone else signing in gets their own list.
     ref.watch(authProvider.select((user) => user?.id));
     return ref.watch(taskRepositoryProvider).getAll();
   }
-
-  // Each action updates the screen right away, then saves.
-  // (A swiped-away task must leave the list in the same frame.)
 
   Future<void> add(TaskModel task) async {
     _show([..._current, task]..sort((a, b) => a.dueAt.compareTo(b.dueAt)));

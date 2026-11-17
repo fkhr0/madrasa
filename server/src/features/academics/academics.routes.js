@@ -1,5 +1,3 @@
-// Administrator: subjects, classes, the head teacher of each class and who
-// teaches each subject there.
 const express = require("express");
 const { HttpError, validate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");
@@ -35,8 +33,6 @@ const classFields = z.object({
   homeroomTeacherId: z.string().nullish(),
 });
 
-// ---------- Subjects ----------
-
 router.get("/subjects", async (req, res) => {
   res.json(await repo.listSubjects(req.user.institutionId));
 });
@@ -58,7 +54,6 @@ router.patch("/subjects/:id", async (req, res) => {
   res.json(subject);
 });
 
-// Removes the subject from every class too (the app asks first).
 router.delete("/subjects/:id", async (req, res) => {
   if (!(await repo.deleteSubject(req.user.institutionId, req.params.id))) {
     throw new HttpError(404, "Subject not found.");
@@ -66,8 +61,6 @@ router.delete("/subjects/:id", async (req, res) => {
   await log(req.user, { kind: "academics", action: "subject.deleted", summary: msg("deleted a subject ({0})", req.params.id) });
   res.status(204).end();
 });
-
-// ---------- Classes ----------
 
 router.get("/classes", async (req, res) => {
   res.json(await repo.listClasses(req.user.institutionId));
@@ -77,7 +70,6 @@ router.get("/classes/:id", async (req, res) => {
   res.json(await findClassOr404(req));
 });
 
-// POST { name, homeroomTeacherId?, subjectIds? } -> class
 router.post("/classes", async (req, res) => {
   const body = validate(
     classFields.extend({ subjectIds: z.array(z.string()).default([]) }),
@@ -96,7 +88,6 @@ router.post("/classes", async (req, res) => {
   res.status(201).json(await repo.findClass(institutionId, id));
 });
 
-// PATCH { name, homeroomTeacherId? } -> class
 router.patch("/classes/:id", async (req, res) => {
   const old = await findClassOr404(req);
   const body = validate(classFields, req.body);
@@ -109,7 +100,6 @@ router.patch("/classes/:id", async (req, res) => {
   res.json(await findClassOr404(req));
 });
 
-// DELETE -> 204. Refused while students are in the class.
 router.delete("/classes/:id", async (req, res) => {
   const schoolClass = await findClassOr404(req);
   if (schoolClass.studentCount > 0) {
@@ -121,8 +111,6 @@ router.delete("/classes/:id", async (req, res) => {
   res.status(204).end();
 });
 
-// PUT /classes/:id/subjects/:subjectId { teacherId | null } -> class
-// Adds the subject to the class, or changes who teaches it there.
 router.put("/classes/:id/subjects/:subjectId", async (req, res) => {
   const schoolClass = await findClassOr404(req);
   const { teacherId } = validate(
@@ -135,7 +123,6 @@ router.put("/classes/:id/subjects/:subjectId", async (req, res) => {
   }
   await checkTeachers(institutionId, [teacherId]);
 
-  // The subject's lessons in this class must fit the new teacher's week.
   const slots = await timetable.subjectSlots(schoolClass.id, req.params.subjectId);
   const [clash] = await timetable.teacherClashes(teacherId, schoolClass.id, slots);
   if (clash) {
@@ -155,7 +142,6 @@ router.put("/classes/:id/subjects/:subjectId", async (req, res) => {
   res.json(updated);
 });
 
-// DELETE /classes/:id/subjects/:subjectId -> class
 router.delete("/classes/:id/subjects/:subjectId", async (req, res) => {
   const schoolClass = await findClassOr404(req);
   if (!(await repo.removeClassSubject(schoolClass.id, req.params.subjectId))) {
@@ -170,8 +156,6 @@ router.delete("/classes/:id/subjects/:subjectId", async (req, res) => {
   res.json(await findClassOr404(req));
 });
 
-// ---------- helpers ----------
-
 async function findClassOr404(req) {
   const schoolClass = await repo.findClass(req.user.institutionId, req.params.id);
   if (!schoolClass) throw new HttpError(404, "Class not found.");
@@ -184,7 +168,6 @@ async function checkTeachers(institutionId, ids) {
   }
 }
 
-/** Turns "duplicate name" from the database into a clear message. */
 async function uniqueName(work) {
   try {
     return await work();

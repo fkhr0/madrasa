@@ -1,7 +1,6 @@
 import 'assignment_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// The chips at the top of the Assignments page.
 enum AssignmentFilter {
   all,
   pending,

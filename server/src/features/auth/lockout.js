@@ -1,16 +1,12 @@
-// Locks an ID after too many wrong passwords, whichever address they come from
-// (guessing from many phones at once).
 const config = require("../../config");
 
-/** Wrong passwords allowed in the window before the ID is locked. */
 const MAX_FAILURES = 5;
 const WINDOW_SECONDS = 15 * 60;
 
-const local = new Map(); // id -> { count, until }
+const local = new Map();
 
 const keyOf = (id) => `lock:${id}`;
 
-/** Seconds until the ID can try again, or 0. */
 async function lockedFor(id) {
   if (config.redisUrl) {
     const redis = require("../../common/redis").client();
@@ -22,7 +18,6 @@ async function lockedFor(id) {
   return entry.count >= MAX_FAILURES ? Math.ceil((entry.until - Date.now()) / 1000) : 0;
 }
 
-/** One more wrong password. Returns true when this one locked the ID. */
 async function recordFailure(id) {
   if (config.redisUrl) {
     const redis = require("../../common/redis").client();

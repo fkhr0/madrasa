@@ -4,11 +4,6 @@ import '../models/bus_stop_model.dart';
 import '../models/road_path_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Helpers for the administrator's stop editor.
-/// Stops are in morning order and the school is always last.
-
-/// Where a new stop at ([lat], [lng]) adds the least driving: the index to
-/// insert it at (never after the school).
 int bestInsertIndex(List<BusStopModel> stops, double lat, double lng) {
   if (stops.length <= 1) return 0;
 
@@ -23,7 +18,6 @@ int bestInsertIndex(List<BusStopModel> stops, double lat, double lng) {
     final double extra;
 
     if (i == 0) {
-      // A new first stop: the bus drives from it to the old first stop.
       extra = d(lat, lng, next.latitude, next.longitude);
     } else {
       final prev = stops[i - 1];
@@ -42,8 +36,6 @@ int bestInsertIndex(List<BusStopModel> stops, double lat, double lng) {
   return best;
 }
 
-/// Planned times for a stop inserted at [index] of [stops]: halfway
-/// between its neighbours in the morning, mirrored in the afternoon.
 (int morning, int afternoon) suggestedTimes(
   List<BusStopModel> stops,
   int index,
@@ -57,13 +49,9 @@ int bestInsertIndex(List<BusStopModel> stops, double lat, double lng) {
   return (morning, afternoonFor(school, morning));
 }
 
-/// The afternoon trip drives the same road backwards: a stop reached N minutes
-/// before school in the morning is reached N minutes after the bus leaves
-/// school in the afternoon.
 int afternoonFor(BusStopModel school, int morningMinute) =>
     school.afternoonMinute + (school.morningMinute - morningMinute);
 
-/// A problem with the planned times, or null when they are in order.
 String? timetableProblem(List<BusStopModel> stops) {
   for (var i = 1; i < stops.length; i++) {
     if (stops[i].morningMinute <= stops[i - 1].morningMinute) {
@@ -83,8 +71,6 @@ String? timetableProblem(List<BusStopModel> stops) {
   return null;
 }
 
-/// Spreads the morning times evenly from the first stop to the school,
-/// keeping both ends, and mirrors them for the afternoon.
 List<BusStopModel> evenTimes(List<BusStopModel> stops) {
   if (stops.length < 2) return stops;
 
@@ -109,11 +95,8 @@ List<BusStopModel> evenTimes(List<BusStopModel> stops) {
   ];
 }
 
-/// How long the bus waits at each stop for students to get on or off.
 const stopWaitMinutes = 1;
 
-/// Times from the real driving times on the roads: the school times stay, each
-/// earlier stop is one drive (plus a short wait) before the next.
 List<BusStopModel> timesFromRoads(
   List<BusStopModel> stops,
   RoadPathModel toSchool,
@@ -121,13 +104,11 @@ List<BusStopModel> timesFromRoads(
 ) {
   int minutesOf(int seconds) => (seconds / 60).ceil() + stopWaitMinutes;
 
-  // Morning: backwards from the school's arrival time.
   final morning = List<int>.filled(stops.length, stops.last.morningMinute);
   for (var i = stops.length - 2; i >= 0; i--) {
     morning[i] = morning[i + 1] - minutesOf(toSchool.legSeconds[i]);
   }
 
-  // Afternoon: forwards from the school's leaving time, stops in reverse.
   final afternoon = List<int>.filled(stops.length, stops.last.afternoonMinute);
   final back = toHome ?? toSchool;
   for (var k = 1; k < stops.length; k++) {

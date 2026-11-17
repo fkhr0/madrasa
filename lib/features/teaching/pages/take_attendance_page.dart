@@ -17,13 +17,11 @@ import '../../auth/providers/auth_provider.dart';
 import '../widgets/attendance_toggle.dart';
 import '../../../core/l10n/language.dart';
 
-/// Attendance for one lesson of a class.
 class TakeAttendancePage extends ConsumerStatefulWidget {
   final String classId;
 
   const TakeAttendancePage({super.key, required this.classId});
 
-  /// How far back a teacher may still correct (the server checks too).
   static const teacherDaysBack = 7;
 
   @override
@@ -33,10 +31,8 @@ class TakeAttendancePage extends ConsumerStatefulWidget {
 class _TakeAttendancePageState extends ConsumerState<TakeAttendancePage> {
   late DateTime _date = _dateOnly(DateTime.now());
 
-  /// The chosen lesson; null = the current one (or the latest of the day).
   int? _period;
 
-  /// Student ID → status the user changed and hasn't saved yet.
   final Map<String, AttendanceStatus> _edits = {};
   bool _saving = false;
 
@@ -50,7 +46,6 @@ class _TakeAttendancePageState extends ConsumerState<TakeAttendancePage> {
     _edits.clear();
   });
 
-  /// The lesson running now, else the last one that started, else the first.
   ClassLessonModel _defaultLesson(List<ClassLessonModel> lessons) {
     final now = DateTime.now();
     final time =
@@ -367,7 +362,6 @@ class _BottomBar extends StatelessWidget {
   final String label;
   final bool isSaving;
 
-  /// Null when there is nothing to save.
   final VoidCallback? onSave;
 
   const _BottomBar({

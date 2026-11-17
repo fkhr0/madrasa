@@ -3,8 +3,6 @@ import '../models/trip_model.dart';
 import 'trip_rules.dart';
 import '../../../core/l10n/language.dart';
 
-/// Turns a trip into two lines a person can read at a glance.
-/// [myStopId] is the student's stop (null for drivers and administrators).
 ({String title, String detail}) describeTrip(
   TripModel trip,
   DateTime now, {
@@ -54,7 +52,6 @@ import '../../../core/l10n/language.dart';
           ? tr('Bus is at {0}', [current])
           : tr('Driving to {0}', [next]);
 
-      // The bus is standing at the student's stop right now.
       if (hasMyStop && trip.isAtStop && myIndex == trip.lastReachedIndex) {
         return (
           title: tr('The bus is at your stop'),
@@ -64,7 +61,6 @@ import '../../../core/l10n/language.dart';
         );
       }
 
-      // The student's stop is still ahead.
       if (hasMyStop && !trip.hasPassed(myIndex)) {
         final minutes = trip.minutesUntil(myIndex, now);
         final stopsAway = myIndex - trip.lastReachedIndex;
@@ -102,7 +98,6 @@ import '../../../core/l10n/language.dart';
   }
 }
 
-/// Worth showing on a home page? (During a trip, or shortly before.)
 bool isTripRelevantNow(TripModel trip, DateTime now) {
   switch (trip.phase) {
     case TripPhase.onTheWay:
@@ -110,14 +105,12 @@ bool isTripRelevantNow(TripModel trip, DateTime now) {
     case TripPhase.notStarted:
       return trip.plannedTimes.first.difference(now).inMinutes <= 45;
     case TripPhase.arrived:
-      // A live trip that just ended stays visible until the driver closes it.
       return trip.isLive;
     case TripPhase.noTripToday:
       return false;
   }
 }
 
-/// "2 h 10 min", "25 min", "1 min".
 String durationText(Duration d) {
   final minutes = d.inMinutes < 1 ? 1 : d.inMinutes;
   final h = minutes ~/ 60;
@@ -127,7 +120,6 @@ String durationText(Duration d) {
   return m == 0 ? '$h h' : tr('{0} h {1} min', [h, m]);
 }
 
-/// One line about whether a trip can start, for the driver.
 String tripAvailabilityText(TripAvailability trip, DateTime now) {
   String at(DateTime t) => DateFormatter.time(t);
 

@@ -10,7 +10,6 @@ import '../repo/api_grade_repository.dart';
 import '../repo/grade_repository.dart';
 import '../repo/mock_grade_repository.dart';
 
-/// Published exam scores on the server when API_URL is set, otherwise mock.
 final gradeRepositoryProvider = Provider<GradeRepository>(
   (ref) => AppConfig.useApi
       ? ApiGradeRepository(ref.watch(examRepositoryProvider))
@@ -23,8 +22,6 @@ final gradesProvider = FutureProvider<List<SubjectGradesModel>>(
       .getCurrentTerm(ref.watch(activeStudentIdProvider)),
 );
 
-/// Mean of the subject averages (each subject counts the same), over the
-/// subjects that have marks. Null before any mark: not a 0% "fail".
 final overallAverageProvider = FutureProvider<double?>((ref) async {
   final graded = (await ref.watch(
     gradesProvider.future,
@@ -36,8 +33,6 @@ final overallAverageProvider = FutureProvider<double?>((ref) async {
   return total / graded.length;
 });
 
-/// Each subject's year result (السعي السنوي and the final mark), from the
-/// student's published exam scores and the study year's semesters.
 final yearResultsProvider = FutureProvider<List<YearResultModel>>((ref) async {
   final exams = await ref.watch(examsProvider.future);
   final year = await ref.watch(academicYearProvider.future);

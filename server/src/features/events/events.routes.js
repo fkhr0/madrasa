@@ -1,5 +1,3 @@
-// School events and meetings on the calendar.
-// Everyone reads what is meant for them; administrators add, edit and delete.
 const express = require("express");
 const { HttpError, validate, isoDate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");
@@ -7,7 +5,6 @@ const repo = require("./events.repository");
 const { notify, audience } = require("../notifications/notify");
 const { msg } = require("../../i18n");
 
-/** Who is told about a new event of each audience. */
 const TOLD = {
   everyone: ["student", "parent", "teacher"],
   families: ["parent", "teacher"],
@@ -17,7 +14,6 @@ const TOLD = {
 const router = express.Router();
 router.use(requireAuth);
 
-/** Which audiences each role sees. */
 const AUDIENCES = {
   student: ["everyone"],
   driver: ["everyone"],
@@ -44,14 +40,12 @@ const eventFields = z
     message: "endDate must be on or after date",
   });
 
-// GET /events -> [event]
 router.get("/", async (req, res) => {
   res.json(
     await repo.list(req.user.institutionId, AUDIENCES[req.user.role] ?? []),
   );
 });
 
-// POST /events -> event  (admin)
 router.post("/", requireRole("admin"), async (req, res) => {
   const body = validate(eventFields, req.body);
   const event = await repo.insert(req.user.institutionId, req.user.id, body);
@@ -68,7 +62,6 @@ router.post("/", requireRole("admin"), async (req, res) => {
   res.status(201).json(event);
 });
 
-// PATCH /events/:id -> event  (admin)
 router.patch("/:id", requireRole("admin"), async (req, res) => {
   const body = validate(eventFields, req.body);
   const event = await repo.update(req.user.institutionId, req.params.id, body);
@@ -76,7 +69,6 @@ router.patch("/:id", requireRole("admin"), async (req, res) => {
   res.json(event);
 });
 
-// DELETE /events/:id -> 204  (admin)
 router.delete("/:id", requireRole("admin"), async (req, res) => {
   if (!(await repo.remove(req.user.institutionId, req.params.id))) {
     throw new HttpError(404, "Event not found.");

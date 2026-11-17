@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../constants/app_radius.dart';
 import '../constants/app_sizes.dart';
 
-/// An icon inside a soft-tinted rounded square.
 class IconBox extends StatelessWidget {
   final IconData icon;
   final Color color;

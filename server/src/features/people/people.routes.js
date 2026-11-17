@@ -1,4 +1,3 @@
-// Administrator: the school's accounts.
 const crypto = require("crypto");
 const express = require("express");
 const bcrypt = require("bcryptjs");
@@ -40,7 +39,6 @@ const personFields = z.object({
   childIds: z.array(z.string()).default([]),
 });
 
-// GET /people?role=student -> [user]
 router.get("/", async (req, res) => {
   const role = z.enum(ROLES).safeParse(req.query.role);
   if (!role.success) throw new HttpError(400, "role: choose a valid role");
@@ -49,13 +47,10 @@ router.get("/", async (req, res) => {
   res.json(await Promise.all(rows.map(userWithChildren)));
 });
 
-// GET /people/:id -> user
 router.get("/:id", async (req, res) => {
   res.json(await userWithChildren(await findOr404(req)));
 });
 
-// POST /people { role, name, email, phone, className?, subjectName?, childIds? }
-//   -> { user, temporaryPassword }
 router.post("/", async (req, res) => {
   const body = validate(
     personFields.extend({ role: z.enum(ROLES) }),
@@ -96,8 +91,6 @@ router.post("/", async (req, res) => {
   });
 });
 
-// PATCH /people/:id { name, email, phone, className?, subjectName?, childIds? }
-// The role and ID never change; create a new account for another role.
 router.patch("/:id", async (req, res) => {
   const person = await findOr404(req);
   const body = validate(personFields, req.body);
@@ -119,10 +112,7 @@ router.patch("/:id", async (req, res) => {
   res.json(await userWithChildren(await findOr404(req)));
 });
 
-// POST /people/:id/active { isActive } -> user
-// A deactivated account can't sign in, and is signed out everywhere.
 router.post("/:id/active", async (req, res) => {
-  // The accounts "Try the demo" opens stay usable for the next visitor.
   notOnDemoAccount(req.params.id);
   const person = await findOr404(req);
   const { isActive } = validate(z.object({ isActive: z.boolean() }), req.body);
@@ -145,9 +135,7 @@ router.post("/:id/active", async (req, res) => {
   res.json(await userWithChildren(await findOr404(req)));
 });
 
-// POST /people/:id/reset-password -> { user, temporaryPassword }
 router.post("/:id/reset-password", async (req, res) => {
-  // The accounts "Try the demo" opens stay usable for the next visitor.
   notOnDemoAccount(req.params.id);
   const person = await findOr404(req);
   const temporaryPassword = makePassword();
@@ -171,11 +159,7 @@ router.post("/:id/reset-password", async (req, res) => {
   });
 });
 
-// DELETE /people/:id -> 204
-// For mistakes (a wrong or duplicate account). People who leave the school
-// should be deactivated instead, so their history stays.
 router.delete("/:id", async (req, res) => {
-  // The accounts "Try the demo" opens stay usable for the next visitor.
   notOnDemoAccount(req.params.id);
   const person = await findOr404(req);
   if (person.id === req.user.id) {
@@ -191,8 +175,6 @@ router.delete("/:id", async (req, res) => {
   res.status(204).end();
 });
 
-// ---------- helpers ----------
-
 async function findOr404(req) {
   const person = await repo.findInInstitution(
     req.user.institutionId,
@@ -202,7 +184,6 @@ async function findOr404(req) {
   return person;
 }
 
-/** Students need a class, teachers a subject, parents at least one child. */
 async function checkRoleFields(req, role, body) {
   if (role === "student" && !body.className) {
     throw new HttpError(400, "className: choose a class");
@@ -227,7 +208,6 @@ async function checkRoleFields(req, role, body) {
   }
 }
 
-/** 8 characters, without ones that look alike (0/O, 1/l/I). */
 function makePassword() {
   const chars = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789";
   return Array.from(

@@ -1,12 +1,6 @@
-// The demo school in Arabic, like a real Iraqi school would type it: names,
-// classes, subjects, rooms, announcements, homework, chats, the bus.
-// arabize() runs after the demo data is made in English (the tests keep the
-// English one) and before the activity history, which is then written from
-// these Arabic names.
 const { query } = require("./database");
 
 const WORDS = {
-  // ── The schools ──
   "Al-Noor Preparatory School": "إعدادية النور",
   "Al-Noor Intermediate School": "متوسطة النور",
   Baghdad: "بغداد",
@@ -14,7 +8,6 @@ const WORDS = {
   "First semester": "الفصل الأول",
   "Second semester": "الفصل الثاني",
 
-  // ── People ──
   "Zainab Haider": "زينب حيدر",
   "Ali Haider": "علي حيدر",
   "Ahmed Kareem": "أحمد كريم",
@@ -56,7 +49,6 @@ const WORDS = {
   "School Administration": "إدارة المدرسة",
   Library: "المكتبة",
 
-  // ── Subjects ──
   Mathematics: "الرياضيات",
   Physics: "الفيزياء",
   Chemistry: "الكيمياء",
@@ -66,7 +58,6 @@ const WORDS = {
   "Islamic Education": "التربية الإسلامية",
   "Computer Science": "الحاسوب",
 
-  // ── Calendar ──
   "Mid-year break": "عطلة نصف السنة",
   "Sports day": "اليوم الرياضي",
   "School playground": "ساحة المدرسة",
@@ -82,7 +73,6 @@ const WORDS = {
   "Trip to the Iraq Natural History Museum": "سفرة إلى متحف التاريخ الطبيعي العراقي",
   "Bring the signed permission slip": "أحضر ورقة الموافقة موقّعة",
 
-  // ── Announcements ──
   "Mid-term exams timetable published": "صدر جدول امتحانات نصف السنة",
   "The mid-term exam timetable is now available in the Exams section. Exams start on the 16th and run for two weeks. Please arrive 15 minutes early and bring your student card.\n\nIf you have two exams on the same day, contact the exams office.":
     "جدول امتحانات نصف السنة متاح الآن في قسم الامتحانات. تبدأ الامتحانات يوم 16 وتستمر أسبوعين. يرجى الحضور قبل 15 دقيقة وإحضار هوية الطالب.\n\nإذا كان لديك امتحانان في اليوم نفسه، راجع لجنة الامتحانات.",
@@ -97,7 +87,6 @@ const WORDS = {
   "Class photos will be taken on Tuesday morning. Please wear the full school uniform.":
     "ستُلتقط صور الصفوف صباح الثلاثاء. يرجى ارتداء الزي المدرسي كاملاً.",
 
-  // ── The bus ──
   "Al-Mansour line": "خط المنصور",
   "Al-Karrada line": "خط الكرادة",
   "Baghdad 41582": "بغداد 41582",
@@ -117,12 +106,10 @@ const WORDS = {
   "Al-Jadriya": "الجادرية",
   "Al-Jadriya bridge": "جسر الجادرية",
 
-  // ── Attendance and fees ──
   "Medical note received": "استُلم تقرير طبي",
   "Siblings at the school": "إخوة في المدرسة",
   "Top of his class": "الأول على صفه",
 
-  // ── Exams ──
   "Algebra quiz": "اختبار الجبر",
   "Functions test": "امتحان الدوال",
   "Worksheet 3": "ورقة العمل 3",
@@ -147,7 +134,6 @@ const WORDS = {
   "Periodic table": "الجدول الدوري",
   "Chemical bonding": "الأواصر الكيميائية",
 
-  // ── Homework ──
   "Quadratic equations – worksheet 4": "المعادلات التربيعية – ورقة العمل 4",
   "Solve questions 1 to 12 on the worksheet. Show every step of your work; final answers alone will not get full marks.":
     "حلّ الأسئلة من 1 إلى 12 في ورقة العمل. اكتب كل خطوات الحل؛ الجواب النهائي وحده لا يأخذ الدرجة الكاملة.",
@@ -169,7 +155,6 @@ const WORDS = {
   "Analyse the imagery of the poem from lesson 7.": "حلّل الصور الفنية في قصيدة الدرس 7.",
   "Good understanding of the imagery. Watch your spelling.": "فهم جيد للصور الفنية. انتبه للإملاء.",
 
-  // ── Chats ──
   "Sir, is question 7 on the worksheet about the discriminant?": "أستاذ، هل السؤال 7 في ورقة العمل عن المميّز؟",
   "Yes. Find b² − 4ac first, then decide how many roots there are.":
     "نعم. احسب b² − 4ac أولاً، ثم حدّد عدد الجذور.",
@@ -182,7 +167,6 @@ const WORDS = {
   "Will the lab report be due next week?": "هل تسليم تقرير المختبر الأسبوع القادم؟",
   "Yes, three days after the lab.": "نعم، بعد المختبر بثلاثة أيام.",
 
-  // ── Study material and tasks ──
   "Solving quadratic equations": "حل المعادلات التربيعية",
   "Forces simulation (PhET)": "محاكاة القوى (PhET)",
   "Chemical bonding explained": "شرح الأواصر الكيميائية",
@@ -200,7 +184,6 @@ const ORDINALS = { "1st": "الأول", "2nd": "الثاني", "3rd": "الثا�
 const STREAMS = { Scientific: "العلمي", Literary: "الأدبي", Intermediate: "المتوسط" };
 const SECTIONS = { A: "أ", B: "ب", C: "ج", D: "د" };
 
-/** One value in Arabic: patterns first (classes, rooms), then the words. */
 function toArabic(text) {
   const cls = /^(\d(?:st|nd|rd|th)) (Scientific|Literary|Intermediate) – ([A-D])$/.exec(text);
   if (cls) return `${ORDINALS[cls[1]]} ${STREAMS[cls[2]]} – ${SECTIONS[cls[3]]}`;
@@ -213,10 +196,6 @@ function toArabic(text) {
   return WORDS[text] ?? text;
 }
 
-/**
- * Which rows are the demo school's, per table ($1 = the demo schools' IDs),
- * and the text columns to put in Arabic. Real schools' rows are never touched.
- */
 const CLASSES = "SELECT id FROM classes WHERE institution_id = ANY($1)";
 const PEOPLE = "SELECT id FROM users WHERE institution_id = ANY($1)";
 const YEARS = "SELECT id FROM academic_years WHERE institution_id = ANY($1)";
@@ -224,7 +203,6 @@ const TABLES = {
   institutions: ["id = ANY($1)", ["name", "city", "address"]],
   users: ["institution_id = ANY($1)", ["name", "class_name", "subject_name"]],
   terms: [`academic_year_id IN (${YEARS})`, ["name"]],
-  // Official holidays are translated for each reader already.
   holidays: [`academic_year_id IN (${YEARS}) AND official_key IS NULL`, ["name"]],
   school_events: ["institution_id = ANY($1)", ["title", "place", "details"]],
   subjects: ["institution_id = ANY($1)", ["name"]],
@@ -243,7 +221,6 @@ const TABLES = {
   attendance_excuses: [`student_id IN (${PEOPLE})`, ["note"]],
 };
 
-/** The demo schools' text in Arabic (only values it knows change). */
 async function arabize(institutionIds) {
   const existing = new Set(
     (await query(
@@ -254,13 +231,11 @@ async function arabize(institutionIds) {
   for (const [table, [scope, columns]] of Object.entries(TABLES)) {
     for (const column of columns) {
       if (!existing.has(`${table}.${column}`)) continue;
-      // Table and column names come from the list above, never from input.
       const values = await query(
         `SELECT DISTINCT ${column} AS v FROM ${table} WHERE ${scope} AND ${column} IS NOT NULL`,
         [institutionIds],
       );
       for (const { v } of values) {
-        // A list column (exam topics): each item.
         const arabic = Array.isArray(v) ? v.map(toArabic) : toArabic(v);
         if (JSON.stringify(arabic) === JSON.stringify(v)) continue;
         await query(`UPDATE ${table} SET ${column} = $3 WHERE ${scope} AND ${column} = $2`, [

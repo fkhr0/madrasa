@@ -8,7 +8,6 @@ import '../../../core/utils/context_extensions.dart';
 import '../models/school_stats_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator's hero card: today's attendance across the school.
 class TodayAtSchoolCard extends StatelessWidget {
   final SchoolStatsModel stats;
 

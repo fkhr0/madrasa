@@ -1,6 +1,5 @@
 import '../models/faq_model.dart';
 
-/// App help content. Stays in the app (not from the server).
 class FaqData {
   FaqData._();
 

@@ -10,8 +10,6 @@ import '../providers/transport_provider.dart';
 import 'home_location_sheet.dart';
 import '../../../core/l10n/language.dart';
 
-/// Parent: share (or update) the home, so the school can pick the child up
-/// at the door. Saves the family sending it on WhatsApp.
 class FamilyHomeCard extends ConsumerWidget {
   final String studentId;
   final String firstName;

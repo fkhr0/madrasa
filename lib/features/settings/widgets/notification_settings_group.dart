@@ -4,8 +4,6 @@ import '../../../core/widgets/menu_group.dart';
 import '../../../core/widgets/menu_tile.dart';
 import '../../../core/l10n/language.dart';
 
-/// Which kinds of notifications the user wants.
-/// Local only for now; saved to the server in the backend stage.
 class NotificationSettingsGroup extends StatefulWidget {
   const NotificationSettingsGroup({super.key});
 

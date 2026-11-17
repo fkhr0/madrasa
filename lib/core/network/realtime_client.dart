@@ -5,8 +5,6 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'api_client.dart';
 
-/// One "something changed" message from the server, e.g.
-/// `{type: message.new, conversationId: ...}`.
 class RealtimeEvent {
   final String type;
   final Map<String, dynamic> data;
@@ -16,7 +14,6 @@ class RealtimeEvent {
   String? operator [](String key) => data[key] as String?;
 }
 
-/// The live connection to the server (server/src/realtime/hub.js).
 class RealtimeClient {
   final ApiClient _api;
 
@@ -34,7 +31,6 @@ class RealtimeClient {
 
   bool get isConnected => _connected;
 
-  /// The socket address: http → ws, https → wss.
   Uri get _address {
     final base = _api.resolve('/ws');
     return base.replace(scheme: base.scheme == 'https' ? 'wss' : 'ws');
@@ -43,10 +39,9 @@ class RealtimeClient {
   Future<void> connect() async {
     if (_closed) return;
     try {
-      // A quick signed-in request refreshes an expired access token first.
       await _api.get('/me');
       final token = _api.accessToken;
-      if (token == null) return; // signed out meanwhile
+      if (token == null) return;
 
       final channel = WebSocketChannel.connect(_address);
       _channel = channel;
@@ -87,14 +82,12 @@ class RealtimeClient {
     _channel = null;
     if (_closed) return;
 
-    // 2, 4, 8, 16, 30, 30... seconds.
     final wait = Duration(seconds: (2 << _failures.clamp(0, 4)).clamp(2, 30));
     _failures++;
     _retry?.cancel();
     _retry = Timer(wait, connect);
   }
 
-  /// On sign-out: stop for good.
   void close() {
     _closed = true;
     _connected = false;

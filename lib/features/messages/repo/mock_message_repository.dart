@@ -3,7 +3,6 @@ import '../models/conversation_model.dart';
 import '../models/message_model.dart';
 import 'message_repository.dart';
 
-/// Keeps chats in memory so sent messages stay during the session.
 class MockMessageRepository implements MessageRepository {
   final List<ConversationModel> _conversations = [
     ...MockMessages.conversations,
@@ -13,7 +12,6 @@ class MockMessageRepository implements MessageRepository {
   ];
   final List<MessageModel> _messages = MockMessages.messages;
 
-  /// Chats opened during the session (shown to everyone in mock mode).
   final Set<String> _started = {};
 
   static const _contacts = [

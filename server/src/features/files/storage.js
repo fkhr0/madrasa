@@ -1,4 +1,3 @@
-// Where the bytes of uploaded files live.
 const fs = require("fs");
 const path = require("path");
 const config = require("../../config");
@@ -10,7 +9,6 @@ const local = {
     await fs.promises.writeFile(path.join(config.uploadsDir, id), bytes);
   },
 
-  /** Sends the file as the answer (headers already set by the route). */
   send(id, res) {
     res.sendFile(path.resolve(config.uploadsDir, id), (err) => {
       if (err && !res.headersSent) res.status(404).json({ error: t("File not found.") });
@@ -23,7 +21,6 @@ const local = {
 };
 
 let client = null;
-/** The S3 connection, made the first time it is needed. */
 function s3() {
   if (!client) {
     const { S3Client } = require("@aws-sdk/client-s3");
@@ -31,7 +28,6 @@ function s3() {
       endpoint: config.s3.endpoint || undefined,
       region: config.s3.region,
       credentials: { accessKeyId: config.s3.accessKeyId, secretAccessKey: config.s3.secretAccessKey },
-      // MinIO and test servers use bucket/key paths instead of bucket.host names.
       forcePathStyle: config.s3.pathStyle,
     });
   }
@@ -46,10 +42,6 @@ const bucket = {
     );
   },
 
-  /**
-   * Streams the file through this server, so our safety headers stay on it
-   * and the bucket stays private. Passes "Range" on, so videos can seek.
-   */
   async send(id, res, range) {
     const { GetObjectCommand } = require("@aws-sdk/client-s3");
     let object;
@@ -77,10 +69,8 @@ const bucket = {
   },
 };
 
-/** uploads/<id>: room for other folders in the same bucket later (backups). */
 const keyOf = (id) => `uploads/${id}`;
 
-/** The storage in use (read each time, so tests can switch it). */
 const storage = () => (config.storage === "s3" ? bucket : local);
 
 module.exports = {

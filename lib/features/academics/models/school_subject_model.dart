@@ -2,17 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'subject_style.dart';
 
-/// A subject in the school's catalogue, managed by the administrator.
 class SchoolSubjectModel {
-  /// Empty for a subject not saved yet.
   final String id;
   final String name;
 
-  /// Keys from [SubjectStyle], e.g. "math" and "purple".
   final String iconKey;
   final String colorKey;
 
-  /// How many classes study it.
   final int classCount;
 
   const SchoolSubjectModel({

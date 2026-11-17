@@ -1,5 +1,3 @@
-// Files in an S3 bucket (Cloudflare R2, MinIO...), as with several servers.
-// A small S3 server in memory stands in for the bucket.
 const { test, before, after } = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("fs");
@@ -37,7 +35,6 @@ after(async () => {
 const upload = (name, bytes) =>
   request(app).post("/files").set(as.ahmed).set("X-File-Name", encodeURIComponent(name)).send(bytes);
 const linkOf = async (id) => (await request(app).get(`/files/${id}/link`).set(as.ahmed).expect(200)).body.url;
-/** supertest: keep the answer as bytes. */
 const binary = (res, done) => {
   const parts = [];
   res.on("data", (c) => parts.push(c));
@@ -48,7 +45,6 @@ test("a file goes to the bucket and comes back with our safety headers", async (
   const text = Buffer.from("name,mark\nZainab,95\nAli,88\n");
   const file = (await upload("Marks.csv", text).expect(201)).body;
 
-  // Not on this server's disk.
   assert.equal(fs.existsSync(path.join(config.uploadsDir, file.id)), false);
 
   const res = await request(app).get(await linkOf(file.id)).buffer(true).parse(binary).expect(200);
@@ -100,6 +96,6 @@ test("nightly: the dump and new uploads are copied off the server", async () => 
 
   assert.equal(await offsite.sendDump(dump), "database/school-2026-11-09.dump");
   assert.ok((await offsite.sendNewUploads()) >= 1);
-  assert.equal(await offsite.sendNewUploads(), 0); // each file only once
+  assert.equal(await offsite.sendNewUploads(), 0);
   Object.assign(config, { storage: "s3" });
 });

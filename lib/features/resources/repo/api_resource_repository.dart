@@ -2,7 +2,6 @@ import '../../../core/network/api_client.dart';
 import '../models/resource_model.dart';
 import 'resource_repository.dart';
 
-/// Study material on the school API (server/src/features/resources).
 class ApiResourceRepository implements ResourceRepository {
   final ApiClient _api;
 

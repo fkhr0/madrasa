@@ -1,6 +1,3 @@
--- Android phones that get notifications through Firebase (FCM), one row per
--- phone; token = the phone's Firebase Installation ID (FID).
--- The browser app's Web Push subscriptions stay in push_subscriptions.
 CREATE TABLE device_tokens (
   token       TEXT PRIMARY KEY,
   user_id     TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,

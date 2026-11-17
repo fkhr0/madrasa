@@ -10,7 +10,6 @@ import '../models/grade_item_model.dart';
 import '../models/subject_grades_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Subject average with a bar. Tap to show every mark in that subject.
 class SubjectGradesCard extends StatefulWidget {
   final SubjectGradesModel grades;
 
@@ -129,7 +128,6 @@ class _GradeItemRow extends StatelessWidget {
     );
   }
 
-  /// 9.0 → "9", 8.5 → "8.5"
   String _format(double value) =>
       value == value.roundToDouble() ? value.toStringAsFixed(0) : '$value';
 }

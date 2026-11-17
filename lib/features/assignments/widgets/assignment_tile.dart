@@ -13,8 +13,6 @@ import '../../../core/widgets/status_badge.dart';
 import '../models/assignment_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Assignment card used in the list and on the dashboard.
-/// Tapping opens the details page.
 class AssignmentTile extends StatelessWidget {
   final AssignmentModel assignment;
 
@@ -80,7 +78,6 @@ class AssignmentTile extends StatelessWidget {
     );
   }
 
-  /// The grade once graded, otherwise the status badge.
   Widget _trailing(BuildContext context) {
     if (assignment.status == AssignmentStatus.graded &&
         assignment.grade != null) {

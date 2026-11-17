@@ -5,7 +5,6 @@ import 'package:school/features/timetable/models/class_timetable_model.dart';
 import 'package:school/features/timetable/models/period_model.dart';
 import 'package:school/features/timetable/repo/mock_timetable_repository.dart';
 
-/// The server's week for a teacher: maths in 5th A on Sunday, 6th C on Monday.
 const _json = {
   'periods': [
     {'number': 1, 'start': '08:00', 'end': '08:45'},
@@ -69,7 +68,6 @@ void main() {
     expect(lessons.single.end, DateTime(2026, 11, 8, 9, 35));
     expect(lessons.single.className, '5th Scientific – A');
 
-    // Monday comes from the same week: no second request.
     final monday = await schedule.getLessonsFor(
       'TCH-2019-0031',
       DateTime(2026, 11, 9),
@@ -93,7 +91,6 @@ void main() {
     final repo = MockTimetableRepository();
     final two = (await repo.getPeriods()).take(2).toList();
 
-    // 5th A has a lesson in period 3 on Sunday.
     await expectLater(
       repo.savePeriods(two),
       throwsA(isA<ApiException>().having((e) => e.status, 'status', 409)),

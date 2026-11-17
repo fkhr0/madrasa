@@ -1,5 +1,3 @@
-# Alerts to Telegram. scripts/configure.sh fills in the bot from .env and
-# writes alertmanager.yml (not in git: it holds the bot's token).
 route:
   receiver: telegram
   group_by: [alertname]

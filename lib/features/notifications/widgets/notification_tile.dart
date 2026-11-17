@@ -7,7 +7,6 @@ import '../../../core/widgets/icon_box.dart';
 import '../models/notification_model.dart';
 import '../../../core/utils/text_direction.dart';
 
-/// Unread notifications have a tinted background and a dot.
 class NotificationTile extends StatelessWidget {
   final NotificationModel notification;
   final VoidCallback onTap;

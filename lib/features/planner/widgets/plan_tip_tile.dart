@@ -12,7 +12,6 @@ import '../../../core/l10n/language.dart';
 class PlanTipTile extends StatelessWidget {
   final PlanTipModel tip;
 
-  /// Shows a "Remind me" button (for students).
   final bool canRemind;
 
   const PlanTipTile({super.key, required this.tip, this.canRemind = false});

@@ -1,5 +1,3 @@
-/// The school: its name, contact details and its place on the map.
-/// Every bus line ends at [latitude], [longitude].
 class InstitutionModel {
   final String id;
   final String name;
@@ -7,14 +5,11 @@ class InstitutionModel {
   final String address;
   final String phone;
 
-  /// Shown on the Help page for families (empty = hidden).
   final String email;
   final String whatsapp;
 
-  /// Whoever runs the app, for problems with the app itself.
   final String appSupportEmail;
 
-  /// The school gate, or null until the administrator sets it.
   final double? latitude;
   final double? longitude;
 

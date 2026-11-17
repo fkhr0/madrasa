@@ -62,7 +62,6 @@ void main() {
         ],
       );
 
-      // (10 + 20) / (10 + 40) = 60%
       expect(grades.average, closeTo(60, 0.001));
     });
   });

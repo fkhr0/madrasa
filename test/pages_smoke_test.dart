@@ -70,8 +70,6 @@ import 'package:school/features/transport/pages/route_details_page.dart';
 import 'package:school/features/transport/providers/transport_provider.dart';
 import 'package:school/features/transport/pages/transport_admin_page.dart';
 
-/// Renders every page on a small phone screen in light and dark mode, and in
-/// Arabic (right to left).
 void main() {
   final studentPages = <String, Widget>{
     'login': const LoginPage(),
@@ -175,7 +173,6 @@ void main() {
     'driver more': const MorePage(),
   };
 
-  /// Pages tested while the driver is running a trip.
   const liveTripPages = {'driver home (live trip)', 'bus (live trip)'};
   studentPages['bus (live trip)'] = const BusPage();
 
@@ -187,7 +184,6 @@ void main() {
     MockUsers.driver: driverPages,
   };
 
-  // Light and dark in English, and light in Arabic (right to left).
   const modes = [
     (Brightness.light, AppLanguage.en),
     (Brightness.dark, AppLanguage.en),
@@ -205,12 +201,9 @@ void main() {
           AppLanguage.current = language;
           addTearDown(() => AppLanguage.current = AppLanguage.en);
 
-          // No internet in tests: maps draw without OpenStreetMap tiles.
           final container = ProviderContainer(
             overrides: [mapTilesEnabledProvider.overrideWithValue(false)],
           );
-          // Pages behind the login need a signed-in user. runAsync uses real
-          // time, because the mock sign-in waits with Future.delayed.
           await tester.runAsync(
             () => container
                 .read(authProvider.notifier)
@@ -249,8 +242,6 @@ void main() {
 
           expect(tester.takeException(), isNull);
 
-          // In Arabic, no English sentence from the dictionary may show: it
-          // would mean a text that skipped tr().
           if (language == AppLanguage.ar) {
             final english = {
               for (final MapEntry(:key, :value) in arabic.entries)
@@ -263,8 +254,6 @@ void main() {
             expect(shown.where(english.contains), isEmpty);
           }
 
-          // Dispose inside the test so the clock and bus timers stop
-          // before Flutter checks for pending timers.
           await tester.pumpWidget(const SizedBox());
           container.dispose();
         });

@@ -8,10 +8,10 @@ before(async () => {
   app = await startTestApp();
   for (const [role, id] of [
     ["admin", "ADM-2020-0001"],
-    ["student", "STU-2026-0142"], // 5th Scientific – A
-    ["parent", "PAR-2026-0142"], // Zainab's father
-    ["teacher", "TCH-2019-0031"], // Mathematics, every class
-    ["biology", "TCH-2019-0045"], // not in 5th Scientific – B
+    ["student", "STU-2026-0142"],
+    ["parent", "PAR-2026-0142"],
+    ["teacher", "TCH-2019-0031"],
+    ["biology", "TCH-2019-0045"],
     ["driver", "DRV-2024-0012"],
   ]) {
     as[role] = { Authorization: `Bearer ${(await signIn(app, id)).accessToken}` };
@@ -32,7 +32,7 @@ test("each role reads what is meant for them, pinned first", async () => {
 
   const parent = await titles(as.parent);
   assert.ok(parent.includes("Parent–teacher meeting"));
-  assert.ok(parent.includes("Class photo day")); // their child's class
+  assert.ok(parent.includes("Class photo day"));
 
   const driver = await titles(as.driver);
   assert.ok(!driver.includes("Class photo day"));
@@ -55,14 +55,13 @@ test("a teacher announces only to classes they teach", async () => {
   const created = await post(as.teacher, {
     audience: "class",
     className: "5th Scientific – A",
-    isPinned: true, // ignored for teachers
+    isPinned: true,
   }).expect(201);
   assert.equal(created.body.authorName, "Ahmed Kareem");
   assert.equal(created.body.className, "5th Scientific – A");
   assert.equal(created.body.isPinned, false);
   assert.ok((await titles(as.student)).includes("Quiz on Sunday"));
 
-  // Another teacher can't change it; its author can.
   await request(app)
     .delete(`/announcements/${created.body.id}`)
     .set(as.biology)

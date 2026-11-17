@@ -8,8 +8,6 @@ import '../models/task_model.dart';
 import '../providers/task_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// "Remind me", one sheet used everywhere (dashboard, assignments, exams,
-/// planner tips, tasks).
 Future<void> showReminderSheet(
   BuildContext context, {
   String title = '',
@@ -51,14 +49,12 @@ class _ReminderSheetState extends ConsumerState<_ReminderSheet> {
     super.dispose();
   }
 
-  /// Quick times that make sense right now.
   List<(String, DateTime)> _buildChoices() {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final before = widget.before;
 
     return [
-      // Handy for trying reminders out.
       (tr('In 1 minute'), now.add(const Duration(minutes: 1))),
       (tr('In 1 hour'), now.add(const Duration(hours: 1))),
       if (now.hour < 19)

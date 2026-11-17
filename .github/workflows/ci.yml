@@ -1,10 +1,8 @@
-# Every push and pull request: the tests, and the security scanners.
-# deploy.yml runs this first and only deploys when it passes.
 name: CI
 
 on:
   push:
-    branches-ignore: [main] # main: deploy.yml runs these first
+    branches-ignore: [main]
   pull_request:
   workflow_call:
 
@@ -61,18 +59,14 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with: { fetch-depth: 0 }
-      # Passwords or keys committed by mistake (whole history).
       - uses: gitleaks/gitleaks-action@v3
         env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
-      # Known holes in the server's packages (high and critical fail).
       - uses: actions/setup-node@v7
         with: { node-version: 22 }
       - run: npm audit --omit=dev --audit-level=high
         working-directory: server
-      # Mistakes in the Dockerfile.
       - uses: hadolint/hadolint-action@v3.5.0
         with: { dockerfile: server/Dockerfile }
-      # Secrets and misconfigurations in the deploy files.
       - uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: config

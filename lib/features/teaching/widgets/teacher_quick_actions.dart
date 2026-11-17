@@ -7,8 +7,6 @@ import '../../../core/widgets/quick_actions_row.dart';
 import 'class_picker_sheet.dart';
 import '../../../core/l10n/language.dart';
 
-/// The things a teacher does most: attendance, homework, grades and
-/// announcements. The first three ask "which class?" first.
 class TeacherQuickActions extends StatelessWidget {
   const TeacherQuickActions({super.key});
 

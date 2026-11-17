@@ -12,8 +12,6 @@ import '../models/school_event_model.dart';
 import '../providers/calendar_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator: add an event or meeting to the school calendar, or change
-/// or delete one ([event] given). Dates stay inside the study year.
 Future<void> showEventEditor(
   BuildContext context, {
   required AcademicYearModel year,
@@ -182,7 +180,6 @@ class _EventEditorState extends ConsumerState<_EventEditor> {
                     selected: _type == type,
                     onSelected: (_) => setState(() {
                       _type = type;
-                      // Meetings are usually not for students.
                       if (type == CalendarEventType.meeting &&
                           _audience == EventAudience.everyone) {
                         _audience = EventAudience.families;

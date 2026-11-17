@@ -21,14 +21,11 @@ enum AttachmentType {
   }
 }
 
-/// A file attached by the teacher or submitted by the student.
 class AttachmentModel {
-  /// The server's file ID; empty in mock data.
   final String id;
   final String name;
   final AttachmentType type;
 
-  /// Human readable, e.g. "2.4 MB".
   final String size;
 
   const AttachmentModel({
@@ -38,7 +35,6 @@ class AttachmentModel {
     required this.size,
   });
 
-  /// The type from the file name: "Worksheet.pdf" → pdf.
   static AttachmentType typeOf(String name) {
     final ext = name.contains('.') ? name.split('.').last.toLowerCase() : '';
     return switch (ext) {
@@ -60,7 +56,6 @@ class AttachmentModel {
     };
   }
 
-  /// 1258291 → "1.2 MB"
   static String sizeText(int bytes) {
     if (bytes >= 1024 * 1024) {
       return tr('{0} MB', [(bytes / 1024 / 1024).toStringAsFixed(1)]);

@@ -2,11 +2,9 @@ import '../../subjects/data/mock_subjects.dart';
 import '../../subjects/models/subject_model.dart';
 import '../models/lesson_model.dart';
 
-/// Fake weekly timetable. School week is Sunday → Thursday.
 class MockSchedule {
   MockSchedule._();
 
-  /// Period start times (hour, minute). Every period is 45 minutes.
   static const _periods = [
     (8, 0),
     (8, 50),
@@ -16,7 +14,6 @@ class MockSchedule {
     (12, 25),
   ];
 
-  /// Subjects per weekday. Keys use DateTime.monday ... DateTime.sunday.
   static const Map<int, List<(SubjectModel, String)>> _week = {
     DateTime.sunday: [
       (MockSubjects.islamic, 'Room 204'),
@@ -57,7 +54,6 @@ class MockSchedule {
     ],
   };
 
-  /// Mr. Ahmed Kareem's maths classes. Null = free period.
   static const Map<int, List<(String, String)?>> _teacherWeek = {
     DateTime.sunday: [
       null,
@@ -99,7 +95,7 @@ class MockSchedule {
 
     for (var i = 0; i < periods.length; i++) {
       final period = periods[i];
-      if (period == null) continue; // free period
+      if (period == null) continue;
 
       lessons.add(
         LessonModel(
@@ -116,7 +112,6 @@ class MockSchedule {
     return lessons;
   }
 
-  /// The period number (1, 2, 3...) of a lesson starting at [start].
   static int periodOf(DateTime start) =>
       _periods.indexOf((start.hour, start.minute)) + 1;
 

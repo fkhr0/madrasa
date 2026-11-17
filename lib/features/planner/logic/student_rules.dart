@@ -10,8 +10,6 @@ import '../models/plan_tip_model.dart';
 import 'common_rules.dart';
 import '../../../core/l10n/language.dart';
 
-/// The student's plan: what to do today, tomorrow and this week.
-/// Plain rules, no AI, the future AI helper builds on top of these.
 List<PlanTipModel> studentTips({
   required DateTime now,
   required List<AssignmentModel> assignments,
@@ -23,11 +21,9 @@ List<PlanTipModel> studentTips({
     (a) => a.status == AssignmentStatus.pending,
   );
 
-  // ---------- Assignments ----------
   for (final a in pending) {
     final days = daysUntil(now, a.dueDate);
     final route = AppRoutes.assignmentDetails(a.id);
-    // Judged at [now], not the phone's clock, so tips match the time given.
     final overdue = now.isAfter(a.dueDate);
     final canSubmit = !overdue || a.allowsLateSubmission;
 
@@ -95,7 +91,6 @@ List<PlanTipModel> studentTips({
     }
   }
 
-  // ---------- Exams ----------
   for (final exam in exams.where((e) => now.isBefore(e.end))) {
     final days = daysUntil(now, exam.start);
     final isQuiz = exam.type == ExamType.quiz;
@@ -145,7 +140,6 @@ List<PlanTipModel> studentTips({
             days,
             topics == null ? '' : ' · $topics',
           ]),
-          // Sooner and bigger exams first.
           priority: (isQuiz ? 45 : 60) - days,
           route: AppRoutes.exams,
         ),
@@ -153,7 +147,6 @@ List<PlanTipModel> studentTips({
     }
   }
 
-  // ---------- Personal tasks ----------
   for (final task in tasks.where((t) => !t.isDone && !t.isOverdue)) {
     final days = daysUntil(now, task.dueAt);
     if (days > 1) continue;
@@ -172,7 +165,6 @@ List<PlanTipModel> studentTips({
     );
   }
 
-  // ---------- A busy tomorrow ----------
   final examsTomorrow = exams.where(
     (e) => now.isBefore(e.end) && daysUntil(now, e.start) == 1,
   );

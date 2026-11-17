@@ -16,7 +16,6 @@ import '../models/notification_model.dart';
 import '../providers/notification_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Wraps the signed-in app and.
 class LiveAlertsListener extends ConsumerStatefulWidget {
   final Widget child;
 
@@ -27,12 +26,9 @@ class LiveAlertsListener extends ConsumerStatefulWidget {
 }
 
 class _LiveAlertsListenerState extends ConsumerState<LiveAlertsListener> {
-  /// Only reminders due after sign-in fire (no burst of old ones).
   final DateTime _since = DateTime.now();
   final Set<String> _firedReminders = {};
 
-  /// Mock mode only: with the server, the "reminders.tasks" job sends them
-  /// (as a notification, and a push when the app is closed).
   void _checkReminders(DateTime now) {
     if (AppConfig.useApi) return;
     final user = ref.read(currentUserProvider);
@@ -111,7 +107,6 @@ class _LiveAlertsListenerState extends ConsumerState<LiveAlertsListener> {
   Widget build(BuildContext context) {
     final isStudent = ref.watch(currentUserProvider).role == UserRole.student;
 
-    // Keep the student's tasks loaded so reminders can fire.
     if (isStudent) ref.watch(tasksProvider);
 
     ref.listen(nowProvider, (_, now) {
@@ -121,7 +116,7 @@ class _LiveAlertsListenerState extends ConsumerState<LiveAlertsListener> {
     ref.listen(notificationsProvider, (previous, next) {
       final before = previous?.valueOrNull;
       final after = next.valueOrNull;
-      if (before == null || after == null) return; // first load: no banners
+      if (before == null || after == null) return;
 
       final known = {for (final n in before) n.id};
       final fresh = after.where((n) => !known.contains(n.id) && !n.isRead);

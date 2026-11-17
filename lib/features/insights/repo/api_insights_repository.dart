@@ -2,8 +2,6 @@ import '../../../core/network/api_client.dart';
 import '../models/insights_model.dart';
 import 'insights_repository.dart';
 
-/// Statistics worked out by the server from the real data
-/// (server/src/features/reports).
 class ApiInsightsRepository implements InsightsRepository {
   final ApiClient _api;
 

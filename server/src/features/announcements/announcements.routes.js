@@ -1,4 +1,3 @@
-// Announcements.
 const express = require("express");
 const { HttpError, validate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");
@@ -17,7 +16,6 @@ const fields = z
     body: z.string().trim().min(1).max(5000),
     audience: z.enum(["school", "class", "parents", "teachers"]),
     className: z.string().trim().nullish(),
-    // Only when publishing: a future time schedules it.
     publishedAt: z.string().datetime({ offset: true }).nullish(),
     isPinned: z.boolean().default(false),
   })
@@ -25,10 +23,6 @@ const fields = z
     message: "Choose a class",
   });
 
-/**
- * Checks what this user may send and turns the class name into its ID.
- * Teachers: only to classes they teach, and they cannot pin.
- */
 async function resolve(user, body, wasPinned = false) {
   let classId = null;
   if (body.audience === "class") {
@@ -50,7 +44,6 @@ async function resolve(user, body, wasPinned = false) {
   return { ...body, classId };
 }
 
-/** The announcement, if this user may change it (author or admin). */
 async function findEditable(user, id) {
   const found = await repo.find(user.institutionId, id);
   if (!found) throw new HttpError(404, "Announcement not found.");
@@ -60,17 +53,14 @@ async function findEditable(user, id) {
   return found;
 }
 
-// GET /announcements -> [announcement]
 router.get("/", async (req, res) => {
   res.json(await repo.listFor(req.user));
 });
 
-// POST /announcements -> announcement  (teachers and admins)
 router.post("/", requireRole("teacher", "admin"), async (req, res) => {
   const body = await resolve(req.user, validate(fields, req.body));
   const author = await users.findById(req.user.id);
   const created = await repo.insert(req.user.institutionId, author, body);
-  // Published now: tell everyone it is for (scheduled ones wait their time).
   await sendDueAnnouncements();
   await log(req.user, {
     kind: "announcement",
@@ -82,14 +72,12 @@ router.post("/", requireRole("teacher", "admin"), async (req, res) => {
   res.status(201).json(created);
 });
 
-// PATCH /announcements/:id -> announcement  (author or admin)
 router.patch("/:id", async (req, res) => {
   const old = await findEditable(req.user, req.params.id);
   const body = await resolve(req.user, validate(fields, req.body), old.isPinned);
   res.json(await repo.update(req.user.institutionId, old.id, body));
 });
 
-// DELETE /announcements/:id -> 204  (author or admin)
 router.delete("/:id", async (req, res) => {
   const old = await findEditable(req.user, req.params.id);
   await repo.remove(req.user.institutionId, old.id);

@@ -4,12 +4,9 @@ import '../../../core/constants/app_spacing.dart';
 import '../../../core/utils/context_extensions.dart';
 import '../models/insights_model.dart';
 
-/// Small column chart for rates (0–1) by day. The lowest day is
-/// highlighted so the eye goes there first.
 class DayColumnsChart extends StatelessWidget {
   final List<LabeledValue> days;
 
-  /// Columns start from this rate, so small differences are visible.
   final double floor;
 
   const DayColumnsChart({super.key, required this.days, this.floor = 0.7});

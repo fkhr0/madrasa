@@ -13,7 +13,6 @@ enum NotificationType {
   reminder,
   payment,
 
-  /// The office's daily summary, a parent's weekly one.
   summary;
 
   IconData get icon {
@@ -75,7 +74,6 @@ class NotificationModel {
   final DateTime createdAt;
   final bool isRead;
 
-  /// Where tapping the notification leads, e.g. "/assignments/a1".
   final String? route;
 
   const NotificationModel({

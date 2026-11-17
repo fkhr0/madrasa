@@ -64,28 +64,22 @@ class AssignmentModel {
   final DateTime dueDate;
   final AssignmentStatus status;
 
-  /// Files from the teacher.
   final List<AttachmentModel> attachments;
 
-  /// Files the student handed in.
   final List<AttachmentModel> submittedFiles;
   final DateTime? submittedAt;
 
-  /// Whether the teacher accepts work after the due date.
   final bool allowsLateSubmission;
 
   final double? grade;
   final double? maxGrade;
   final String? feedback;
 
-  /// Students must hand in a file (otherwise "Mark as done").
   final bool acceptsFiles;
 
-  /// Set by the server.
   final String classId;
   final String className;
 
-  /// Staff lists: how many handed in, and how many are graded.
   final int submittedCount;
   final int gradedCount;
 
@@ -112,7 +106,6 @@ class AssignmentModel {
     this.gradedCount = 0,
   });
 
-  /// One assignment from the server, with the student's submission if any.
   factory AssignmentModel.fromJson(Map<String, dynamic> json) {
     final submission = json['submission'] as Map<String, dynamic>?;
     final grade = (submission?['grade'] as num?)?.toDouble();
@@ -196,7 +189,6 @@ class AssignmentModel {
   }
 }
 
-/// What a teacher or the office fills in to set work for a class.
 class AssignmentDraftModel {
   final String classId;
   final String subjectId;
@@ -208,7 +200,6 @@ class AssignmentDraftModel {
   final bool acceptsFiles;
   final double maxGrade;
 
-  /// The teacher's files (already uploaded).
   final List<AttachmentModel> attachments;
 
   const AssignmentDraftModel({
@@ -237,7 +228,6 @@ class AssignmentDraftModel {
   };
 }
 
-/// A student on a teacher's hand-in list.
 class StudentSubmissionModel {
   final String id;
   final String name;

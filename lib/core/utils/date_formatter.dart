@@ -1,7 +1,6 @@
 import '../l10n/counted.dart';
 import '../l10n/language.dart';
 
-/// Turns dates into short, friendly text, in the app's language.
 class DateFormatter {
   DateFormatter._();
 
@@ -57,39 +56,29 @@ class DateFormatter {
     'December',
   ];
 
-  /// "Wednesday"
   static String weekday(DateTime date) => weekdayName(date.weekday);
 
-  /// 7 → "Sunday" (DateTime.monday = 1 ... DateTime.sunday = 7).
   static String weekdayName(int weekday) =>
       (_ar ? _weekdaysAr : _weekdays)[weekday - 1];
 
-  /// "Wed"
   static String weekdayShort(DateTime date) => _ar
-      // Arabic day names are short already; drop "ال" (the).
       ? weekday(date).replaceFirst('ال', '')
       : weekday(date).substring(0, 3);
 
-  /// "November"
   static String monthName(DateTime date) =>
       (_ar ? _monthsAr : _months)[date.month - 1];
 
-  /// "Nov" (Arabic month names aren't shortened).
   static String monthShort(DateTime date) =>
       _ar ? monthName(date) : monthName(date).substring(0, 3);
 
-  /// "4 Nov"
   static String dayMonth(DateTime date) => '${date.day} ${monthShort(date)}';
 
-  /// "Wednesday, 4 November"
   static String fullDate(DateTime date) =>
       '${weekday(date)}${_ar ? '،' : ','} ${date.day} ${monthName(date)}';
 
-  /// "08:30"
   static String time(DateTime date) =>
       '${_two(date.hour)}:${_two(date.minute)}';
 
-  /// "Today", "Tomorrow", "Yesterday" or "Wed, 4 Nov"
   static String relativeDay(DateTime date) {
     final difference = _daysBetween(DateTime.now(), date);
 
@@ -100,7 +89,6 @@ class DateFormatter {
     return '${weekdayShort(date)}${_ar ? '،' : ','} ${dayMonth(date)}';
   }
 
-  /// "Due today", "Due in 3 days", "2 days overdue"
   static String dueLabel(DateTime due) {
     final days = _daysBetween(DateTime.now(), due);
 
@@ -120,7 +108,6 @@ class DateFormatter {
     return '${-days} days overdue';
   }
 
-  /// For chat lists: "09:41" today, "Yesterday", or "4 Nov".
   static String shortStamp(DateTime date) {
     final days = _daysBetween(date, DateTime.now());
 

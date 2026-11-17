@@ -8,14 +8,11 @@ import '../../../core/utils/money_formatter.dart';
 import '../../../core/widgets/icon_box.dart';
 import '../models/payment_model.dart';
 
-/// A payment with its receipt number.
 class PaymentTile extends StatelessWidget {
   final PaymentModel payment;
 
-  /// Shown above the details, e.g. the student's name in a school-wide list.
   final String? title;
 
-  /// The office taps a payment to void it.
   final VoidCallback? onTap;
 
   const PaymentTile({super.key, required this.payment, this.title, this.onTap});

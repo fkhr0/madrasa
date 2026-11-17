@@ -8,16 +8,12 @@ import '../../auth/models/user_model.dart';
 import '../../people/providers/people_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// What was picked: a teacher, or "no teacher".
 class TeacherChoice {
-  /// Null = no teacher.
   final UserModel? teacher;
 
   const TeacherChoice(this.teacher);
 }
 
-/// Picks a teacher of the school. Teachers of [subjectName] are listed
-/// first. Returns null when the sheet is closed without choosing.
 Future<TeacherChoice?> showTeacherPicker(
   BuildContext context, {
   required String title,

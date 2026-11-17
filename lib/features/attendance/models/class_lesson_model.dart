@@ -1,17 +1,14 @@
 import '../../../core/utils/day_json.dart';
 import 'attendance_record_model.dart';
 
-/// A lesson of a class on one day that this user may mark.
 class ClassLessonModel {
   final int period;
 
-  /// "08:50"
   final String start;
   final String end;
   final String subjectName;
   final String? teacherName;
 
-  /// Attendance was already taken (it can still be corrected).
   final bool taken;
 
   const ClassLessonModel({
@@ -34,12 +31,10 @@ class ClassLessonModel {
       );
 }
 
-/// A class's day: the lessons this user may mark.
 class ClassDayModel {
   final DateTime date;
   final String className;
 
-  /// False on weekends, holidays and outside the study year.
   final bool isSchoolDay;
   final List<ClassLessonModel> lessons;
 
@@ -61,12 +56,10 @@ class ClassDayModel {
   );
 }
 
-/// A student on the attendance sheet of one lesson.
 class StudentMarkModel {
   final String id;
   final String name;
 
-  /// Null while attendance hasn't been taken for this lesson.
   final AttendanceStatus? status;
 
   const StudentMarkModel({required this.id, required this.name, this.status});

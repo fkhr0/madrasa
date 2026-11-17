@@ -10,8 +10,8 @@ before(async () => {
     ["admin", "ADM-2020-0001"],
     ["zainab", "STU-2026-0142"],
     ["fatima", "STU-2026-0150"],
-    ["ali", "STU-2026-0153"], // 5th B
-    ["otherSchool", "STU-2026-0388"], // the intermediate school
+    ["ali", "STU-2026-0153"],
+    ["otherSchool", "STU-2026-0388"],
     ["ahmed", "TCH-2019-0031"],
     ["sara", "TCH-2019-0040"],
     ["parent", "PAR-2026-0142"],
@@ -29,7 +29,6 @@ test("tasks are private: add, tick, delete", async () => {
   const task = { id: "x1", title: "Revise maths", dueAt: new Date().toISOString(), priority: "high" };
   await request(app).post("/tasks").set(as.fatima).send(task).expect(201);
   await request(app).post("/tasks").set(as.fatima).send(task).expect(409);
-  // The same ID is fine for someone else.
   await request(app).post("/tasks").set(as.zainab).send(task).expect(201);
 
   const done = (await request(app).patch("/tasks/x1").set(as.fatima).send({ isDone: true }).expect(200)).body;
@@ -65,7 +64,6 @@ test("study material: the teacher shares, the class sees it", async () => {
   const created = (await request(app).post("/resources/classes/cls-5a").set(as.ahmed).send(shared).expect(201)).body;
   assert.equal(created.fileName, "Chapter 3.pdf");
 
-  // Zainab can open the file; a student of another school can't.
   await request(app).get(`/files/${file.id}/link`).set(as.zainab).expect(200);
   await request(app).get(`/files/${file.id}/link`).set(as.otherSchool).expect(404);
   assert.equal((await request(app).get("/resources/students/STU-2026-0153").set(as.ali)).body.length, 0);

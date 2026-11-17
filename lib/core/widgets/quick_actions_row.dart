@@ -19,7 +19,6 @@ class QuickAction {
   });
 }
 
-/// A row of big coloured shortcuts (used on every home page).
 class QuickActionsRow extends StatelessWidget {
   final List<QuickAction> actions;
 

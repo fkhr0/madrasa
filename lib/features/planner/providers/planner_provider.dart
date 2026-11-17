@@ -20,8 +20,6 @@ import '../logic/teacher_rules.dart';
 import '../models/plan_tip_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// The planner's tips for the signed-in user, sorted (today first).
-/// Only reads data other features already load, so it costs nothing extra.
 final planTipsProvider = FutureProvider<List<PlanTipModel>>((ref) async {
   final now = ref.watch(nowProvider);
   final role = ref.watch(currentUserProvider).role;
@@ -64,7 +62,6 @@ final planTipsProvider = FutureProvider<List<PlanTipModel>>((ref) async {
       );
     case UserRole.admin:
     case UserRole.driver:
-      // Their home pages have their own focused lists.
       break;
   }
 

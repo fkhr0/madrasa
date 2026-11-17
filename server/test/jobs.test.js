@@ -26,7 +26,6 @@ const titles = async (who) => {
   return (Array.isArray(body) ? body : body.items).map((n) => n.title);
 };
 
-/** The next school day from [from] days ahead. */
 function schoolDay(from) {
   for (let d = from; ; d++) if (calendar.isSchoolDay(addDays(today(), d))) return addDays(today(), d);
 }
@@ -40,7 +39,7 @@ test("exam reminders go to the class's families once", async () => {
   );
 
   assert.ok((await reminders.examsToday({ date: day })) >= 1);
-  assert.equal(await reminders.examsToday({ date: day }), 0); // not twice
+  assert.equal(await reminders.examsToday({ date: day }), 0);
   assert.ok((await titles(parent)).includes("Physics monthly exam today at 09:40"));
 
   const evening = await reminders.eveningReminders({ date: addDays(day, -1) });
@@ -83,7 +82,6 @@ test("a teacher is reminded about attendance 10 minutes into a lesson", async ()
 });
 
 test("fee reminders: 3 days before an unpaid installment", async () => {
-  // Zainab paid her first installment; her second is due 2027-01-01.
   const sent = await feeReminders({ date: "2026-12-29" });
   assert.ok(sent >= 1);
   assert.ok((await titles(parent)).includes("School fees due in 3 days"));
@@ -103,7 +101,6 @@ test("nightly upkeep: removes unattached uploads, backs up the database", async 
   const backup = await backUp(folder);
   assert.ok(fs.statSync(backup).size > 1000);
 
-  // Every scheduled job is defined.
   await run("announcements.due", {});
 });
 
@@ -111,7 +108,6 @@ test("summaries: the office's day and each parent's week", async () => {
   const { dailySummary, weeklySummary } = require("../src/jobs/summaries");
   const admin = { Authorization: `Bearer ${(await signIn(app, "ADM-2020-0001")).accessToken}` };
 
-  // A school day in the last week with attendance (the demo has 30 days of it).
   let day = addDays(today(), -1);
   while (!calendar.isSchoolDay(day)) day = addDays(day, -1);
 

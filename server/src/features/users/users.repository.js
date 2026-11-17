@@ -1,4 +1,3 @@
-// SQL for accounts. Returns plain rows; users.mapper.js shapes them for the app.
 const { query, queryOne } = require("../../db/database");
 
 const SELECT_USER = `
@@ -12,7 +11,6 @@ function findById(id) {
   return queryOne(`${SELECT_USER} WHERE u.id = $1`, [id]);
 }
 
-/** The account a "forgot password" request means: its ID, email or phone. */
 function findForReset(who) {
   return queryOne(
     `${SELECT_USER}
@@ -23,7 +21,6 @@ function findForReset(who) {
   );
 }
 
-/** A parent's children (they may be in other schools of the platform). */
 function findChildren(parentId) {
   return query(
     `${SELECT_USER}

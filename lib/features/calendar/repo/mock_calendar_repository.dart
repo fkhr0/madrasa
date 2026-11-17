@@ -3,7 +3,6 @@ import '../data/mock_calendar_events.dart';
 import '../models/school_event_model.dart';
 import 'calendar_repository.dart';
 
-/// Keeps events in memory, so the administrator's changes last the session.
 class MockCalendarRepository implements CalendarRepository {
   final List<SchoolEventModel> _events = MockCalendarEvents.items;
   int _count = 0;

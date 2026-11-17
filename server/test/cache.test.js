@@ -18,12 +18,9 @@ const schoolName = async () => (await request(app).get("/institution").set(as.za
 test("answers come from the cache until anything in the school changes", async () => {
   const name = await schoolName();
 
-  // Changed behind the server's back: the cached answer is still served
-  // (proof the database wasn't asked).
   await query("UPDATE institutions SET name = 'Changed directly' WHERE id = 'inst-001'");
   assert.equal(await schoolName(), name);
 
-  // Any change through the app (here: a holiday added) clears the cache.
   const year = (await request(app).get("/academic-year").set(as.admin)).body;
   await request(app)
     .post("/academic-year/holidays")

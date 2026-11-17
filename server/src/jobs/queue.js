@@ -1,12 +1,9 @@
-// Background jobs, one interface with two engines.
 const { CronExpressionParser } = require("cron-parser");
 const config = require("../config");
 
 const QUEUE = "school";
 
-/** name → async handler(data) */
 const handlers = new Map();
-/** name → cron pattern */
 const schedules = new Map();
 
 let engine = null;
@@ -19,9 +16,8 @@ function schedule(name, pattern) {
   schedules.set(name, pattern);
 }
 
-/** Runs [name] soon, outside the request that asked for it. */
 async function enqueue(name, data = {}) {
-  if (!engine) return run(name, data); // jobs not started (e.g. a script)
+  if (!engine) return run(name, data);
   return engine.enqueue(name, data);
 }
 
@@ -31,10 +27,6 @@ async function run(name, data) {
   return handler(data);
 }
 
-/**
- * Starts the jobs. [worker] = this process also runs them (on one PC);
- * false = it only queues them for node src/worker.js.
- */
 async function startJobs({ worker = config.runWorker } = {}) {
   if (engine) return engine;
   engine = config.redisUrl ? await bullEngine(worker) : timerEngine(worker);
@@ -46,12 +38,9 @@ async function stopJobs() {
   engine = null;
 }
 
-// ---------- BullMQ ----------
-
 async function bullEngine(worker) {
   const { Queue, Worker } = require("bullmq");
   const IORedis = require("ioredis");
-  // BullMQ needs maxRetriesPerRequest: null so its waits never time out.
   const connection = new IORedis(config.redisUrl, { maxRetriesPerRequest: null });
   connection.on("error", (e) => console.warn(`Redis: ${e.message}`));
 
@@ -60,13 +49,11 @@ async function bullEngine(worker) {
     defaultJobOptions: {
       attempts: 3,
       backoff: { type: "exponential", delay: 30_000 },
-      // Keep a little history for checking, not forever (free Redis is 30 MB).
       removeOnComplete: { count: 200 },
       removeOnFail: { count: 500 },
     },
   });
 
-  // Repeating jobs: the same IDs every start, so restarts don't add copies.
   for (const [name, pattern] of schedules) {
     await queue.upsertJobScheduler(name, { pattern, tz: config.timeZone }, { name });
   }
@@ -94,8 +81,6 @@ async function bullEngine(worker) {
   };
 }
 
-// ---------- Without Redis ----------
-
 function timerEngine(worker) {
   const timers = new Set();
   const safely = (name, data) =>
@@ -122,7 +107,6 @@ function timerEngine(worker) {
 
   return {
     name: "timer",
-    // Right after the request finishes, in this process.
     enqueue: (name, data) => {
       setImmediate(() => safely(name, data));
     },

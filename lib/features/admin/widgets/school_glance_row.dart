@@ -13,8 +13,6 @@ import '../../transport/models/trip_model.dart';
 import '../../transport/providers/transport_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Two live numbers for the administrator: fees collected and buses on
-/// the road. Each opens its full page.
 class SchoolGlanceRow extends ConsumerWidget {
   const SchoolGlanceRow({super.key});
 

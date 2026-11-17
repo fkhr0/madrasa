@@ -19,8 +19,6 @@ import '../widgets/school_glance_row.dart';
 import '../widgets/today_at_school_card.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator's 10–30 second screen: today's attendance, the school in
-/// numbers, what needs attention and what happened recently.
 class AdminHomePage extends ConsumerWidget {
   const AdminHomePage({super.key});
 

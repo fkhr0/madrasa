@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/l10n/language.dart';
 
-/// Asks why the trip is ending before the last stop.
-/// Returns the reason, or null when the driver changes their mind.
 Future<String?> showEndEarlyDialog(BuildContext context) {
-  // Sent in English: the server tells each family in their app's language.
   const reasons = [
     'Bus broke down',
     'Road closed',

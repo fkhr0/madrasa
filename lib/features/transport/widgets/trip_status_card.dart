@@ -8,7 +8,6 @@ import '../logic/trip_text.dart';
 import '../models/trip_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Big status at the top of the bus page, with the route progress.
 class TripStatusCard extends StatelessWidget {
   final TripModel trip;
   final DateTime now;

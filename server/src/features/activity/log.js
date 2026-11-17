@@ -1,4 +1,3 @@
-// Writes one line to the activity log.
 const { queryOne, query } = require("../../db/database");
 const { render } = require("../../i18n");
 

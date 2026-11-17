@@ -15,7 +15,6 @@ import '../providers/finance_provider.dart';
 import '../repo/finance_repository.dart';
 import '../../../core/l10n/language.dart';
 
-/// Office: the year's fees.
 class FeeSettingsPage extends ConsumerWidget {
   const FeeSettingsPage({super.key});
 
@@ -48,7 +47,6 @@ class _EditorState extends ConsumerState<_Editor> {
   late final _busFee = _field(widget.saved.busFee);
   late final List<DateTime> _dueDates = [...widget.saved.dueDates];
 
-  /// Class ID → its tuition field (empty = the school's tuition).
   late final Map<String, TextEditingController> _classTuition = {
     for (final c in widget.saved.classTuition) c.classId: _field(c.tuition),
   };

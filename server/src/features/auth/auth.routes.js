@@ -1,4 +1,3 @@
-// Sign in, stay signed in, sign out.
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const { HttpError, validate, z } = require("../../common/http");
@@ -16,13 +15,8 @@ const router = express.Router();
 
 const WRONG = "The ID or password is not correct.";
 
-/**
- * Compared against when the ID doesn't exist, so the answer takes as long
- * as for a wrong password (the time must not tell which IDs exist).
- */
 const NO_ONE = bcrypt.hashSync("no such account", config.bcryptCost);
 
-// POST /auth/login { schoolId, password } -> { accessToken, refreshToken, user }
 router.post("/login", signInLimit, async (req, res) => {
   const { schoolId, password } = validate(
     z.object({
@@ -41,12 +35,10 @@ router.post("/login", signInLimit, async (req, res) => {
   }
 
   const user = await users.findById(id);
-  // Same message for "no such ID" and "wrong password": don't reveal which IDs exist.
   const matches = await bcrypt.compare(password, user?.password_hash ?? NO_ONE);
   require("../../common/metrics").signIns.inc({ result: user && matches ? "ok" : "wrong" });
   if (!user || !matches) {
     if (await lockout.recordFailure(id) && user) {
-      // The office sees it in Activity (someone may be guessing).
       await log(
         { id: user.id, institutionId: user.institution_id, role: user.role },
         {
@@ -72,9 +64,6 @@ router.post("/login", signInLimit, async (req, res) => {
   });
 });
 
-// GET /auth/demo -> { roles }  (404 when the demo is off)
-// POST /auth/demo { role } -> { accessToken, refreshToken, user }
-// "Try the demo" on the sign-in page: no password, the demo school only.
 router.get("/demo", (_req, res) => {
   if (!config.demoMode) throw new HttpError(404, "Not found.");
   res.json({ roles: Object.keys(demo.DEMO_ACCOUNTS) });
@@ -95,7 +84,6 @@ router.post("/demo", signInLimit, async (req, res) => {
   });
 });
 
-// POST /auth/refresh { refreshToken } -> { accessToken, refreshToken }
 router.post("/refresh", async (req, res) => {
   const { refreshToken } = validate(
     z.object({ refreshToken: z.string().min(1) }),
@@ -112,16 +100,11 @@ router.post("/refresh", async (req, res) => {
   });
 });
 
-// POST /auth/logout { refreshToken } -> 204
 router.post("/logout", async (req, res) => {
   await tokens.endSession(req.body?.refreshToken);
   res.status(204).end();
 });
 
-// POST /auth/password-reset { emailOrPhone } -> 202
-// Accounts belong to the school: the office is told and gives a new
-// password (People → reset password). Always the same answer, so nobody can
-// test which IDs, emails or phones exist.
 router.post("/password-reset", resetLimit, async (req, res) => {
   const { emailOrPhone: who } = validate(
     z.object({ emailOrPhone: z.string().trim().min(3).max(120) }),

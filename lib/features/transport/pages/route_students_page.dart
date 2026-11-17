@@ -23,8 +23,6 @@ import '../repo/transport_repository.dart';
 import '../widgets/home_location_sheet.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator: who rides a line, stop by stop.
-/// Add students who have no bus, move them to another stop, or remove them.
 class RouteStudentsPage extends ConsumerWidget {
   final String routeId;
 
@@ -61,7 +59,6 @@ class RouteStudentsPage extends ConsumerWidget {
       if (stop == null || !context.mounted) return;
     }
 
-    // Link the student's parent, if the school has one on file.
     final parents =
         ref.read(peopleByRoleProvider(UserRole.parent)).valueOrNull ?? [];
     UserModel? parent;
@@ -119,7 +116,6 @@ class RouteStudentsPage extends ConsumerWidget {
         .saveRouteStudent(route.id, student.copyWith(stopId: stop.id));
   }
 
-  /// Chosen in the stop list: pick the student up at their door.
   static const _atHome = BusStopModel(
     id: '_at_home',
     name: '',
@@ -130,8 +126,6 @@ class RouteStudentsPage extends ConsumerWidget {
     afternoonMinute: 0,
   );
 
-  /// The stop at the student's home: asks where it is, then adds it to the line
-  /// where it adds the least driving (the road is redrawn on save).
   Future<BusStopModel?> _homeStop(
     BuildContext context,
     WidgetRef ref,
@@ -172,7 +166,6 @@ class RouteStudentsPage extends ConsumerWidget {
       final saved = await ref
           .read(transportActionsProvider)
           .saveRoute(route.copyWith(stops: stops));
-      // The saved copy has the server's ID for the new stop.
       return saved.stops.firstWhere(
         (s) =>
             (s.latitude - p.latitude).abs() < 1e-6 &&
@@ -297,8 +290,6 @@ class RouteStudentsPage extends ConsumerWidget {
                         final actions = ref.read(transportActionsProvider);
                         await actions.removeRouteStudent(route.id, s.id);
 
-                        // Nobody else gets on at that door: the bus no
-                        // longer needs to go there.
                         final stop = route.stops
                             .where((x) => x.id == s.stopId)
                             .firstOrNull;
@@ -397,7 +388,6 @@ class _RiderTile extends StatelessWidget {
   }
 }
 
-/// Students with no bus, with a search box.
 class _StudentPickerSheet extends ConsumerStatefulWidget {
   const _StudentPickerSheet();
 

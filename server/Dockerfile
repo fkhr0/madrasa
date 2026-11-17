@@ -1,20 +1,10 @@
-# The school server and the web app, in one image (linux/arm64 for Oracle's
-# free servers; amd64 works too). Built from the repository's root:
-#   docker build -f server/Dockerfile -t madrasa-api .
-# The web app (build/web) is built first: flutter build web.
-
-# ── 1. Packages, without the test tools ──
 FROM node:22-bookworm-slim AS deps
 WORKDIR /app
 COPY server/package.json server/package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
-# ── 2. What runs ──
 FROM node:22-bookworm-slim
 
-# pg_dump for the nightly backup (PostgreSQL 18's: newer works with older
-# servers), and tini so Ctrl+C / docker stop reach Node and it closes cleanly.
-# npm is gone: only stage 1 needs it, and its own packages had known holes.
 # hadolint ignore=DL3008
 RUN apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates curl gnupg tini \
@@ -43,7 +33,6 @@ COPY server/src ./src
 COPY server/public ./public
 COPY build/web ./web
 
-# Not root: a hole in the app can't take over the container.
 RUN mkdir -p /data/uploads /data/backups && chown -R node:node /data
 USER 1000
 

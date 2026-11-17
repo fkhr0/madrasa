@@ -14,7 +14,6 @@ import '../../../core/l10n/language.dart';
 class ResourceTile extends ConsumerWidget {
   final ResourceModel resource;
 
-  /// Staff: shown at the end to remove it.
   final Widget? trailing;
 
   const ResourceTile({super.key, required this.resource, this.trailing});

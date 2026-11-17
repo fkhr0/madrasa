@@ -14,8 +14,6 @@ import '../repo/auth_repository.dart';
 import 'demo_accounts_hint.dart';
 import '../../../core/l10n/language.dart';
 
-/// School ID + password fields and the sign-in button.
-/// On success the router moves to the dashboard by itself.
 class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({super.key});
 
@@ -50,7 +48,6 @@ class _LoginFormState extends ConsumerState<LoginForm> {
       _errorMessage = null;
     });
 
-    // Test builds: talk to the address typed above from now on.
     if (AppConfig.asksForServer) {
       final address = ServerAddress.clean(_serverController.text)!;
       await ServerAddress.save(address);
@@ -90,7 +87,6 @@ class _LoginFormState extends ConsumerState<LoginForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Test builds only: which server (the test tunnel's address).
           if (AppConfig.asksForServer) ...[
             TextFormField(
               controller: _serverController,

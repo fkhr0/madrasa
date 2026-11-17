@@ -1,13 +1,4 @@
 @echo off
-rem Builds the app for Google Play: an app bundle (.aab) signed with the
-rem upload key (android\key.properties), talking to the real server.
-rem   build-play.bat https://api.your-domain.iq
-rem
-rem Before each upload, raise the number after "+" in pubspec.yaml
-rem (version: 1.0.0+1 -> 1.0.1+2): Google Play refuses a number it has seen.
-rem
-rem The result: build\app\outputs\bundle\release\app-release.aab
-rem Keep build\symbols (it turns crash reports back into readable code).
 cd /d "%~dp0"
 
 set ADDRESS=%~1
@@ -34,7 +25,6 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-rem Gradle keeps about 3 GB of memory after a build: give it back.
 call android\gradlew.bat -p android --stop >nul 2>&1
 echo.
 echo Done: build\app\outputs\bundle\release\app-release.aab

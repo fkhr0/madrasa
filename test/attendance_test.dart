@@ -81,7 +81,6 @@ void main() {
 
   test('mock: marks are kept and excuses change the day', () async {
     final repo = MockAttendanceRepository();
-    // A Sunday: Mr. Ahmed teaches 5th A in period 2.
     final sunday = DateTime(2026, 11, 8);
 
     final day = await repo.getClassDay('cls-5a', sunday);

@@ -4,7 +4,6 @@ import '../constants/app_spacing.dart';
 import '../constants/app_strings.dart';
 import '../utils/context_extensions.dart';
 
-/// Title above a group of cards, with an optional "See all" link.
 class SectionHeader extends StatelessWidget {
   final String title;
   final VoidCallback? onSeeAll;

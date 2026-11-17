@@ -5,12 +5,9 @@ import '../../transport/data/mock_transport.dart';
 import '../models/payment_model.dart';
 import '../models/student_account_model.dart';
 
-/// Fake fees for 2026–2027 until finance has a backend.
-/// Amounts are typical for a private school in Baghdad.
 class MockFinance {
   MockFinance._();
 
-  /// Three installments: October, January and April.
   static final dueDates = [
     DateTime(2026, 10, 1),
     DateTime(2027, 1, 1),
@@ -19,13 +16,12 @@ class MockFinance {
 
   static const busFee = 600000;
 
-  /// Yearly tuition by stage.
   static int tuitionFor(String className) {
     if (className.startsWith('6th')) return 2500000;
     if (className.startsWith('5th')) return 2250000;
     if (className.startsWith('4th')) return 2000000;
 
-    return 1750000; // intermediate
+    return 1750000;
   }
 
   static List<StudentAccountModel> accounts() {
@@ -74,7 +70,6 @@ class MockFinance {
             : '',
       );
 
-      // Zainab has paid her first installment; her brother is behind.
       final pattern = student.id == MockUsers.student.id
           ? 1
           : student.id == MockUsers.secondStudent.id

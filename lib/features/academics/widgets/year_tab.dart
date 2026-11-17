@@ -18,7 +18,6 @@ import 'add_holiday_sheet.dart';
 import '../../../core/network/api_exception.dart';
 import '../../../core/l10n/language.dart';
 
-/// The study year: progress, semesters and holidays (add / remove).
 class YearTab extends ConsumerWidget {
   const YearTab({super.key});
 
@@ -56,7 +55,6 @@ class YearTab extends ConsumerWidget {
                             style: context.text.titleSmall,
                           ),
                         ),
-                        // Arabic month names are long: let the dates wrap.
                         Flexible(
                           child: Text(
                             '${DateFormatter.dayMonth(term.start)} – '
@@ -113,7 +111,6 @@ class _HolidayTile extends ConsumerWidget {
     return Opacity(
       opacity: isPast ? 0.55 : 1,
       child: AppCard(
-        // Tap to change the name or dates (e.g. when an Eid moves).
         onTap: () => showAddHolidaySheet(context, year, holiday: holiday),
         padding: const EdgeInsetsDirectional.fromSTEB(
           AppSpacing.md,
@@ -141,7 +138,6 @@ class _HolidayTile extends ConsumerWidget {
                 ],
               ),
             ),
-            // Official holidays can only move, never go away.
             if (holiday.isOfficial)
               Padding(
                 padding: const EdgeInsets.all(AppSpacing.md),

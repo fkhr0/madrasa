@@ -12,14 +12,12 @@ import '../repo/api_finance_repository.dart';
 import '../repo/finance_repository.dart';
 import '../repo/mock_finance_repository.dart';
 
-/// The server when API_URL is set, otherwise the in-memory mock.
 final financeRepositoryProvider = Provider<FinanceRepository>(
   (ref) => AppConfig.useApi
       ? ApiFinanceRepository(watchApi(ref))
       : MockFinanceRepository(notifier: ref.read(demoNotifierProvider)),
 );
 
-/// The school's fee settings (office).
 final financeSettingsProvider = FutureProvider<FinanceSettingsModel>(
   (ref) => ref.watch(financeRepositoryProvider).getSettings(),
 );
@@ -33,7 +31,6 @@ final accountProvider = FutureProvider.family<StudentAccountModel?, String>(
       ref.watch(financeRepositoryProvider).getAccount(studentId),
 );
 
-/// The year's totals, worked out from the accounts.
 final financeSummaryProvider = Provider<AsyncValue<FinanceSummaryModel>>((ref) {
   final DateTime now = ref.watch(nowProvider);
   return ref
@@ -41,12 +38,10 @@ final financeSummaryProvider = Provider<AsyncValue<FinanceSummaryModel>>((ref) {
       .whenData((accounts) => FinanceSummaryModel.from(accounts, now));
 });
 
-/// Filter chips on the Finance page (null = all).
 final accountFilterProvider = StateProvider<AccountStatus?>((ref) => null);
 
 final accountSearchProvider = StateProvider<String>((ref) => '');
 
-/// Accounts matching the filter and search, overdue ones first.
 final filteredAccountsProvider = Provider<List<StudentAccountModel>>((ref) {
   final accounts = ref.watch(accountsProvider).valueOrNull ?? [];
   final filter = ref.watch(accountFilterProvider);
@@ -75,7 +70,6 @@ class FinanceActions {
 
   FinanceRepository get _repository => _ref.read(financeRepositoryProvider);
 
-  /// Throws [FinanceException] for a wrong amount.
   Future<PaymentModel> recordPayment({
     required String studentId,
     required int amount,
@@ -107,7 +101,6 @@ class FinanceActions {
     _reload(studentId);
   }
 
-  /// Every account's total can change (tuition, bus fee, dates).
   Future<void> saveSettings(FinanceSettingsModel settings) async {
     await _repository.saveSettings(settings);
     _ref

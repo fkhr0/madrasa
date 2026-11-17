@@ -7,7 +7,6 @@ import '../../../core/widgets/user_avatar.dart';
 import '../models/class_student_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Student name with their average and attendance in this class.
 class StudentRow extends StatelessWidget {
   final ClassStudentModel student;
 

@@ -4,7 +4,6 @@ import '../constants/app_spacing.dart';
 import '../utils/context_extensions.dart';
 import 'icon_box.dart';
 
-/// One row of a menu list (More page, Settings page).
 class MenuTile extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -12,10 +11,8 @@ class MenuTile extends StatelessWidget {
   final Widget? trailing;
   final VoidCallback? onTap;
 
-  /// Colours the icon and the title (e.g. red for "Sign out").
   final Color? color;
 
-  /// Colours only the icon. Falls back to [color], then the primary colour.
   final Color? iconColor;
 
   const MenuTile({

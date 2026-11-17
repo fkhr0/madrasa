@@ -16,7 +16,6 @@ import 'package:school/features/transport/models/trip_model.dart';
 void main() {
   final year = MockInstitution.academicYear;
 
-  // Wednesday 4 Nov 2026: a normal school day with 6 lessons.
   final wednesday = DateTime(2026, 11, 4);
   final lessons = MockSchedule.lessonsFor(wednesday);
   final thursday = DateTime(2026, 11, 5);

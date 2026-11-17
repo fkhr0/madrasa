@@ -3,21 +3,15 @@ import '../models/bus_route_model.dart';
 import '../models/bus_stop_model.dart';
 import '../models/trip_model.dart';
 
-/// TEST MODE: a trip the driver is running, simulated on this device.
-/// In production the server builds the same TripModel from GPS points.
 class LiveTrip {
-  /// How long the bus takes from one stop to the next in test mode,
-  /// so a whole trip can be watched in about two minutes.
   static const demoDriveTime = Duration(seconds: 20);
 
   final BusRouteModel route;
   final TripDirection direction;
 
-  /// Stops in driving order.
   final List<BusStopModel> stops;
   final List<DateTime> plannedTimes;
 
-  /// When each stop was reached (null until then).
   final List<DateTime?> reachedAt;
 
   int reachedIndex = 0;
@@ -33,7 +27,6 @@ class LiveTrip {
   LiveTrip._(this.route, this.direction, this.stops, this.plannedTimes)
     : reachedAt = List.filled(stops.length, null);
 
-  /// The bus is at its first stop (or the school, in the afternoon).
   factory LiveTrip.start(
     BusRouteModel route,
     TripDirection direction,
@@ -59,7 +52,6 @@ class LiveTrip {
     leftStopAt = now;
   }
 
-  /// Moves the bus on. Returns the index of a stop it just reached.
   int? advance(DateTime now) {
     if (isAtStop || leftStopAt == null) return null;
     if (now.difference(leftStopAt!) < demoDriveTime) return null;
@@ -67,7 +59,6 @@ class LiveTrip {
     return arriveNow(now);
   }
 
-  /// The bus reached the next stop now (the driver said so).
   int arriveNow(DateTime now) {
     reachedIndex++;
     reachedAt[reachedIndex] = now;
@@ -78,7 +69,6 @@ class LiveTrip {
   }
 
   TripModel toModel(DateTime now) {
-    // Position: at the stop, or part of the way to the next one.
     final fraction = isAtStop
         ? 0.0
         : now.difference(leftStopAt!).inMilliseconds /
@@ -91,7 +81,6 @@ class LiveTrip {
       fraction,
     );
 
-    // Estimates: real times for reached stops, then one drive per stop.
     final departure = isAtStop ? now : leftStopAt!;
     final estimates = [
       for (var i = 0; i < stops.length; i++)

@@ -16,7 +16,6 @@ class MockNotifications {
     if (userId == MockUsers.admin.id) return _admin;
     if (userId == MockUsers.student.id) return _student;
 
-    // Drivers and new accounts start with none.
     return [];
   }
 

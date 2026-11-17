@@ -22,7 +22,6 @@ void main() {
     expect(back.stops.last.isSchool, isTrue);
     expect(back.driverName, route.driverName);
 
-    // A stop added in the app is sent without an ID.
     final added = route.stops.first.copyWith();
     expect(
       BusStopModel(
@@ -81,19 +80,17 @@ void main() {
       expect(t.lastReachedIndex, 1);
       expect(t.latitude, t.stops[1].latitude);
       expect(t.boardedIds, contains('STU-2026-0142'));
-      // Next stop: the timetable's 10 minutes from Al-Mansour to Al-Yarmouk.
       expect(t.expectedAt(2), now.add(const Duration(minutes: 10)));
     });
 
     test('a new trip starts where the driver is, not at the first stop', () {
-      final first = route.stops.last; // the afternoon trip starts at school
+      final first = route.stops.last;
       final t = tripFromServer(
         route: route,
         json: {
           ...trip(
             leftStopAt: now.toUtc().toIso8601String(),
             positionAt: now.toUtc().toIso8601String(),
-            // About 1 km north of the school.
             lat: first.latitude + 0.009,
             lng: first.longitude,
           ),
@@ -108,7 +105,6 @@ void main() {
       expect(t.isAtStop, isFalse);
       expect(t.nextStopIndex, 0);
       expect(t.latitude, first.latitude + 0.009);
-      // 1 km × 1.3 for the streets at ~25 km/h: about 3 minutes away.
       expect(t.minutesUntil(0, now), inInclusiveRange(2, 4));
     });
 

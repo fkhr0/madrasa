@@ -8,7 +8,6 @@ import '../models/task_model.dart';
 import '../providers/task_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Opens the "New task" bottom sheet.
 Future<void> showAddTaskSheet(BuildContext context) {
   return showModalBottomSheet(
     context: context,
@@ -32,7 +31,6 @@ class _AddTaskSheetState extends ConsumerState<_AddTaskSheet> {
   TaskPriority _priority = TaskPriority.medium;
   TaskRepeat _repeat = TaskRepeat.none;
 
-  /// One hour from now, rounded to the hour.
   static DateTime _defaultDue() {
     final now = DateTime.now().add(const Duration(hours: 1));
     return DateTime(now.year, now.month, now.day, now.hour);
@@ -107,7 +105,6 @@ class _AddTaskSheetState extends ConsumerState<_AddTaskSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      // Moves the sheet up above the keyboard.
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(

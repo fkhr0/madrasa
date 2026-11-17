@@ -1,5 +1,3 @@
-// Starts the API: connect to the database, bring it up to date, add demo data
-// to an empty database, then listen.
 const fs = require("fs");
 const path = require("path");
 const config = require("./config");
@@ -10,12 +8,10 @@ const { addMissingOfficialHolidaysEverywhere } = require("./features/institution
 const { addDefaultPeriodsEverywhere } = require("./features/timetable/default-periods");
 const { createApp } = require("./app");
 
-/** Migrations, the platform's defaults, then the demo school (when wanted). */
 async function prepareDatabase() {
   const applied = await migrate();
   const added = await seedDemoSchool({
     beforeHistory: {
-      // Official holidays and bell times, for every school (the demo too).
       defaults: async () => {
         const holidays = await addMissingOfficialHolidaysEverywhere();
         if (holidays) console.log(`Official holidays added: ${holidays}`);
@@ -24,7 +20,6 @@ async function prepareDatabase() {
       },
     },
   });
-  // Schools made later get theirs too.
   await addMissingOfficialHolidaysEverywhere();
   await addDefaultPeriodsEverywhere();
   if (added.length) console.log(`Demo school: ${added.join(", ")}`);
@@ -34,12 +29,8 @@ async function prepareDatabase() {
 async function main() {
   config.checkProductionSettings();
   const engine = await connect();
-  // Several servers may start at once (a new version rolling out): one at a
-  // time brings the database up to date and adds what is missing.
   const { applied, seeded } = await withLock("startup", prepareDatabase);
-  // In the background: drawing lines on the roads needs the internet.
   require("./features/transport/roads").fillMissingRoads();
-  // Background jobs: reminders, scheduled announcements, nightly upkeep...
   require("./jobs").registerJobs();
   await require("./jobs/queue").startJobs();
 
@@ -58,7 +49,6 @@ async function main() {
     }
   });
 
-  // Live updates for the app (chat, notifications, the bus).
   require("./realtime/hub").attach(server);
 
   server.on("error", async (err) => {
@@ -74,7 +64,6 @@ async function main() {
     process.exit(1);
   });
 
-  // Close cleanly (Ctrl+C, hosting restarts) so PGlite saves its files.
   const stop = async () => {
     server.close();
     await require("./jobs/queue").stopJobs();
@@ -85,8 +74,6 @@ async function main() {
   process.on("SIGINT", stop);
   process.on("SIGTERM", stop);
 
-  // stop-school.bat asks for a clean stop by creating this file
-  // (Windows has no gentle "kill", and the database should close properly).
   const stopFlag = path.join(__dirname, "..", "stop.flag");
   setInterval(() => {
     if (fs.existsSync(stopFlag)) stop();

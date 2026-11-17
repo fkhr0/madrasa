@@ -1,11 +1,3 @@
-// A day at school, for any date, as each role needs it:
-//   GET /days/:date/school          office: every period, every class, who took
-//                                   attendance and when, the day's totals, "now"
-//   GET /days/:date/teacher         a teacher's lessons and their attendance
-//   GET /days/:date/students/:id    a student's lessons with their own marks,
-//                                   homework, exams and bus (student, parents,
-//                                   office)
-// What happened that day (who did what) comes from GET /activity?date=.
 const express = require("express");
 const { HttpError, validate, isoDate } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");
@@ -20,7 +12,6 @@ const { t } = require("../../i18n");
 const router = express.Router();
 router.use(requireAuth);
 
-/** Whether a period is over, going on, or still to come (from the school's clock). */
 function stateOf(date, period) {
   const day = today();
   if (date < day) return "done";
@@ -31,10 +22,6 @@ function stateOf(date, period) {
   return "later";
 }
 
-/**
- * Attendance taken on [date], by class and period:
- * "classId/period" → { takenBy, takenAt, present, late, absent }.
- */
 async function takenOn(institutionId, date) {
   const rows = await query(
     `SELECT m.class_id, m.period,
@@ -55,7 +42,6 @@ async function takenOn(institutionId, date) {
   );
 }
 
-/** The bell periods with each one's lessons (picked by [include]). */
 async function periodsWithLessons(institutionId, date, include) {
   const weekday = weekdayOf(date);
   const periods = await timetable.listPeriods(institutionId);
@@ -89,8 +75,6 @@ async function dayHeader(institutionId, date) {
   const dayOff = calendar ? calendar.dayOffReason(date) : "No study year";
   return { date, isToday: date === today(), isSchoolDay: dayOff === null, dayOff: dayOff && t(dayOff) };
 }
-
-// ---------- The office ----------
 
 router.get("/:date/school", requireRole("admin"), async (req, res) => {
   const date = validate(isoDate, req.params.date);
@@ -132,13 +116,10 @@ router.get("/:date/school", requireRole("admin"), async (req, res) => {
       absent: students.absent,
       lessons: lessons.length,
       lessonsTaken: lessons.filter((l) => l.attendance).length,
-      // Lessons that started (or ended) without attendance.
       lessonsMissing: lessons.filter((l) => !l.attendance && l.state !== "later").length,
     },
   });
 });
-
-// ---------- A teacher ----------
 
 router.get("/:date/teacher", requireRole("teacher"), async (req, res) => {
   const date = validate(isoDate, req.params.date);
@@ -174,8 +155,6 @@ router.get("/:date/teacher", requireRole("teacher"), async (req, res) => {
   res.json({ ...header, periods, homework, exams });
 });
 
-// ---------- A student ----------
-
 router.get("/:date/students/:id", async (req, res) => {
   const date = validate(isoDate, req.params.date);
   const student = await personOr404(req.user, req.params.id);
@@ -209,7 +188,6 @@ router.get("/:date/students/:id", async (req, res) => {
           }))
       : [];
 
-  // The day as a whole (absent only when absent from every lesson).
   const [summary] = studentDays(
     await query(
       `SELECT date::text AS date, period, status, subject_name AS "subjectName"

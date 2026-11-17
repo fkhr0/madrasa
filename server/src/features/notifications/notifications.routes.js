@@ -1,4 +1,3 @@
-// The signed-in person's notifications (the bell).
 const express = require("express");
 const { query } = require("../../db/database");
 const { requireAuth } = require("../../common/auth-middleware");
@@ -9,8 +8,6 @@ const fcm = require("./fcm");
 const router = express.Router();
 router.use(requireAuth);
 
-// GET /notifications -> [notification], newest first (the last 100), in the
-// language the app asks for (X-Language).
 router.get("/", async (req, res) => {
   const arabic = req.language === "ar";
   res.json(
@@ -26,7 +23,6 @@ router.get("/", async (req, res) => {
   );
 });
 
-// POST /notifications/:id/read -> 204
 router.post("/:id/read", async (req, res) => {
   await query(
     "UPDATE notifications SET read_at = now() WHERE id = $1 AND user_id = $2 AND read_at IS NULL",
@@ -35,7 +31,6 @@ router.post("/:id/read", async (req, res) => {
   res.status(204).end();
 });
 
-// POST /notifications/read-all -> 204
 router.post("/read-all", async (req, res) => {
   await query(
     "UPDATE notifications SET read_at = now() WHERE user_id = $1 AND read_at IS NULL",
@@ -44,9 +39,6 @@ router.post("/read-all", async (req, res) => {
   res.status(204).end();
 });
 
-// ---------- Web Push (notifications while the app is closed) ----------
-
-// GET /notifications/push-key -> { publicKey }  (for the browser to subscribe)
 router.get("/push-key", (_req, res) => {
   res.json({ publicKey: push.pushKeys().publicKey });
 });
@@ -57,25 +49,20 @@ const subscription = z.object({
 });
 const language = z.enum(["ar", "en"]).default("ar");
 
-// POST /notifications/push { endpoint, keys } -> 204  (this phone wants them)
 router.post("/push", async (req, res) => {
   await push.saveSubscription(req.user.id, {
     ...validate(subscription, req.body),
-    // The phone's app language (its pushes come in it).
     language: validate(language, req.body.language ?? req.language),
   });
   res.status(204).end();
 });
 
-// DELETE /notifications/push { endpoint } -> 204  (this phone stops them)
 router.delete("/push", async (req, res) => {
   const { endpoint } = validate(z.object({ endpoint: z.string() }), req.body);
   await push.removeSubscription(req.user.id, endpoint);
   res.status(204).end();
 });
 
-// POST /notifications/devices { token, platform } -> 204
-// An Android phone's Firebase token (notifications when the app is closed).
 router.post("/devices", async (req, res) => {
   const device = validate(
     z.object({
@@ -89,7 +76,6 @@ router.post("/devices", async (req, res) => {
   res.status(204).end();
 });
 
-// DELETE /notifications/devices { token } -> 204  (signed out on this phone)
 router.delete("/devices", async (req, res) => {
   const { token } = validate(z.object({ token: z.string() }), req.body);
   await fcm.removeDevice(req.user.id, token);

@@ -11,8 +11,6 @@ import '../widgets/trip_control_panel.dart';
 import '../widgets/trip_start_card.dart';
 import '../../../core/l10n/language.dart';
 
-/// Driver's home: start a trip, then drive it stop by stop.
-/// Big buttons and few words, the driver looks at it between stops.
 class DriverHomePage extends ConsumerWidget {
   const DriverHomePage({super.key});
 
@@ -37,7 +35,6 @@ class DriverHomePage extends ConsumerWidget {
             final trip = ref.watch(tripProvider(route.id)).valueOrNull;
             final students =
                 ref.watch(routeStudentsProvider(route.id)).valueOrNull ?? [];
-            // Live trips tick every second, so use the trip's own time.
             final DateTime clock = ref.watch(nowProvider);
             final now = trip?.updatedAt ?? clock;
 

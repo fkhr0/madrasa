@@ -8,7 +8,6 @@ import '../../../core/widgets/app_card.dart';
 import '../models/holiday_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Green card shown on top of the day list when the day is a holiday.
 class HolidayBanner extends StatelessWidget {
   final HolidayModel holiday;
 

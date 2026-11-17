@@ -2,7 +2,6 @@ import '../../../core/network/api_client.dart';
 import '../models/exam_model.dart';
 import 'exam_repository.dart';
 
-/// Exams on the school API (server/src/features/exams).
 class ApiExamRepository implements ExamRepository {
   final ApiClient _api;
 

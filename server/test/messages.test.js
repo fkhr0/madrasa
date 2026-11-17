@@ -10,7 +10,7 @@ before(async () => {
     ["admin", "ADM-2020-0001"],
     ["zainab", "STU-2026-0142"],
     ["fatima", "STU-2026-0150"],
-    ["ali", "STU-2026-0153"], // 5th B
+    ["ali", "STU-2026-0153"],
     ["ahmed", "TCH-2019-0031"],
     ["omar", "TCH-2019-0041"],
     ["parent", "PAR-2026-0142"],
@@ -24,18 +24,18 @@ const ids = (list) => list.map((x) => x.id);
 
 test("who may message whom", async () => {
   const zainab = ids((await request(app).get("/messages/contacts").set(as.zainab).expect(200)).body);
-  assert.ok(zainab.includes("TCH-2019-0031")); // her maths teacher
-  assert.ok(zainab.includes("ADM-2020-0001")); // the office
-  assert.ok(!zainab.includes("STU-2026-0150")); // not other students
+  assert.ok(zainab.includes("TCH-2019-0031"));
+  assert.ok(zainab.includes("ADM-2020-0001"));
+  assert.ok(!zainab.includes("STU-2026-0150"));
 
   const parent = ids((await request(app).get("/messages/contacts").set(as.parent).expect(200)).body);
-  assert.ok(parent.includes("TCH-2019-0042")); // Zainab's Arabic teacher
+  assert.ok(parent.includes("TCH-2019-0042"));
   assert.ok(!parent.includes("PAR-2026-0150"));
 
   const ahmed = ids((await request(app).get("/messages/contacts").set(as.ahmed).expect(200)).body);
-  assert.ok(ahmed.includes("TCH-2019-0041")); // a colleague
-  assert.ok(ahmed.includes("STU-2026-0142")); // his student
-  assert.ok(ahmed.includes("PAR-2026-0142")); // his student's parent
+  assert.ok(ahmed.includes("TCH-2019-0041"));
+  assert.ok(ahmed.includes("STU-2026-0142"));
+  assert.ok(ahmed.includes("PAR-2026-0142"));
 
   const admin = ids((await request(app).get("/messages/contacts").set(as.admin).expect(200)).body);
   assert.ok(admin.includes("STU-2026-0153"));
@@ -64,11 +64,9 @@ test("a private chat: the same one each time, unread counts, read on open", asyn
   const after = (await request(app).get("/messages/conversations").set(as.ahmed)).body.find((c) => c.id === id);
   assert.equal(after.unreadCount, 0);
 
-  // Only newer messages with ?after=.
   const none = (await request(app).get(`/messages/conversations/${id}/messages?after=${encodeURIComponent(sent.sentAt)}`).set(as.ahmed)).body;
   assert.equal(none.length, 0);
 
-  // Others can't read it.
   await request(app).get(`/messages/conversations/${id}/messages`).set(as.zainab).expect(404);
 });
 
@@ -91,18 +89,15 @@ test("seen ticks, editing and deleting your own messages", async () => {
   const mine = async () =>
     (await request(app).get(`/messages/conversations/${id}/messages`).set(as.parent)).body.find((m) => m.id === sent.id);
 
-  // Not seen until the teacher opens the chat.
   assert.equal((await mine()).seen, false);
   await request(app).get(`/messages/conversations/${id}/messages`).set(as.ahmed).expect(200);
   assert.equal((await mine()).seen, true);
 
-  // Only the writer edits; it says "edited".
   await request(app).patch(`/messages/conversations/${id}/messages/${sent.id}`).set(as.ahmed).send({ text: "x" }).expect(404);
   await request(app).patch(`/messages/conversations/${id}/messages/${sent.id}`).set(as.parent).send({ text: "Is the exam on Monday?" }).expect(200);
   assert.equal((await mine()).text, "Is the exam on Monday?");
   assert.equal((await mine()).edited, true);
 
-  // Deleted for everyone: the text is gone, the place stays.
   await request(app).delete(`/messages/conversations/${id}/messages/${sent.id}`).set(as.parent).expect(204);
   const gone = await mine();
   assert.equal(gone.deleted, true);

@@ -6,8 +6,6 @@ import '../../../core/widgets/app_card.dart';
 import '../../../core/utils/grade_scale.dart';
 import '../../../core/l10n/language.dart';
 
-/// Big number at the top of the Grades page. [average] is null before the
-/// first mark: "no marks yet", never a 0% fail.
 class OverallAverageCard extends StatelessWidget {
   final double? average;
   final int subjectCount;

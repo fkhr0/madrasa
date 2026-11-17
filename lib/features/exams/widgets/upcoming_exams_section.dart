@@ -9,7 +9,6 @@ import '../providers/exam_provider.dart';
 import 'exam_card.dart';
 import '../../../core/l10n/language.dart';
 
-/// The next exams (default 2), with a link to the Exams page.
 class UpcomingExamsSection extends ConsumerWidget {
   final int maxItems;
 

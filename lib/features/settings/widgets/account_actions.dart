@@ -10,7 +10,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/context_extensions.dart';
 import '../../../core/widgets/confirm_dialog.dart';
 
-/// A page on the server's website, e.g. the privacy policy, in the browser.
 Future<void> openAccountPage(WidgetRef ref, String path) async {
   if (!AppConfig.useApi) return;
   await launchUrl(
@@ -19,7 +18,6 @@ Future<void> openAccountPage(WidgetRef ref, String path) async {
   );
 }
 
-/// Every other phone and computer is signed out; this one stays in.
 Future<void> signOutEverywhere(BuildContext context, WidgetRef ref) async {
   final sure = await confirmDelete(
     context,
@@ -41,8 +39,6 @@ Future<void> signOutEverywhere(BuildContext context, WidgetRef ref) async {
   }
 }
 
-/// Accounts belong to the school: this asks the office to delete it (and
-/// says what that means). Google Play requires the way to ask.
 Future<void> askToDeleteAccount(BuildContext context, WidgetRef ref) async {
   final reason = TextEditingController();
   final sure = await showDialog<bool>(

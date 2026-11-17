@@ -18,7 +18,6 @@ import '../../grades/widgets/year_result_card.dart';
 import '../widgets/child_switcher.dart';
 import '../../../core/l10n/language.dart';
 
-/// Parent's third tab: grades, attendance and pending work in one place.
 class ProgressPage extends ConsumerWidget {
   const ProgressPage({super.key});
 

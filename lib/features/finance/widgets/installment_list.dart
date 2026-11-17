@@ -9,7 +9,6 @@ import '../../../core/widgets/status_badge.dart';
 import '../models/student_account_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// The year's installments with how much of each is paid.
 class InstallmentList extends StatelessWidget {
   final StudentAccountModel account;
   final DateTime now;

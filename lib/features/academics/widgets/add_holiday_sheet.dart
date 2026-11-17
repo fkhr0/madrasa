@@ -10,7 +10,6 @@ import '../../institution/providers/institution_provider.dart';
 import '../../../core/network/api_exception.dart';
 import '../../../core/l10n/language.dart';
 
-/// Lets the administrator add a day off (or several) to the study year, e.g.
 Future<void> showAddHolidaySheet(
   BuildContext context,
   AcademicYearModel year, {
@@ -44,7 +43,6 @@ class _AddHolidaySheetState extends ConsumerState<_AddHolidaySheet> {
 
   bool get _isNew => widget.holiday == null;
 
-  // A getter, so the words follow the language chosen now.
   static Map<HolidayType, String> get _typeLabels => {
     HolidayType.national: tr('Official'),
     HolidayType.religious: tr('Religious'),
@@ -108,7 +106,6 @@ class _AddHolidaySheetState extends ConsumerState<_AddHolidaySheet> {
               style: context.text.titleLarge,
             ),
             const SizedBox(height: AppSpacing.lg),
-            // Official holidays: only the dates can move (moon sighting).
             if (_isOfficial)
               Text(
                 tr(

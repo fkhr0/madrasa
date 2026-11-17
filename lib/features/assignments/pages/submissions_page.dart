@@ -16,8 +16,6 @@ import '../providers/assignment_provider.dart';
 import '../widgets/attachment_tile.dart';
 import '../../../core/l10n/language.dart';
 
-/// Who handed in one piece of work. Tap a student to grade them (also
-/// work handed in on paper); they and their parents are told.
 class SubmissionsPage extends ConsumerWidget {
   final String assignmentId;
 

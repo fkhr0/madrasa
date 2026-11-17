@@ -3,8 +3,6 @@ import '../models/holiday_model.dart';
 import '../models/institution_model.dart';
 import '../models/term_model.dart';
 
-/// Fake school and study year. In production the administrator sets these.
-/// Religious holidays are approximate: they depend on the moon sighting.
 class MockInstitution {
   MockInstitution._();
 

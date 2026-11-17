@@ -1,9 +1,7 @@
-/// A private chat or a class / subject group.
 class ConversationModel {
   final String id;
   final String title;
 
-  /// e.g. "Mathematics teacher" or "24 members".
   final String subtitle;
   final bool isGroup;
 
@@ -31,7 +29,6 @@ class ConversationModel {
       title: json['title'] as String? ?? '',
       subtitle: json['subtitle'] as String? ?? '',
       isGroup: isGroup,
-      // In a group, say who wrote the last message.
       lastMessage: isGroup && lastSender != null && last.isNotEmpty
           ? '${lastSender.split(' ').first}: $last'
           : last,
@@ -57,12 +54,10 @@ class ConversationModel {
   }
 }
 
-/// Someone the user may start a private chat with.
 class ContactModel {
   final String id;
   final String name;
 
-  /// e.g. "Mathematics teacher", "Parent", "School office".
   final String detail;
 
   const ContactModel({

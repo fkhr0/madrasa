@@ -12,8 +12,6 @@ import '../models/conversation_model.dart';
 import '../providers/message_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Pick someone to message; opens the chat with them. Only people this
-/// user may talk to are listed (teachers of the class, the office...).
 Future<void> showNewChatSheet(BuildContext context) {
   return showModalBottomSheet(
     context: context,

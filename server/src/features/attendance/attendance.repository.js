@@ -1,7 +1,5 @@
-// SQL for attendance marks and excused days.
 const { query, queryOne } = require("../../db/database");
 
-/** Active students of a class, by name: [{ id, name }]. */
 function classStudents(classId) {
   return query(
     `SELECT u.id, u.name FROM users u
@@ -12,7 +10,6 @@ function classStudents(classId) {
   );
 }
 
-/** Periods of [date] that already have marks for the class. */
 async function takenPeriods(classId, date) {
   const rows = await query(
     `SELECT DISTINCT period FROM attendance_marks WHERE class_id = $1 AND date = $2`,
@@ -21,7 +18,6 @@ async function takenPeriods(classId, date) {
   return new Set(rows.map((r) => r.period));
 }
 
-/** Student ID → status for one lesson. */
 async function lessonMarks(classId, date, period) {
   const rows = await query(
     `SELECT student_id, status FROM attendance_marks
@@ -31,7 +27,6 @@ async function lessonMarks(classId, date, period) {
   return new Map(rows.map((r) => [r.student_id, r.status]));
 }
 
-/** Saves one lesson's marks ({ studentId: status }), replacing old ones. */
 async function saveLessonMarks(tx, { classId, date, period, subjectName, markedBy }, marks) {
   for (const [studentId, status] of Object.entries(marks)) {
     await tx.query(
@@ -46,7 +41,6 @@ async function saveLessonMarks(tx, { classId, date, period, subjectName, markedB
   }
 }
 
-/** A student's marks between two dates: [{ date, period, status, subjectName }]. */
 function studentMarks(studentId, from, to) {
   return query(
     `SELECT date::text AS date, period, status, subject_name AS "subjectName"
@@ -66,7 +60,6 @@ function studentExcuses(studentId, from, to) {
   );
 }
 
-/** Which of [studentIds] the office excused on [date]. */
 async function excusedOn(studentIds, date) {
   if (studentIds.length === 0) return new Set();
   const rows = await query(
@@ -93,10 +86,6 @@ async function deleteExcuse(studentId, date) {
   return rows.length > 0;
 }
 
-/**
- * Attendance rate (0–100) of each student of a class in one subject's
- * lessons: { studentId: rate }. Students without marks are left out.
- */
 async function subjectRates(classId, subjectName) {
   const rows = await query(
     `SELECT student_id,

@@ -1,11 +1,4 @@
 @echo off
-rem Builds the Android app for testing on a phone.
-rem   build-android.bat          -> the sign-in page asks for the server's
-rem                                 address (type the tunnel's https address;
-rem                                 one APK works with every new tunnel)
-rem   build-android.bat https://something.trycloudflare.com  -> fixed address
-rem The result: build\app\outputs\flutter-apk\app-arm64-v8a-release.apk
-rem (copy it to the phone and open it to install).
 cd /d "%~dp0"
 
 set ADDRESS=%~1

@@ -51,8 +51,6 @@ enum TaskRepeat {
   }
 }
 
-/// A personal task or reminder the student creates for themselves.
-/// A reminder is a task that alerts the student at [dueAt].
 class TaskModel {
   final String id;
   final String title;
@@ -63,7 +61,6 @@ class TaskModel {
   final bool isDone;
   final bool isReminder;
 
-  /// Where the reminder leads, e.g. the assignment it is about.
   final String? route;
 
   const TaskModel({

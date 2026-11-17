@@ -15,8 +15,6 @@ import '../providers/planner_provider.dart';
 import 'plan_tip_tile.dart';
 import '../../../core/l10n/language.dart';
 
-/// The top planner tips on a home page, with a link to the full plan.
-/// Shows a calm "all caught up" card when there is nothing to do.
 class ForYouSection extends ConsumerWidget {
   final int maxItems;
 

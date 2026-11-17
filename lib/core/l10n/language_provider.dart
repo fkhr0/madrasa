@@ -5,7 +5,6 @@ import 'language.dart';
 
 const _key = 'language';
 
-/// The language saved on this device (Arabic the first time).
 Future<AppLanguage> loadSavedLanguage() async {
   try {
     final prefs = await SharedPreferences.getInstance();
@@ -17,8 +16,6 @@ Future<AppLanguage> loadSavedLanguage() async {
   }
 }
 
-/// The app's language. Changing it rebuilds the whole app in the other
-/// language and direction, and remembers the choice on this device.
 final languageProvider = NotifierProvider<LanguageController, AppLanguage>(
   LanguageController.new,
 );
@@ -34,7 +31,7 @@ class LanguageController extends Notifier<AppLanguage> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_key, language.name);
     } catch (_) {
-      // Not saved (private browser window): it still applies until closed.
+      // private window: not saved
     }
   }
 }

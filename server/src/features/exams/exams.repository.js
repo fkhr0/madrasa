@@ -1,8 +1,5 @@
-// SQL for exams and their scores.
 const { query, queryOne } = require("../../db/database");
 
-// One exam as the app shows it. NUMERIC comes back as text, so scores are
-// cast to float.
 const EXAM = `
   SELECT e.id, e.class_id AS "classId", c.name AS "className",
          e.type, e.title, e.date::text AS date,
@@ -24,7 +21,6 @@ function findExam(institutionId, examId) {
   ]);
 }
 
-/** A class's exams, optionally of one subject, with how many are scored. */
 function classExams(classId, subjectId = null) {
   return query(
     `SELECT x.*, (SELECT COUNT(*)::int FROM exam_scores es WHERE es.exam_id = x.id)
@@ -35,7 +31,6 @@ function classExams(classId, subjectId = null) {
   );
 }
 
-/** A student's exams (their class's), with their own score once published. */
 function studentExams(institutionId, className, studentId) {
   return query(
     `SELECT x.*,
@@ -80,7 +75,6 @@ function deleteExam(examId) {
   return query("DELETE FROM exams WHERE id = $1", [examId]);
 }
 
-/** Student ID → score. */
 async function scoresOf(examId) {
   const rows = await query(
     "SELECT student_id, score::float AS score FROM exam_scores WHERE exam_id = $1",
@@ -97,7 +91,6 @@ async function highestScore(examId) {
   return row.max;
 }
 
-/** Replaces the exam's scores ({ studentId: score | null }) and publishes. */
 async function saveScores(tx, examId, scores) {
   for (const [studentId, score] of Object.entries(scores)) {
     if (score === null) {
@@ -119,10 +112,6 @@ async function saveScores(tx, examId, scores) {
   );
 }
 
-/**
- * Each student's average (0–100) in one subject of a class, from published
- * scores, weighted by each exam's max: { studentId: average }.
- */
 async function subjectAverages(classId, subjectId) {
   const rows = await query(
     `SELECT es.student_id, 100 * SUM(es.score) / SUM(e.max_score) AS average

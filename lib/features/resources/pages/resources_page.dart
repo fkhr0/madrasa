@@ -38,7 +38,6 @@ class ResourcesPage extends ConsumerWidget {
             ),
           ),
 
-          // Subject filter chips.
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
@@ -50,7 +49,6 @@ class ResourcesPage extends ConsumerWidget {
                   subjectId: null,
                   selected: selectedSubject,
                 ),
-                // Subjects come from the backend in a later stage.
                 for (final subject in MockSubjects.all)
                   _chip(
                     ref,

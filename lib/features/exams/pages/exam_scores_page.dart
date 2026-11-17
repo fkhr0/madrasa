@@ -12,8 +12,6 @@ import '../models/exam_model.dart';
 import '../providers/exam_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// One score per student for an exam. Saving publishes them: students and
-/// parents see them in Grades. An empty field means no score (e.g. absent).
 class ExamScoresPage extends ConsumerWidget {
   final String examId;
 
@@ -47,7 +45,6 @@ class _ScoresForm extends ConsumerStatefulWidget {
 class _ScoresFormState extends ConsumerState<_ScoresForm> {
   final _formKey = GlobalKey<FormState>();
 
-  /// Student ID → its score field, filled with the saved score.
   late final Map<String, TextEditingController> _fields = {
     for (final s in widget.students)
       s.id: TextEditingController(text: _plain(s.score)),

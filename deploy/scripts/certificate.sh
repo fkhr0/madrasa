@@ -1,27 +1,20 @@
 #!/usr/bin/env bash
-# HTTPS certificate from Let's Encrypt (free), and its renewal.
-#   bash scripts/certificate.sh          first time (Nginx not running yet)
-#   bash scripts/certificate.sh renew    what the daily timer runs
 set -euo pipefail
 cd "$(dirname "$0")/.."
-# Read as plain text, not run: values may hold & or $ (database addresses).
 while IFS='=' read -r key value; do
   if [[ $key =~ ^[A-Z_][A-Z0-9_]*$ ]]; then export "$key=$value"; fi
 done < .env
 
 if [[ "${1:-}" == "renew" ]]; then
-  # Nginx serves the check files from certbot-www; then it reloads the new one.
   docker compose run --rm certbot renew --webroot -w /var/www/certbot --quiet
   docker compose exec nginx nginx -s reload
   exit 0
 fi
 
-# First time: certbot answers Let's Encrypt itself on port 80.
 docker compose stop nginx 2>/dev/null || true
 docker compose run --rm -p 80:80 certbot certonly --standalone \
   -d "$DOMAIN" --email "$CERT_EMAIL" --agree-tos --no-eff-email --non-interactive
 
-# Renew by itself every day at 03:30 (only acts when under 30 days are left).
 sudo tee /etc/systemd/system/madrasa-cert.service >/dev/null <<EOF
 [Unit]
 Description=Renew the HTTPS certificate

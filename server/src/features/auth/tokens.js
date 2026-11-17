@@ -1,4 +1,3 @@
-// Sign-in tokens.
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const config = require("../../config");
@@ -7,10 +6,8 @@ const { HttpError } = require("../../common/http");
 
 const sha256 = (text) => crypto.createHash("sha256").update(text).digest("hex");
 
-/** What each signed token is for. */
 const PURPOSE = { access: "access", file: "file" };
 
-/** The token's payload, or throws: wrong key, expired, other purpose, other algorithm. */
 function verifyToken(token, purpose) {
   return jwt.verify(String(token ?? ""), config.jwt.accessSecret, {
     algorithms: ["HS256"],
@@ -26,7 +23,6 @@ function signAccessToken(user) {
   );
 }
 
-/** A short-lived link to download one file. */
 function signFileToken(fileId, expiresIn) {
   return jwt.sign({ file: fileId }, config.jwt.accessSecret, {
     expiresIn,
@@ -35,7 +31,6 @@ function signFileToken(fileId, expiresIn) {
   });
 }
 
-/** Starts a new session (one per signed-in device). Returns the refresh token. */
 async function createSession(userId) {
   const id = crypto.randomUUID();
   const secret = crypto.randomBytes(32).toString("hex");
@@ -50,10 +45,6 @@ async function createSession(userId) {
   return `${id}.${secret}`;
 }
 
-/**
- * Checks a refresh token and replaces it. Returns { userId, refreshToken }.
- * Throws 401 when it is unknown, expired, revoked or already used.
- */
 async function rotateSession(refreshToken) {
   const session = await findSession(refreshToken);
   await revoke(session.id);
@@ -64,13 +55,11 @@ async function rotateSession(refreshToken) {
   };
 }
 
-/** Signs one device out. Unknown tokens are ignored (already signed out). */
 async function endSession(refreshToken) {
   try {
     const session = await findSession(refreshToken);
     await revoke(session.id);
   } catch {
-    // Nothing to do.
   }
 }
 
@@ -99,7 +88,6 @@ async function findSession(refreshToken) {
 const revoke = (sessionId) =>
   query("UPDATE sessions SET revoked_at = now() WHERE id = $1", [sessionId]);
 
-/** Signs every device of a user out (after a password change). */
 const endAllSessions = (userId, exceptSessionOf) =>
   query(
     `UPDATE sessions SET revoked_at = now()

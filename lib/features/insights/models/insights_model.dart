@@ -1,6 +1,5 @@
 import '../../../core/l10n/language.dart';
 
-/// The time span the statistics cover.
 enum InsightsPeriod {
   week,
   month,
@@ -18,7 +17,6 @@ enum InsightsPeriod {
   }
 }
 
-/// A name and a number, e.g. ("Biology", 71.5) or ("Sun", 0.94).
 class LabeledValue {
   final String label;
   final double value;
@@ -31,34 +29,26 @@ class LabeledValue {
   );
 }
 
-/// The school in numbers for one period (doc: admin reports).
 class InsightsModel {
   final InsightsPeriod period;
 
-  // Attendance, rates are 0–1.
   final double attendanceRate;
 
-  /// Change from the previous period, in percentage points (+1.5, -2).
   final double attendanceChange;
   final List<LabeledValue> attendanceByDay;
   final List<LabeledValue> attendanceByClass;
 
-  // Learning, grades out of 100, pass = 50.
   final double averageGrade;
   final double passRate;
   final List<LabeledValue> gradeBySubject;
 
-  // Homework
   final int assignmentsGiven;
   final double submissionRate;
 
-  // Transport
   final int tripsDone;
   final double onTimeRate;
   final int averageDelayMinutes;
 
-  // What there is to show yet. A new school has none of it: no made-up
-  // 0% or 100% figures.
   bool get hasAttendance =>
       attendanceByClass.isNotEmpty || attendanceByDay.isNotEmpty;
   bool get hasGrades => gradeBySubject.isNotEmpty;

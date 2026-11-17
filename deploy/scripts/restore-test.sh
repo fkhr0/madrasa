@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# Proves the backups work: restores the newest nightly dump into a throwaway
-# PostgreSQL and counts what came back. A backup nobody restored isn't one.
-#   bash scripts/restore-test.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
 

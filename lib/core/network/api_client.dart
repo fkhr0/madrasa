@@ -8,46 +8,32 @@ import '../l10n/language.dart';
 import 'api_exception.dart';
 import 'response_cache.dart';
 
-/// Talks to the school API (server/ folder).
 class ApiClient {
-  /// Changes only in test builds, when the sign-in page sets the address.
   String baseUrl;
   final http.Client _http;
 
-  /// The answers saved on this device.
   final ResponseCache cache;
 
-  /// Whose saved answers to use (the signed-in person's ID).
   String? cacheOwner;
 
-  /// True while the screens show saved answers because the server can't be
-  /// reached.
   final offline = ValueNotifier<bool>(false);
 
-  /// Saved answers shown at once this session (each is checked once).
   final _shownSaved = <String>{};
 
-  /// The background checks found newer data than the saved answers shown.
   void Function()? onSavedAnswersOutdated;
   Timer? _outdatedSoon;
 
-  /// Called when the user must sign in again.
   void Function()? onSessionExpired;
 
-  /// Called with the new refresh token after each refresh (it works only
-  /// once, so the saved one must be replaced).
   void Function(String refreshToken)? onTokensChanged;
 
   static const _timeout = Duration(seconds: 20);
 
-  /// A video on mobile data takes a while.
   static const _uploadTimeout = Duration(minutes: 3);
 
   String? _accessToken;
   String? _refreshToken;
 
-  /// The refresh in progress, shared by requests that fail at the same time
-  /// (a refresh token works only once).
   Future<bool>? _refreshing;
 
   ApiClient({
@@ -58,7 +44,6 @@ class ApiClient {
 
   String? get refreshToken => _refreshToken;
 
-  /// For the live connection's sign-in (realtime_client.dart).
   String? get accessToken => _accessToken;
 
   void setTokens({required String accessToken, required String refreshToken}) {
@@ -66,8 +51,6 @@ class ApiClient {
     _refreshToken = refreshToken;
   }
 
-  /// Opening the app with a saved session: the next request gets a fresh
-  /// access token with [refreshToken] first.
   void restoreSession(String refreshToken) {
     _accessToken = null;
     _refreshToken = refreshToken;
@@ -78,7 +61,6 @@ class ApiClient {
     _refreshToken = null;
   }
 
-  /// Signing out: nobody else on this phone may see the saved answers.
   Future<void> forgetSavedAnswers() async {
     cacheOwner = null;
     _shownSaved.clear();
@@ -99,7 +81,6 @@ class ApiClient {
   Future<dynamic> delete(String path, [Object? body]) =>
       _send('DELETE', path, body: body);
 
-  /// Sends a file's bytes as the body (POST /files). Returns the server's JSON.
   Future<dynamic> upload(
     String path,
     List<int> bytes, {
@@ -116,10 +97,7 @@ class ApiClient {
     },
   );
 
-  /// [path] on the server as a full address, e.g. for a download link.
   Uri resolve(String path) => Uri.parse('$baseUrl$path');
-
-  // ---------- plumbing ----------
 
   Future<dynamic> _send(
     String method,
@@ -133,8 +111,6 @@ class ApiClient {
   }) async {
     final request = http.Request(method, Uri.parse('$baseUrl$path'))
       ..headers['Accept'] = 'application/json'
-      // Answers, errors and this person's notifications in the app's
-      // language (the server remembers it).
       ..headers['X-Language'] = AppLanguage.current.name;
     if (_accessToken != null) {
       request.headers['Authorization'] = 'Bearer $_accessToken';
@@ -146,7 +122,6 @@ class ApiClient {
     if (bytes != null) request.bodyBytes = bytes;
     request.headers.addAll(headers);
 
-    // A saved answer: ask "changed since this version?"
     final owner = cacheOwner;
     final cacheKey = '${AppLanguage.current.name} $path';
     final canCache =
@@ -154,7 +129,6 @@ class ApiClient {
     final saved = canCache ? await cache.read(owner, cacheKey) : null;
     if (saved != null) request.headers['If-None-Match'] = saved.etag;
 
-    // First time this session: the saved answer now, the check after.
     if (saved != null && !fromServer && _shownSaved.add(cacheKey)) {
       unawaited(_checkSaved(path, owner!, cacheKey, saved.etag));
       return jsonDecode(saved.body);
@@ -176,12 +150,10 @@ class ApiClient {
     }
     offline.value = false;
 
-    // Not changed: the saved answer is still right.
     if (response.statusCode == 304 && saved != null) {
       return jsonDecode(saved.body);
     }
 
-    // Expired access token: refresh once, then repeat the request.
     final isAuthCall = path.startsWith('/auth/');
     if (response.statusCode == 401 && canRefresh && !isAuthCall) {
       if (await _refresh()) {
@@ -222,8 +194,6 @@ class ApiClient {
     return data;
   }
 
-  /// Asks the server for what was shown from the phone; newer data makes
-  /// the screens load again (once for a burst of checks).
   Future<void> _checkSaved(
     String path,
     String owner,
@@ -233,7 +203,7 @@ class ApiClient {
     try {
       await _send('GET', path, fromServer: true);
     } catch (_) {
-      return; // offline or refused: what is shown stays
+      return;
     }
     final now = await cache.read(owner, cacheKey);
     if (now == null || now.etag == shownEtag) return;

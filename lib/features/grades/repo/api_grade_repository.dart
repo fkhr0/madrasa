@@ -3,7 +3,6 @@ import '../models/grade_item_model.dart';
 import '../models/subject_grades_model.dart';
 import 'grade_repository.dart';
 
-/// Grades are the student's published exam scores, grouped by subject.
 class ApiGradeRepository implements GradeRepository {
   final ExamRepository _exams;
 

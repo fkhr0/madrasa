@@ -1,13 +1,10 @@
 import '../../../core/utils/day_json.dart';
 
-/// The school's fees: tuition, bus fee, installment dates, and classes
-/// whose tuition differs.
 class FinanceSettingsModel {
   final int tuition;
   final int busFee;
   final List<DateTime> dueDates;
 
-  /// Every class; tuition null = the school's tuition.
   final List<ClassTuitionModel> classTuition;
 
   const FinanceSettingsModel({
@@ -46,7 +43,6 @@ class ClassTuitionModel {
   final String classId;
   final String className;
 
-  /// Null = the school's tuition.
   final int? tuition;
 
   const ClassTuitionModel({

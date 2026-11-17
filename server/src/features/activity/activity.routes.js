@@ -1,15 +1,3 @@
-// Every record of who did what and when, with filters. Each role sees its
-// part only:
-//   office   everything at the school
-//   teacher  their own actions, and what happened in their classes
-//   student  lines about them, and class news (homework, exams, material)
-//   parent   the same for each of their children
-//
-// GET /activity?date=YYYY-MM-DD | from=&to=  &kind=attendance,grades
-//              &actorId=  &classId=  &studentId=  &q=text  &before=ISO  &limit=50
-//   -> { items: [{ id, at, actorName, actorRole, kind, action, summary,
-//                  classId, className, route }], next: ISO | null }
-// "next" is passed back as ?before= to load older lines.
 const express = require("express");
 const { validate, isoDate, z } = require("../../common/http");
 const { requireAuth } = require("../../common/auth-middleware");
@@ -20,7 +8,6 @@ const { KINDS } = require("./log");
 const router = express.Router();
 router.use(requireAuth);
 
-/** News for the whole class that its students and parents may see. */
 const CLASS_NEWS = ["homework", "grades", "material"];
 
 const filters = z.object({
@@ -52,7 +39,6 @@ router.get("/", async (req, res) => {
     where.push(text);
   };
 
-  // ---------- What this person may see ----------
   const me = req.user;
   if (me.role === "admin") {
     add("a.institution_id = ?", me.institutionId);
@@ -64,7 +50,6 @@ router.get("/", async (req, res) => {
       me.institutionId, me.id, me.id, me.id,
     );
   } else {
-    // Students: themselves. Parents: their children (any school).
     const ids =
       me.role === "parent"
         ? (await query("SELECT child_id FROM parent_children WHERE parent_id = $1", [me.id])).map(
@@ -79,7 +64,6 @@ router.get("/", async (req, res) => {
     );
   }
 
-  // ---------- Filters ----------
   if (f.date) add("(a.at AT TIME ZONE ?)::date = ?", config.timeZone, f.date);
   if (f.from) add("(a.at AT TIME ZONE ?)::date >= ?", config.timeZone, f.from);
   if (f.to) add("(a.at AT TIME ZONE ?)::date <= ?", config.timeZone, f.to);

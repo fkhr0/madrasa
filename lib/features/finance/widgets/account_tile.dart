@@ -11,7 +11,6 @@ import '../../../core/widgets/user_avatar.dart';
 import '../models/student_account_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// One family's account in the Finance list.
 class AccountTile extends StatelessWidget {
   final StudentAccountModel account;
   final DateTime now;

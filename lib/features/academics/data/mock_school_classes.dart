@@ -1,12 +1,9 @@
 import '../models/school_class_model.dart';
 import '../models/school_subject_model.dart';
 
-/// Fake subjects and classes, the same as the server's demo data.
-/// Teacher IDs match the People directory.
 class MockSchoolClasses {
   MockSchoolClasses._();
 
-  /// (id, name, icon, colour, usual teacher ID, teacher name)
   static const _catalogue = [
     ('math', 'Mathematics', 'math', 'purple', 'TCH-2019-0031', 'Ahmed Kareem'),
     ('physics', 'Physics', 'physics', 'blue', 'TCH-2019-0040', 'Sara Hadi'),
@@ -51,7 +48,6 @@ class MockSchoolClasses {
       SchoolSubjectModel(id: id, name: name, iconKey: icon, colorKey: color),
   ];
 
-  /// Every subject with its usual teacher, except [without].
   static List<ClassSubjectModel> _team({List<String> without = const []}) => [
     for (final (id, name, _, _, teacherId, teacherName) in _catalogue)
       ClassSubjectModel(
@@ -85,7 +81,6 @@ class MockSchoolClasses {
       homeroomTeacherId: 'TCH-2019-0044',
       homeroomTeacherName: 'Yusuf Ali',
       studentCount: 30,
-      // A class still being set up.
       subjects: _team(without: ['biology', 'computer']),
     ),
     SchoolClassModel(

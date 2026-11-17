@@ -1,4 +1,3 @@
-// The signed-in user's own account.
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const { HttpError, validate, z } = require("../../common/http");
@@ -15,14 +14,12 @@ const { msg } = require("../../i18n");
 const router = express.Router();
 router.use(requireAuth);
 
-// GET /me -> user
 router.get("/", async (req, res) => {
   const user = await users.findById(req.user.id);
   if (!user) throw new HttpError(404, "Account not found.");
   res.json(await userWithChildren(user));
 });
 
-// PATCH /me { email, phone } -> user
 router.patch("/", async (req, res) => {
   const body = validate(
     z.object({
@@ -39,8 +36,6 @@ router.patch("/", async (req, res) => {
   res.json(await userWithChildren(await users.findById(req.user.id)));
 });
 
-// POST /me/sign-out-everywhere { refreshToken } -> 204
-// Every other phone and computer is signed out; this one stays in.
 router.post("/sign-out-everywhere", async (req, res) => {
   notOnDemoAccount(req.user.id);
   const { refreshToken } = validate(z.object({ refreshToken: z.string().optional() }), req.body);
@@ -48,8 +43,6 @@ router.post("/sign-out-everywhere", async (req, res) => {
   res.status(204).end();
 });
 
-// POST /me/deletion-request { reason? } -> 204
-// Accounts belong to the school: the office is told and deletes it (People).
 router.post("/deletion-request", async (req, res) => {
   notOnDemoAccount(req.user.id);
   const { reason } = validate(
@@ -74,8 +67,6 @@ router.post("/deletion-request", async (req, res) => {
   res.status(204).end();
 });
 
-// POST /me/password { currentPassword, newPassword, refreshToken? } -> 204
-// Signs the user out everywhere else (the device sending refreshToken stays in).
 router.post("/password", async (req, res) => {
   notOnDemoAccount(req.user.id);
   const { currentPassword, newPassword, refreshToken } = validate(

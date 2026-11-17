@@ -15,8 +15,6 @@ import '../../../core/widgets/icon_box.dart';
 import '../providers/notification_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// "Get notifications on this phone": asks once, so the bus, announcements and
-/// the rest reach the phone even when the app is closed.
 class PhoneNotificationsCard extends ConsumerStatefulWidget {
   const PhoneNotificationsCard({super.key});
 
@@ -29,7 +27,6 @@ class _PhoneNotificationsCardState
     extends ConsumerState<PhoneNotificationsCard> {
   bool _asking = false;
 
-  /// "granted", "denied" or "default"; null while it is being read.
   String? _permission;
 
   @override
@@ -38,7 +35,6 @@ class _PhoneNotificationsCardState
     _readPermission();
   }
 
-  /// The Android app asks Firebase; the browser knows at once.
   Future<void> _readPermission() async {
     final permission = PhonePush.supported
         ? await PhonePush.permission()
@@ -61,8 +57,6 @@ class _PhoneNotificationsCardState
     if (!AppConfig.useApi || permission == null || permission == 'granted') {
       return const SizedBox.shrink();
     }
-    // The installed app without Firebase can't offer anything (and the
-    // iPhone advice below is for the browser).
     if (!kIsWeb && !PhonePush.supported) return const SizedBox.shrink();
 
     final String title;
@@ -91,8 +85,6 @@ class _PhoneNotificationsCardState
         'The bus, announcements and more, even when the app is closed.',
       );
       action = FilledButton(
-        // The theme makes buttons full width; inside this row that breaks
-        // the layout (a grey box over the whole page in the release app).
         style: FilledButton.styleFrom(minimumSize: const Size(0, 40)),
         onPressed: _asking ? null : _turnOn,
         child: Text(tr('Turn on')),
@@ -137,8 +129,6 @@ class _PhoneNotificationsCardState
   }
 }
 
-/// Asks for notifications and says how it went (the card and the first-open
-/// question use it).
 Future<String> turnOnNotifications(WidgetRef ref) async {
   try {
     final on = await ref
@@ -148,7 +138,6 @@ Future<String> turnOnNotifications(WidgetRef ref) async {
         ? tr('Notifications are on for this phone')
         : tr('Notifications were not turned on');
   } on TimeoutException {
-    // Allowed, but Firebase hasn't answered yet: it registers by itself.
     return tr(
       'Notifications are allowed. The phone is still connecting; they will start in a moment.',
     );

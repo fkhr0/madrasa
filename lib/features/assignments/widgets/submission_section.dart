@@ -15,11 +15,9 @@ import '../providers/assignment_provider.dart';
 import 'attachment_tile.dart';
 import '../../../core/l10n/language.dart';
 
-/// "Your work" card: pick files and hand them in, or see what was handed in.
 class SubmissionSection extends ConsumerStatefulWidget {
   final AssignmentModel assignment;
 
-  /// False for parents: they can see the work but not hand it in.
   final bool canSubmit;
 
   const SubmissionSection({

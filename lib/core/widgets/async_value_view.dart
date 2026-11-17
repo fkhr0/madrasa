@@ -4,8 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/app_strings.dart';
 import 'empty_state.dart';
 
-/// Shows a loader, an error with a retry button, or [data], so every screen
-/// handles loading the same way.
 class AsyncValueView<T> extends StatelessWidget {
   final AsyncValue<T> value;
   final Widget Function(T data) data;
@@ -21,8 +19,6 @@ class AsyncValueView<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return value.when(
-      // Reloading in the background (e.g. the 15-second check): keep
-      // showing what is there, and keep it if that check fails.
       skipLoadingOnReload: true,
       skipError: value.hasValue,
       data: data,

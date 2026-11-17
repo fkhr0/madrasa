@@ -2,10 +2,8 @@ import '../../../core/utils/day_json.dart';
 import '../../attendance/models/attendance_record_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Whether a period is over, going on, or still to come.
 enum PeriodState { done, now, later }
 
-/// Attendance a teacher took for one lesson (office and teacher views).
 class TakenModel {
   final String? takenBy;
   final DateTime takenAt;
@@ -30,7 +28,6 @@ class TakenModel {
   );
 }
 
-/// A student's own mark in one lesson (student and parent views).
 class MarkModel {
   final AttendanceStatus status;
   final String? markedBy;
@@ -56,10 +53,8 @@ class DayLessonModel {
   final String? teacherName;
   final String room;
 
-  /// Office and teacher: the class's attendance (null = not taken).
   final TakenModel? attendance;
 
-  /// Student and parent: their own mark (null = not taken).
   final MarkModel? mark;
 
   const DayLessonModel({
@@ -92,7 +87,6 @@ class DayLessonModel {
 class DayPeriodModel {
   final int number;
 
-  /// "08:50"
   final String start;
   final String end;
   final PeriodState state;
@@ -118,7 +112,6 @@ class DayPeriodModel {
   );
 }
 
-/// The office's numbers for the day.
 class DayTotalsModel {
   final int students;
   final int present;
@@ -127,7 +120,6 @@ class DayTotalsModel {
   final int lessons;
   final int lessonsTaken;
 
-  /// Lessons that started without attendance.
   final int lessonsMissing;
   final int homeworkDue;
   final int exams;
@@ -163,15 +155,12 @@ class DayTotalsModel {
   }
 }
 
-/// A line under "Homework" or "Exams" on a day.
 class DayItemModel {
   final String id;
   final String title;
 
-  /// "5th Scientific – A" (teacher) or "Mathematics" (student).
   final String detail;
 
-  /// "Handed in", "2 to grade", "Scored 18 / 20"...
   final String? status;
 
   const DayItemModel({
@@ -182,7 +171,6 @@ class DayItemModel {
   });
 }
 
-/// A bus trip of the student's line that day.
 class DayTripModel {
   final bool toSchool;
   final DateTime startedAt;
@@ -199,21 +187,16 @@ class DayTripModel {
   });
 }
 
-/// One day for one role: the office's school, a teacher's lessons, or a
-/// student's own day. The parts a role doesn't have stay empty.
 class DayModel {
   final DateTime date;
   final bool isToday;
   final bool isSchoolDay;
 
-  /// Why there is no school ("Weekend", a holiday...), or null.
   final String? dayOff;
   final List<DayPeriodModel> periods;
 
-  /// Office only.
   final DayTotalsModel? totals;
 
-  /// Student / parent: the day as a whole, e.g. present, "Missed ...".
   final AttendanceStatus? dayStatus;
   final String? dayNote;
   final String? studentName;
@@ -237,11 +220,9 @@ class DayModel {
     this.bus = const [],
   });
 
-  /// The period going on now, if any.
   DayPeriodModel? get current =>
       periods.where((p) => p.state == PeriodState.now).firstOrNull;
 
-  /// The office's and teacher's view (from /days/:date/school or /teacher).
   factory DayModel.fromJson(Map<String, dynamic> json) {
     final student = json['student'] as Map<String, dynamic>?;
     final day = json['day'] as Map<String, dynamic>?;

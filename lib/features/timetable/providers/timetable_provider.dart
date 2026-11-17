@@ -9,7 +9,6 @@ import '../repo/api_timetable_repository.dart';
 import '../repo/mock_timetable_repository.dart';
 import '../repo/timetable_repository.dart';
 
-/// The server when API_URL is set, otherwise the in-memory mock.
 final timetableRepositoryProvider = Provider<TimetableRepository>(
   (ref) => AppConfig.useApi
       ? ApiTimetableRepository(watchApi(ref))
@@ -31,8 +30,6 @@ final timetableActionsProvider = Provider<TimetableActions>(
   TimetableActions.new,
 );
 
-/// Administrator changes to bell times and lessons. Each one reloads what
-/// it changed. They throw ApiException with a message to show.
 class TimetableActions {
   final Ref _ref;
 

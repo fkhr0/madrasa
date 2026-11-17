@@ -11,8 +11,6 @@ import '../providers/academics_provider.dart';
 import 'teacher_picker_sheet.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator: a new class (name, head teacher, subjects), or rename a class
-/// and change its head teacher ([schoolClass] given).
 Future<bool?> showClassSheet(
   BuildContext context, {
   SchoolClassModel? schoolClass,
@@ -39,7 +37,6 @@ class _ClassSheetState extends ConsumerState<_ClassSheet> {
   late String? _headId = widget.schoolClass?.homeroomTeacherId;
   late String? _headName = widget.schoolClass?.homeroomTeacherName;
 
-  /// New classes: the subjects it studies (all of them by default).
   Set<String>? _subjectIds;
   bool _saving = false;
 

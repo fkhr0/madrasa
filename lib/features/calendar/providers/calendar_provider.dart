@@ -18,23 +18,18 @@ import '../repo/calendar_repository.dart';
 import '../repo/mock_calendar_repository.dart';
 import '../../../core/l10n/language.dart';
 
-/// The server when API_URL is set, otherwise the mock events.
 final calendarRepositoryProvider = Provider<CalendarRepository>(
   (ref) => AppConfig.useApi
       ? ApiCalendarRepository(watchApi(ref))
       : MockCalendarRepository(),
 );
 
-/// The day tapped on the calendar. Null until the user taps one,
-/// then the page shows today (kept inside the study year).
 final selectedCalendarDayProvider = StateProvider<DateTime?>((ref) => null);
 
-/// The kinds of items the signed-in user sees (and the legend shows).
 final visibleCalendarTypesProvider = Provider<List<CalendarEventType>>(
   (ref) => CalendarEventType.visibleFor(ref.watch(currentUserProvider).role),
 );
 
-/// Everything on the calendar in one list, for the signed-in user's role.
 final calendarEventsProvider = FutureProvider<List<CalendarEventModel>>((
   ref,
 ) async {
@@ -63,7 +58,6 @@ final calendarEventsProvider = FutureProvider<List<CalendarEventModel>>((
       ),
   ];
 
-  // Students and parents: the student's homework and exams.
   if (shows(CalendarEventType.homework)) {
     final assignments = await ref.watch(assignmentsProvider.future);
     final exams = await ref.watch(examsProvider.future);
@@ -92,7 +86,6 @@ final calendarEventsProvider = FutureProvider<List<CalendarEventModel>>((
     ]);
   }
 
-  // Students only: their own reminders.
   if (shows(CalendarEventType.reminder) && role == UserRole.student) {
     final tasks = await ref.watch(tasksProvider.future);
 
@@ -108,7 +101,6 @@ final calendarEventsProvider = FutureProvider<List<CalendarEventModel>>((
     ]);
   }
 
-  // Only what falls inside the study year and this role may see.
   return events.where((e) => shows(e.type) && year.contains(e.start)).toList()
     ..sort((a, b) => a.start.compareTo(b.start));
 });
@@ -127,7 +119,6 @@ CalendarEventType _typeOf(AssignmentModel assignment) {
 
 final calendarActionsProvider = Provider<CalendarActions>(CalendarActions.new);
 
-/// Administrator: change the school calendar. Each change reloads it.
 class CalendarActions {
   final Ref _ref;
 

@@ -1,10 +1,3 @@
-// Reminders the school sends by itself (all times on the school's clock): 7:00
-// exams today               → the class's students and parents 18:00  exams
-// tomorrow            → the class's students and parents homework due tomorrow
-// → students who haven't handed it in every minute   personal reminders the
-// user set in Tasks every 5 min    a lesson started 10 min ago without
-// attendance → its teacher Each reminder is sent once (sent_reminders), even if
-// a job runs again.
 const { query, queryOne } = require("../db/database");
 const { notify, withParents } = require("../features/notifications/notify");
 const attendance = require("../features/attendance/attendance.repository");
@@ -19,7 +12,6 @@ const TYPE_NAMES = {
   final: "final exam",
 };
 
-/** True the first time [key] is claimed; false if it was sent before. */
 async function once(key) {
   return Boolean(
     await queryOne(
@@ -33,7 +25,6 @@ async function institutions() {
   return (await query("SELECT id FROM institutions")).map((r) => r.id);
 }
 
-/** Exams on [date] at schools where it is a school day. */
 async function examsOn(date) {
   const exams = [];
   for (const id of await institutions()) {
@@ -71,14 +62,10 @@ async function remindExams(date, when) {
   return sent;
 }
 
-// Each job takes an optional { date, time } (tests); the scheduler uses now.
-
-/** 7:00: exams today. */
 function examsToday({ date = today() } = {}) {
   return remindExams(date, "today");
 }
 
-/** 18:00: exams and homework due tomorrow. */
 async function eveningReminders({ date = today() } = {}) {
   const tomorrow = addDays(date, 1);
   const exams = await remindExams(tomorrow, "tomorrow");
@@ -116,7 +103,6 @@ async function eveningReminders({ date = today() } = {}) {
 
 const REPEAT = { daily: "1 day", weekly: "7 days", monthly: "1 month" };
 
-/** Every minute - personal reminders that are due. */
 async function taskReminders() {
   const due = await query(
     `SELECT t.user_id AS "userId", t.id, t.title, t.due_at AS "dueAt", t.repeat, t.route,
@@ -143,10 +129,8 @@ async function taskReminders() {
   return due.length;
 }
 
-/** How long after a lesson starts its teacher is reminded to take attendance. */
 const ATTENDANCE_GRACE_MIN = 10;
 
-/** Every 5 minutes: lessons under way without attendance. */
 async function attendanceReminders({ date = today(), time = timeNow() } = {}) {
   const now = time;
   let sent = 0;

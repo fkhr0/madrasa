@@ -12,11 +12,6 @@ class MainActivity : FlutterActivity() {
         createNotificationChannel()
     }
 
-    /**
-     * The channel the server's notifications go to ("school", see
-     * AndroidManifest.xml and server/src/features/notifications/fcm.js).
-     * People can mute it in the phone's settings. Making it again is harmless.
-     */
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val channel = NotificationChannel(

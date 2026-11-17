@@ -17,8 +17,6 @@ import '../providers/resource_provider.dart';
 import '../widgets/resource_tile.dart';
 import '../../../core/l10n/language.dart';
 
-/// A class's study material for the subject's teacher (every subject for
-/// the office): share a file or a link, or remove one.
 class ClassResourcesPage extends ConsumerWidget {
   final String classId;
 
@@ -81,7 +79,7 @@ class ClassResourcesPage extends ConsumerWidget {
                   AppSpacing.page,
                   AppSpacing.sm,
                   AppSpacing.page,
-                  96, // room for the button
+                  96,
                 ),
                 itemCount: items.length,
                 separatorBuilder: (_, _) =>
@@ -118,7 +116,6 @@ class _ShareSheetState extends ConsumerState<_ShareSheet> {
       ? widget.subjects.single.$1
       : null;
 
-  /// What a teacher can share (older "slides" items still show in lists).
   static const _types = [
     ResourceType.pdf,
     ResourceType.video,
@@ -131,14 +128,12 @@ class _ShareSheetState extends ConsumerState<_ShareSheet> {
   AttachmentModel? _file;
   bool _busy = false;
 
-  /// A video: a file from the phone, or a link (YouTube...) for long ones.
   bool _videoAsLink = false;
 
   bool get _isLink =>
       _type == ResourceType.link ||
       (_type == ResourceType.video && _videoAsLink);
 
-  /// The file kinds to pick for this type.
   List<String> get _extensions =>
       _type == ResourceType.video ? videoExtensions : const ['pdf'];
 
@@ -153,7 +148,6 @@ class _ShareSheetState extends ConsumerState<_ShareSheet> {
     setState(() => _busy = true);
     final files = await pickAndUpload(context, ref, extensions: _extensions);
     if (!mounted) return;
-    // The title stays what the teacher writes (never the file's name).
     setState(() {
       _busy = false;
       if (files.isNotEmpty) _file = files.first;
@@ -235,7 +229,6 @@ class _ShareSheetState extends ConsumerState<_ShareSheet> {
                     avatar: Icon(type.icon, size: 18, color: type.color),
                     label: Text(type.label),
                     selected: _type == type,
-                    // A file of another kind doesn't fit the new type.
                     onSelected: (_) => setState(() {
                       _type = type;
                       _file = null;
@@ -301,7 +294,6 @@ class _ShareSheetState extends ConsumerState<_ShareSheet> {
                 icon: const Icon(Icons.attach_file, size: 18),
                 label: Text(_busy ? tr('Uploading…') : tr('Choose a file')),
               ),
-            // The limit, before choosing (not after a long wait).
             if (!_isLink && _file == null) ...[
               const SizedBox(height: AppSpacing.xs),
               Text(

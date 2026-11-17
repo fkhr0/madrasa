@@ -9,14 +9,11 @@ import '../../../core/widgets/status_badge.dart';
 import '../models/day_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// One period of the day with its lessons.
 class PeriodCard extends StatelessWidget {
   final DayPeriodModel period;
 
-  /// Tapping a lesson (e.g. to take its attendance).
   final void Function(DayLessonModel lesson)? onLessonTap;
 
-  /// Student view: show the mark instead of the class's attendance.
   final bool ownMarks;
 
   const PeriodCard({
@@ -122,7 +119,6 @@ class PeriodCard extends StatelessWidget {
   }
 }
 
-/// "08:05 · Ahmed Kareem · 2 absent", or "Not taken" once it started.
 class _Taken extends StatelessWidget {
   final DayLessonModel lesson;
   final PeriodState state;
@@ -161,7 +157,6 @@ class _Taken extends StatelessWidget {
   }
 }
 
-/// The student's own mark: present / late / absent, by whom and when.
 class _OwnMark extends StatelessWidget {
   final DayLessonModel lesson;
   final PeriodState state;

@@ -74,7 +74,6 @@ class TasksPage extends ConsumerWidget {
           };
 
           return ListView(
-            // Extra bottom space so the button never hides the last task.
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.page,
               AppSpacing.sm,

@@ -2,28 +2,22 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// A server answer saved on the device.
 class CachedResponse {
-  /// The server's version tag for it ("has it changed since?").
   final String etag;
   final String body;
 
   const CachedResponse({required this.etag, required this.body});
 }
 
-/// The answers to GET requests, saved on the device (used by ApiClient).
 abstract class ResponseCache {
   Future<CachedResponse?> read(String owner, String key);
   Future<void> write(String owner, String key, CachedResponse response);
   Future<void> clear();
 }
 
-/// Saved with shared_preferences (the browser's storage on the web, the
-/// app's settings file on Android).
 class DeviceResponseCache implements ResponseCache {
   static const _prefix = 'api-cache:';
 
-  /// Bigger answers aren't kept: the browser's storage holds about 5 MB.
   static const maxBodyLength = 200 * 1024;
 
   String _keyOf(String owner, String key) => '$_prefix$owner $key';
@@ -50,7 +44,6 @@ class DeviceResponseCache implements ResponseCache {
         jsonEncode({'etag': response.etag, 'body': response.body}),
       );
     } catch (_) {
-      // The storage is full: start again empty rather than fail the screen.
       await clear();
     }
   }
@@ -64,7 +57,6 @@ class DeviceResponseCache implements ResponseCache {
   }
 }
 
-/// Keeps nothing (tests, mock mode).
 class NoResponseCache implements ResponseCache {
   const NoResponseCache();
 

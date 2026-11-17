@@ -11,7 +11,6 @@ import '../repo/api_teaching_repository.dart';
 import '../repo/mock_teaching_repository.dart';
 import '../repo/teaching_repository.dart';
 
-/// The server when API_URL is set, otherwise the mock classes.
 final teachingRepositoryProvider = Provider<TeachingRepository>(
   (ref) => AppConfig.useApi
       ? ApiTeachingRepository(watchApi(ref))
@@ -43,9 +42,6 @@ final classStudentsProvider =
           ref.watch(teachingRepositoryProvider).getStudents(classId),
     );
 
-/// A class's name and the subjects this user may set exams and homework for, as
-/// (id, name): every subject for the office, the teacher's own subject for a
-/// teacher.
 final classSubjectChoicesProvider =
     Provider.family<(String, List<(String, String)>), String>((ref, classId) {
       if (ref.watch(currentUserProvider).role == UserRole.admin) {

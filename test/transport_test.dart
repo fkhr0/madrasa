@@ -24,7 +24,6 @@ void main() {
       final halfway = t0.add(LiveTrip.demoDriveTime ~/ 2);
       final moving = trip.toModel(halfway);
       expect(moving.isAtStop, isFalse);
-      // The bus is between stop 1 and stop 2 on the map.
       final a = MockTransport.mansourLine.stops[0];
       final b = MockTransport.mansourLine.stops[1];
       expect(moving.longitude, closeTo((a.longitude + b.longitude) / 2, 1e-6));

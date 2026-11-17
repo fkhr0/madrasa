@@ -12,7 +12,6 @@ import '../providers/finance_provider.dart';
 import '../repo/finance_repository.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator: record money the office received.
 Future<void> showPaymentSheet(
   BuildContext context,
   StudentAccountModel account,
@@ -54,7 +53,6 @@ class _PaymentSheetState extends ConsumerState<_PaymentSheet> {
     super.dispose();
   }
 
-  /// (label, amount) shortcuts, without duplicates.
   List<(String, int)> _suggestions() {
     final account = widget.account;
     final DateTime now = ref.read(nowProvider);

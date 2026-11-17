@@ -9,16 +9,12 @@ import '../../../core/utils/date_formatter.dart';
 import '../../../core/utils/text_direction.dart';
 import '../models/message_model.dart';
 
-/// My messages: right, tinted. Others: left, card colour.
-/// In groups the sender's name is shown above their messages.
 class MessageBubble extends StatelessWidget {
   final MessageModel message;
   final bool showSenderName;
 
-  /// A message that failed to send: tapping it tries again.
   final VoidCallback? onRetry;
 
-  /// Edit or delete (my messages).
   final VoidCallback? onLongPress;
 
   const MessageBubble({
@@ -55,8 +51,6 @@ class MessageBubble extends StatelessWidget {
           decoration: BoxDecoration(
             color: isMine ? palette.primarySoft : palette.card,
             border: isMine ? null : Border.all(color: palette.border),
-            // The small "tail" corner points to the sender's side (it
-            // flips with the reading direction).
             borderRadius: BorderRadiusDirectional.only(
               topStart: radius,
               topEnd: radius,
@@ -64,7 +58,6 @@ class MessageBubble extends StatelessWidget {
               bottomEnd: isMine ? tail : radius,
             ),
           ),
-          // As wide as the longest line: a one-letter message is a small bubble.
           child: IntrinsicWidth(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -88,8 +81,6 @@ class MessageBubble extends StatelessWidget {
                     ),
                   )
                 else
-                  // Arabic reads right to left, English left to right,
-                  // whatever the app's language (mixed words stay in order).
                   Text(
                     message.text,
                     textDirection: directionOf(message.text),
@@ -124,7 +115,6 @@ class MessageBubble extends StatelessWidget {
                       Icon(
                         message.status.icon,
                         size: 14,
-                        // ✓✓ in the app's colour once seen, like WhatsApp.
                         color: switch (message.status) {
                           MessageStatus.failed => AppColors.danger,
                           MessageStatus.read => palette.primary,

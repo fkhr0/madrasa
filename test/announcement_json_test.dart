@@ -18,7 +18,6 @@ void main() {
     expect(a.audience, AnnouncementAudience.className);
     expect(a.isWrittenBy('TCH-2019-0031', 'Someone else'), isTrue);
     expect(a.toJson()['audience'], 'class');
-    // Already published: no publishedAt, so the server uses its own clock.
     expect(a.toJson().containsKey('publishedAt'), isFalse);
 
     final scheduled = a.copyWith(

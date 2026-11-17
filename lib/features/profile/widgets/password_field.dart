@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Password input with a show / hide eye button.
 class PasswordField extends StatefulWidget {
   final TextEditingController controller;
   final String label;

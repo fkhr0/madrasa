@@ -12,8 +12,6 @@ import '../providers/institution_provider.dart';
 import '../../../core/widgets/location_picker.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator: the whole school's settings, name, contact details,
-/// the school gate on the map (every bus line ends there) and the study week.
 class SchoolSettingsPage extends ConsumerWidget {
   const SchoolSettingsPage({super.key});
 
@@ -54,7 +52,6 @@ class _FormState extends ConsumerState<_Form> {
       ? LatLng(widget.institution.latitude!, widget.institution.longitude!)
       : null;
 
-  /// Null until the administrator changes the study week.
   List<int>? _workingDays;
   bool _isSaving = false;
 
@@ -205,7 +202,6 @@ class _FormState extends ConsumerState<_Form> {
             spacing: AppSpacing.sm,
             runSpacing: AppSpacing.sm,
             children: [
-              // Sunday first, as the Iraqi week starts (1 Nov 2026 is a Sunday).
               for (var i = 0; i < 7; i++)
                 FilterChip(
                   label: Text(

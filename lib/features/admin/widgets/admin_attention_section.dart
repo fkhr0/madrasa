@@ -18,7 +18,6 @@ import '../../transport/providers/transport_provider.dart';
 import '../models/school_stats_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// What the administrator should look at today.
 class AdminAttentionSection extends ConsumerWidget {
   final SchoolStatsModel stats;
 

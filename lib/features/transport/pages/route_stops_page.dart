@@ -18,7 +18,6 @@ import '../widgets/place_search_field.dart';
 import '../widgets/stop_sheet.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator: the stops of a line on a map.
 class RouteStopsPage extends ConsumerStatefulWidget {
   final String routeId;
 
@@ -31,7 +30,6 @@ class RouteStopsPage extends ConsumerStatefulWidget {
 class _RouteStopsPageState extends ConsumerState<RouteStopsPage> {
   BusRouteModel? _route;
 
-  /// Edited copy, school last. Saved with the button.
   List<BusStopModel> _stops = [];
   bool _changed = false;
   bool _saving = false;
@@ -86,7 +84,6 @@ class _RouteStopsPageState extends ConsumerState<RouteStopsPage> {
     final stops = [..._stops];
     final school = stops.removeLast();
     stops.insert(newIndex, stops.removeAt(oldIndex));
-    // New order, new times: keep the timetable consistent.
     _set(evenTimes([...stops, school]));
   }
 
@@ -105,8 +102,6 @@ class _RouteStopsPageState extends ConsumerState<RouteStopsPage> {
     }
     if (!mounted) return;
     context.showMessage(tr('Stops saved and drawn on the streets'));
-    // Stay: the admin sees the new road and can use its driving times.
-    // The server's copy has the new stop IDs and the road.
     setState(() {
       _route = saved;
       _stops = [...saved.stops];
@@ -155,7 +150,6 @@ class _RouteStopsPageState extends ConsumerState<RouteStopsPage> {
             ],
           ),
         );
-        // Navigator.pop is not stopped by PopScope (only back gestures are).
         if (leave == true && context.mounted) Navigator.of(context).pop();
       },
       child: Scaffold(
@@ -176,7 +170,6 @@ class _RouteStopsPageState extends ConsumerState<RouteStopsPage> {
             AppSpacing.xl,
           ),
           children: [
-            // 1. Put the stops where students get on and off...
             PlaceSearchField(
               onPicked: (p) =>
                   _addAt(LatLng(p.latitude, p.longitude), name: p.name),
@@ -186,7 +179,6 @@ class _RouteStopsPageState extends ConsumerState<RouteStopsPage> {
               stops: _stops,
               height: 260,
               onTap: _addAt,
-              // The saved road; edited stops wait for Save to be redrawn.
               road: _changed ? null : _route!.roadFor(TripDirection.toSchool),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -196,7 +188,6 @@ class _RouteStopsPageState extends ConsumerState<RouteStopsPage> {
               ),
               style: context.text.bodySmall,
             ),
-            // 2. ...then the line is drawn on the streets.
             const SizedBox(height: AppSpacing.sm),
             _RoadSummary(
               route: _route!,
@@ -274,7 +265,6 @@ class _RouteStopsPageState extends ConsumerState<RouteStopsPage> {
 }
 
 class _StopTile extends StatelessWidget {
-  /// Null for the school.
   final int? number;
   final BusStopModel stop;
   final int riders;
@@ -349,8 +339,6 @@ class _StopTile extends StatelessWidget {
   }
 }
 
-/// Whether the line is drawn on the streets, how long it takes, and a
-/// button to plan the stop times from the real driving times.
 class _RoadSummary extends StatelessWidget {
   final BusRouteModel route;
   final bool changed;

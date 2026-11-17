@@ -18,8 +18,6 @@ import '../../transport/providers/transport_provider.dart';
 import '../../transport/repo/transport_repository.dart';
 import '../../../core/l10n/language.dart';
 
-/// Before a trip: today's two trips, whether each can start, and one
-/// main button for the trip that fits the time of day.
 class TripStartCard extends ConsumerWidget {
   final BusRouteModel route;
   final List<RouteStudentModel> students;
@@ -41,7 +39,6 @@ class TripStartCard extends ConsumerWidget {
     WidgetRef ref,
     TripDirection direction,
   ) async {
-    // Before the phone asks for location (Google Play requires it).
     if (!await confirmBusLocationSharing(context)) return;
     try {
       await ref.read(transportActionsProvider).startTrip(route.id, direction);
@@ -104,7 +101,6 @@ class TripStartCard extends ConsumerWidget {
             icon: const Icon(Icons.play_arrow_rounded),
             label: Text(tr('Start {0}', [main.direction.label.toLowerCase()])),
           ),
-          // The other trip, only when it can start too (test mode).
           for (final other in trips)
             if (!identical(other, main) && other.canStart) ...[
               const SizedBox(height: AppSpacing.sm),

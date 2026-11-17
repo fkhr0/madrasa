@@ -8,7 +8,6 @@ import '../repo/api_insights_repository.dart';
 import '../repo/insights_repository.dart';
 import '../repo/mock_insights_repository.dart';
 
-/// The server's numbers when API_URL is set, otherwise mock ones.
 final insightsRepositoryProvider = Provider<InsightsRepository>(
   (ref) => AppConfig.useApi
       ? ApiInsightsRepository(watchApi(ref))

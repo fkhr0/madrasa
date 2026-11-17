@@ -16,15 +16,10 @@ import 'features/auth/providers/auth_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Arabic unless this device chose English before.
   AppLanguage.current = await loadSavedLanguage();
-  // Test builds: the server address typed last time.
   await ServerAddress.load();
   addFontLicenses();
-  // Android: notifications through Firebase (when it is set up).
   await PhonePush.start();
-  // Still signed in from last time? Opens straight into the app (read from
-  // the phone, no network needed).
   final container = ProviderContainer();
   await container.read(authProvider.notifier).restore();
   runApp(
@@ -32,7 +27,6 @@ Future<void> main() async {
   );
 }
 
-/// The bundled fonts' licenses, shown on the Licenses page (the license asks for it).
 void addFontLicenses() {
   for (final (font, file) in [
     ('Cairo', 'OFL-Cairo.txt'),
@@ -54,11 +48,9 @@ class SchoolApp extends ConsumerWidget {
     final language = ref.watch(languageProvider);
 
     return MaterialApp.router(
-      // A new language rebuilds every screen (texts, direction, fonts).
       key: ValueKey(language),
       title: AppStrings.appName,
       debugShowCheckedModeBanner: false,
-      // Arabic lays everything out right to left by itself.
       locale: language.locale,
       supportedLocales: [for (final l in AppLanguage.values) l.locale],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,

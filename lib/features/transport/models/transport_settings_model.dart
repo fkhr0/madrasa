@@ -1,13 +1,8 @@
-/// School-wide trip rules, set by the administrator.
 class TransportSettingsModel {
-  /// A trip can start this many minutes before its first planned stop.
   final int opensBeforeMinutes;
 
-  /// ...and no later than this many minutes after its last planned stop.
   final int closesAfterMinutes;
 
-  /// TEST MODE: drivers may start any trip at any time (for demos).
-  /// The app still shows what the normal rule would say.
   final bool testMode;
 
   const TransportSettingsModel({

@@ -1,8 +1,6 @@
-/// One marked piece of work: a quiz, an exam, an assignment...
 class GradeItemModel {
   final String title;
 
-  /// "Quiz", "Mid-term exam", "Assignment"...
   final String category;
   final double score;
   final double maxScore;

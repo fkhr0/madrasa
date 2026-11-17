@@ -6,7 +6,6 @@ import '../../../core/widgets/app_card.dart';
 import '../models/academic_year_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// "2026–2027 · First semester · Week 7 of 38" with a progress bar.
 class YearProgressCard extends StatelessWidget {
   final AcademicYearModel year;
   final DateTime day;

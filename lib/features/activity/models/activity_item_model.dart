@@ -4,7 +4,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/l10n/language.dart';
 import '../../../core/utils/day_json.dart';
 
-/// What an activity line is about (server: activity_log.kind).
 enum ActivityKind {
   attendance('Attendance', Icons.fact_check_outlined, AppColors.subjectTeal),
   grades('Exams & grades', Icons.grade_outlined, AppColors.success),
@@ -32,24 +31,19 @@ enum ActivityKind {
       values.where((k) => k.name == name).firstOrNull ?? announcement;
 }
 
-/// One line of who did what, and when.
 class ActivityItemModel {
   final String id;
   final DateTime at;
   final String actorName;
 
-  /// "teacher", "admin"...
   final String actorRole;
   final ActivityKind kind;
 
-  /// e.g. "attendance.taken".
   final String action;
 
-  /// "Ahmed Kareem took attendance for 5th A, period 2 ..."
   final String summary;
   final String? className;
 
-  /// Where tapping it leads, if anywhere.
   final String? route;
 
   const ActivityItemModel({
@@ -78,14 +72,11 @@ class ActivityItemModel {
       );
 }
 
-/// Which lines to show. All fields optional; equal filters share a list.
 class ActivityFilter {
-  /// One day, or a range with [from] / [to].
   final DateTime? date;
   final DateTime? from;
   final DateTime? to;
 
-  /// Empty = every kind.
   final Set<ActivityKind> kinds;
   final String? actorId;
   final String? classId;
@@ -132,7 +123,6 @@ class ActivityFilter {
     query: query ?? this.query,
   );
 
-  /// The server's query string (without "before" and "limit").
   Map<String, String> toQuery() => {
     if (date != null) 'date': formatDay(date!),
     if (from != null) 'from': formatDay(from!),
@@ -170,7 +160,6 @@ class ActivityFilter {
   );
 }
 
-/// A page of lines; [next] is passed back to load older ones.
 class ActivityPageModel {
   final List<ActivityItemModel> items;
   final DateTime? next;

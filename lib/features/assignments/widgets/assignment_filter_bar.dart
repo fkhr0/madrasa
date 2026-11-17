@@ -5,7 +5,6 @@ import '../../../core/constants/app_spacing.dart';
 import '../models/assignment_filter.dart';
 import '../providers/assignment_provider.dart';
 
-/// Horizontal row of filter chips (All / To do / Submitted / Graded).
 class AssignmentFilterBar extends ConsumerWidget {
   const AssignmentFilterBar({super.key});
 

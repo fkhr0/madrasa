@@ -23,8 +23,6 @@ import '../widgets/payment_sheet.dart';
 import '../widgets/payment_tile.dart';
 import '../../../core/l10n/language.dart';
 
-/// One student's fees. Administrators can record payments and remind the
-/// parent; parents see the same page read-only (via FeesPage).
 class StudentAccountPage extends ConsumerWidget {
   final String studentId;
 
@@ -59,12 +57,10 @@ class StudentAccountPage extends ConsumerWidget {
   }
 }
 
-/// The account itself, shared by the admin page and the parent's Fees page.
 class StudentAccountView extends ConsumerWidget {
   final StudentAccountModel account;
   final bool isAdmin;
 
-  /// Shown above the account (the parent's child switcher).
   final Widget header;
 
   const StudentAccountView({
@@ -228,8 +224,6 @@ class StudentAccountView extends ConsumerWidget {
 }
 
 extension on StudentAccountView {
-  /// The office voids a wrong payment: it stays in the records but no
-  /// longer counts.
   Future<void> _voidPayment(
     BuildContext context,
     WidgetRef ref,
@@ -318,7 +312,6 @@ extension on StudentAccountView {
   }
 }
 
-/// Asks for a reason before something is voided; null when cancelled.
 Future<String?> _askReason(
   BuildContext context, {
   required String title,

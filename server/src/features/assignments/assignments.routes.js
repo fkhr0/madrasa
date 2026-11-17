@@ -1,4 +1,3 @@
-// Homework.
 const express = require("express");
 const { HttpError, validate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");
@@ -28,9 +27,6 @@ const assignmentFields = z.object({
   fileIds: z.array(z.string()).max(10).default([]),
 });
 
-// ---------- A student's homework ----------
-
-// GET /assignments/students/:id -> [assignment + { submission | null }]
 router.get("/students/:id", async (req, res) => {
   const student = await personOr404(req.user, req.params.id);
   if (student.role !== "student" || !student.className) return res.json([]);
@@ -39,8 +35,6 @@ router.get("/students/:id", async (req, res) => {
   );
 });
 
-// POST /assignments/:id/submission { fileIds } -> assignment + { submission }
-// The student hands in (or again, until it is graded).
 router.post("/:id/submission", requireRole("student"), async (req, res) => {
   const assignment = await assignmentOr404(req);
   const me = await personOr404(req.user, req.user.id);
@@ -80,18 +74,14 @@ router.post("/:id/submission", requireRole("student"), async (req, res) => {
   res.json(updated);
 });
 
-// ---------- A class's homework (subject's teacher, or office) ----------
-
 const staff = requireRole("teacher", "admin");
 
-// GET /assignments/classes/:id -> [assignment + { submittedCount, gradedCount }]
 router.get("/classes/:id", staff, async (req, res) => {
   const schoolClass = await classOr404(req);
   const mine = taughtBy(req.user, schoolClass);
   res.json((await repo.classAssignments(schoolClass.id)).filter((a) => mine(a.subjectId)));
 });
 
-// POST /assignments/classes/:id { ...fields, fileIds } -> assignment
 router.post("/classes/:id", staff, async (req, res) => {
   const schoolClass = await classOr404(req);
   const body = await checkedBody(req, schoolClass);
@@ -117,7 +107,6 @@ router.post("/classes/:id", staff, async (req, res) => {
   res.status(201).json(assignment);
 });
 
-// PATCH /assignments/:id { ...fields, fileIds } -> assignment
 router.patch("/:id", staff, async (req, res) => {
   const assignment = await assignmentOr404(req);
   const schoolClass = await academics.findClass(req.user.institutionId, assignment.classId);
@@ -136,7 +125,6 @@ router.patch("/:id", staff, async (req, res) => {
   res.json(changed);
 });
 
-// DELETE /assignments/:id -> 204  (hand-ins and grades go too; the app asks first)
 router.delete("/:id", staff, async (req, res) => {
   const assignment = await assignmentOr404(req);
   const schoolClass = await academics.findClass(req.user.institutionId, assignment.classId);
@@ -151,8 +139,6 @@ router.delete("/:id", staff, async (req, res) => {
   res.status(204).end();
 });
 
-// GET /assignments/:id/submissions
-//   -> { assignment, students: [{ id, name, submission | null }] }
 router.get("/:id/submissions", staff, async (req, res) => {
   const assignment = await assignmentOr404(req);
   const schoolClass = await academics.findClass(req.user.institutionId, assignment.classId);
@@ -160,8 +146,6 @@ router.get("/:id/submissions", staff, async (req, res) => {
   res.json(await submissionSheet(assignment));
 });
 
-// PUT /assignments/:id/submissions/:studentId/grade { grade, feedback } -> sheet
-// Also for work handed in on paper. The student and parents are told.
 router.put("/:id/submissions/:studentId/grade", staff, async (req, res) => {
   const assignment = await assignmentOr404(req);
   const schoolClass = await academics.findClass(req.user.institutionId, assignment.classId);
@@ -196,8 +180,6 @@ router.put("/:id/submissions/:studentId/grade", staff, async (req, res) => {
   res.json(await submissionSheet(assignment));
 });
 
-// ---------- helpers ----------
-
 async function classOr404(req) {
   const schoolClass = await academics.findClass(req.user.institutionId, req.params.id);
   if (!schoolClass) throw new HttpError(404, "Class not found.");
@@ -210,7 +192,6 @@ async function assignmentOr404(req) {
   return assignment;
 }
 
-/** The validated body: a subject the class studies and this user teaches, own files. */
 async function checkedBody(req, schoolClass, old = null) {
   const body = validate(assignmentFields, req.body);
   if (!schoolClass.subjects.some((s) => s.subjectId === body.subjectId)) {
@@ -218,7 +199,6 @@ async function checkedBody(req, schoolClass, old = null) {
   }
   checkTeaches(req.user, schoolClass, body.subjectId);
 
-  // New files must be this user's uploads; files already attached may stay.
   const kept = new Set((old?.attachments ?? []).map((f) => f.id));
   const added = body.fileIds.filter((id) => !kept.has(id));
   if ((await files.ownFiles(req.user.id, added)).length !== new Set(added).size) {

@@ -31,7 +31,6 @@ class ChatPage extends ConsumerStatefulWidget {
 }
 
 class _ChatPageState extends ConsumerState<ChatPage> {
-  /// How often an open chat asks for newer messages when the live connection is down.
   static const _checkEvery = Duration(seconds: 5);
 
   Timer? _check;
@@ -40,12 +39,9 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   @override
   void initState() {
     super.initState();
-    // Opening the chat clears its unread badge; a chat kept in memory
-    // shows at once and only asks for what is new.
     Future.microtask(() {
       ref.read(openChatProvider.notifier).state = widget.conversationId;
       ref.read(messageActionsProvider).markRead(widget.conversationId);
-      // Ticks, edits and deletions since it was last on screen.
       _chat.refresh().ignore();
     });
     _check = Timer.periodic(_checkEvery, (_) {
@@ -68,7 +64,6 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
   @override
   void deactivate() {
-    // Leaving the chat: its new messages get a banner again.
     final open = ref.read(openChatProvider.notifier);
     if (open.state == widget.conversationId) open.state = null;
     super.deactivate();
@@ -80,7 +75,6 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     super.dispose();
   }
 
-  /// Long press on my message: edit (first 15 minutes) or delete.
   Future<void> _actionsFor(MessageModel message) async {
     if (!message.isMine || message.deleted || message.isLocal) return;
     final action = await showModalBottomSheet<String>(
@@ -198,7 +192,6 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                   );
                 }
 
-                // reverse: true keeps the newest message at the bottom.
                 final newestFirst = items.reversed.toList();
 
                 return ListView.separated(
@@ -208,7 +201,6 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                   separatorBuilder: (_, _) =>
                       const SizedBox(height: AppSpacing.sm),
                   itemBuilder: (_, i) => MessageBubble(
-                    // Same message (sending → sent): same bubble, no flicker.
                     key: ValueKey(newestFirst[i].id),
                     message: newestFirst[i],
                     showSenderName: conversation?.isGroup ?? false,

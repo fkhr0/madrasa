@@ -1,6 +1,3 @@
-// Summaries, so nobody has to dig for how things went: 15:00 on school days →
-// the office: today at school Thursday 17:00       → each parent, per child:
-// the week Each sent once (sent_reminders).
 const { query, queryOne } = require("../db/database");
 const { notify, admins } = require("../features/notifications/notify");
 const reports = require("../features/reports/reports.repository");
@@ -12,7 +9,6 @@ const config = require("../config");
 const { once } = require("./reminders");
 const { msg } = require("../i18n");
 
-/** The office's day in one notification (school days only). */
 async function dailySummary({ date = today() } = {}) {
   let sent = 0;
   for (const { id } of await query("SELECT id FROM institutions")) {
@@ -21,7 +17,6 @@ async function dailySummary({ date = today() } = {}) {
     if (!(await once(`daily-summary:${id}:${date}`))) continue;
 
     const { present, absent } = await reports.presentToday(id, date);
-    // Lessons of the whole day that never got attendance.
     const missing = await reports.classesMissingAttendance(id, date, weekdayOf(date), "23:59");
     const day = await queryOne(
       `SELECT
@@ -36,7 +31,6 @@ async function dailySummary({ date = today() } = {}) {
     );
 
     const rate = present + absent === 0 ? null : Math.round((present / (present + absent)) * 100);
-    // One msg() per line: each admin gets them in their language.
     const lines = [
       rate === null
         ? msg("No attendance taken")
@@ -57,12 +51,10 @@ async function dailySummary({ date = today() } = {}) {
   return sent;
 }
 
-/** Sunday … today (Thursday) of this school week. */
 function weekOf(date) {
   return { from: addDays(date, -(weekdayOf(date) % 7)), to: date };
 }
 
-/** Each parent, per child: attendance, grades and homework this week, exams next week. */
 async function weeklySummary({ date = today() } = {}) {
   const { from, to } = weekOf(date);
   const children = await query(
@@ -120,7 +112,6 @@ async function weeklySummary({ date = today() } = {}) {
       type: "summary",
       title: msg("{0}'s week", child.name.split(" ")[0]),
       body: lines,
-      // The parent's Progress tab.
       route: "/work",
     });
     sent++;

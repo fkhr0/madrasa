@@ -12,19 +12,14 @@ import '../models/road_path_model.dart';
 import '../models/trip_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// The route on an OpenStreetMap map: the line, the stops (the student's stop
-/// larger), and the bus where it is now.
 class BusMap extends ConsumerStatefulWidget {
-  /// Stops in any order (the line follows this order).
   final List<BusStopModel> stops;
   final TripModel? trip;
   final String? myStopId;
   final double height;
 
-  /// The streets to draw when there is no trip (the morning road).
   final RoadPathModel? road;
 
-  /// Editing stops: called with the point the administrator tapped.
   final ValueChanged<LatLng>? onTap;
 
   const BusMap({
@@ -48,16 +43,13 @@ class _BusMapState extends ConsumerState<BusMap> {
 
   static LatLng _point(BusStopModel s) => LatLng(s.latitude, s.longitude);
 
-  /// [bounds] with about 1.5 km more on every side.
   static LatLngBounds _grow(LatLngBounds bounds) => LatLngBounds(
     LatLng(bounds.south - 0.015, bounds.west - 0.015),
     LatLng(bounds.north + 0.015, bounds.east + 0.015),
   );
 
-  /// Shown around a line that has only the school so far.
   static const _baghdad = [LatLng(33.26, 44.28), LatLng(33.36, 44.44)];
 
-  /// Where the bus is, when it is on a live trip and its place is known.
   LatLng? _busOf(TripModel? trip) {
     if (trip == null ||
         !trip.isLive ||
@@ -75,7 +67,6 @@ class _BusMapState extends ConsumerState<BusMap> {
     if (bus == null || !_following || !_ready) return;
     if (bus == _busOf(old.trip)) return;
 
-    // After this frame, once the map knows its new limits.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _map.move(bus, _map.camera.zoom);
     });
@@ -92,7 +83,6 @@ class _BusMapState extends ConsumerState<BusMap> {
     final palette = context.palette;
     final points = widget.stops.map(_point).toList();
     final trip = widget.trip;
-    // On the streets when the road is known, else straight between stops.
     final line = (trip?.road ?? widget.road)?.points ?? points;
     final showBus =
         trip != null && trip.hasPosition && trip.phase != TripPhase.noTripToday;
@@ -100,7 +90,6 @@ class _BusMapState extends ConsumerState<BusMap> {
     final bounds = LatLngBounds.fromPoints(
       line.length > 1 ? line : [...points, ..._baghdad],
     );
-    // The area the map may show: the line, plus the bus wherever it is.
     final area = bus == null
         ? bounds
         : LatLngBounds.fromPoints([bounds.southWest, bounds.northEast, bus]);
@@ -115,17 +104,12 @@ class _BusMapState extends ConsumerState<BusMap> {
             FlutterMap(
               mapController: _map,
               options: MapOptions(
-                // Never flutter_map's default place (Kyiv): start on the line,
-                // and fit it again once the map knows its size (the web may lay
-                // it out at zero size first and skip the fit).
                 initialCenter: area.center,
                 initialZoom: 12,
                 initialCameraFit: CameraFit.bounds(
                   bounds: area,
                   padding: const EdgeInsets.all(36),
                 ),
-                // Watching a line: the map stays on the line's area and the
-                // bus. Editing (onTap) can go anywhere, to add stops.
                 cameraConstraint: editing
                     ? const CameraConstraint.unconstrained()
                     : CameraConstraint.contain(bounds: _grow(area)),
@@ -141,7 +125,6 @@ class _BusMapState extends ConsumerState<BusMap> {
                     ),
                   );
                 },
-                // Dragging or zooming by hand: stop following the bus.
                 onPositionChanged: (_, hasGesture) {
                   if (hasGesture && _following && bus != null) {
                     setState(() => _following = false);
@@ -188,7 +171,6 @@ class _BusMapState extends ConsumerState<BusMap> {
                       ),
                   ],
                 ),
-                // OpenStreetMap requires visible credit.
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Container(
@@ -264,7 +246,6 @@ class _BusMarker extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: palette.primary,
-        // Green ring = the driver is reporting live.
         border: Border.all(
           color: isLive ? AppColors.success : Colors.white,
           width: 3,

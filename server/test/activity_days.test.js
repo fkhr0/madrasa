@@ -12,7 +12,7 @@ before(async () => {
     ["admin", "ADM-2020-0001"],
     ["zainab", "STU-2026-0142"],
     ["fatima", "STU-2026-0150"],
-    ["ali", "STU-2026-0153"], // 5th B
+    ["ali", "STU-2026-0153"],
     ["ahmed", "TCH-2019-0031"],
     ["omar", "TCH-2019-0041"],
     ["parent", "PAR-2026-0142"],
@@ -23,7 +23,6 @@ before(async () => {
 });
 after(close);
 
-/** The latest school day before today (the demo has attendance on it). */
 function lastSchoolDay() {
   let day = addDays(today(), -1);
   while (!calendar.isSchoolDay(day)) day = addDays(day, -1);
@@ -62,7 +61,6 @@ test("filters: day, kind, person, class, text", async () => {
 });
 
 test("each role sees only its part", async () => {
-  // A new action is logged with who did it.
   await request(app)
     .put("/attendance/students/STU-2026-0142/excuses/" + lastSchoolDay())
     .set(as.admin)
@@ -71,19 +69,15 @@ test("each role sees only its part", async () => {
   const office = await get(as.admin, "/activity?kind=attendance&limit=5");
   assert.match(office.items[0].summary, /excused Zainab Haider on .*Doctor's visit/);
 
-  // Zainab's parent sees it; Fatima doesn't.
   assert.ok((await get(as.parent, "/activity?q=Doctor")).items.length === 1);
   assert.equal((await get(as.fatima, "/activity?q=Doctor")).items.length, 0);
 
-  // Students see their own grades and the class's news, never a classmate's lines.
   const fatima = await get(as.fatima, "/activity?limit=100");
   assert.ok(fatima.items.every((a) => !/Zainab/.test(a.summary)));
   assert.ok(fatima.items.some((a) => a.kind === "homework"));
-  // A student of 5th B sees nothing of 5th A.
   const ali = await get(as.ali, "/activity?limit=100");
   assert.ok(ali.items.every((a) => a.className !== "5th Scientific – A"));
 
-  // A teacher sees their classes, not the office's money.
   const ahmed = await get(as.ahmed, "/activity?limit=100");
   assert.ok(ahmed.items.length > 0);
   assert.ok(ahmed.items.every((a) => a.kind !== "finance"));
@@ -100,9 +94,8 @@ test("the school's day: periods, who took attendance and when, totals", async ()
   assert.ok(fiveA.attendance, "5th A's first lesson was taken");
   assert.ok(fiveA.attendance.takenBy && fiveA.attendance.takenAt);
   assert.ok(school.totals.present > 0);
-  assert.ok(school.totals.lessonsMissing > 0); // the demo only marks 5th A
+  assert.ok(school.totals.lessonsMissing > 0);
 
-  // A weekend says why.
   let off = today();
   while (calendar.isSchoolDay(off)) off = addDays(off, 1);
   const weekend = await get(as.admin, `/days/${off}/school`);

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../models/subject_model.dart';
 
-/// Fake subjects used until the backend is connected.
 class MockSubjects {
   MockSubjects._();
 

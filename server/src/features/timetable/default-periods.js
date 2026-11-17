@@ -1,5 +1,3 @@
-// Every school starts with six 45-minute periods and a 20-minute break after
-// the third. The administrator changes them in the app.
 const { query } = require("../../db/database");
 
 const DEFAULT_PERIODS = [
@@ -11,7 +9,6 @@ const DEFAULT_PERIODS = [
   ["12:25", "13:10"],
 ];
 
-/** Gives the default bell times to every school that has none. */
 async function addDefaultPeriodsEverywhere() {
   const schools = await query(
     `SELECT i.id FROM institutions i

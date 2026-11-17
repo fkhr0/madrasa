@@ -17,10 +17,7 @@ import '../providers/activity_provider.dart';
 import '../widgets/activity_tile.dart';
 import '../../../core/l10n/language.dart';
 
-/// Every record of who did what, newest first, with filters: when, what kind,
-/// and (office, teachers) which class, who, and words to search.
 class ActivityPage extends ConsumerStatefulWidget {
-  /// Opens on this day (e.g. from a day's page).
   final DateTime? date;
 
   const ActivityPage({super.key, this.date});
@@ -33,7 +30,6 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
   late ActivityFilter _filter = ActivityFilter(date: widget.date);
   final _search = TextEditingController();
 
-  /// The person picked in the "who" filter, to show their name.
   String? _actorName;
 
   @override
@@ -46,7 +42,6 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
 
   static DateTime _day(DateTime d) => DateTime(d.year, d.month, d.day);
 
-  /// "Today", "Yesterday", "This week", a picked day, or any time.
   Future<void> _pickWhen() async {
     final today = _day(DateTime.now());
     final choice = await showModalBottomSheet<String>(
@@ -148,7 +143,6 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
     _set(_filter.copyWith(classId: () => picked.isEmpty ? null : picked));
   }
 
-  /// Office: anyone at the school (staff first: they do most things).
   Future<void> _pickPerson() async {
     final picked = await showModalBottomSheet<UserModel?>(
       context: context,
@@ -158,7 +152,6 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
     );
     if (!mounted) return;
     if (picked == null) {
-      // Closed without choosing: keep the filter. "Anyone" returns a marker.
       return;
     }
     setState(() {
@@ -195,7 +188,6 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
       appBar: AppBar(title: Text(tr('Activity'))),
       body: Column(
         children: [
-          // ---------- Filters ----------
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.fromLTRB(
@@ -295,7 +287,6 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
               ),
             ),
 
-          // ---------- The records ----------
           Expanded(
             child: AsyncValueView(
               value: feed,
@@ -387,7 +378,6 @@ class _FilterChip extends StatelessWidget {
   }
 }
 
-/// Picks a person at the school: role chips, then a name.
 class _PersonSheet extends ConsumerStatefulWidget {
   const _PersonSheet();
 
@@ -415,7 +405,6 @@ class _PersonSheetState extends ConsumerState<_PersonSheet> {
                   child: Text(tr('Who'), style: context.text.titleLarge),
                 ),
                 TextButton(
-                  // An empty ID = everyone.
                   onPressed: () => Navigator.pop(
                     context,
                     const UserModel(

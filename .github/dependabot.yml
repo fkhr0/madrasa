@@ -1,6 +1,3 @@
-# Package updates: one grouped pull request per area each month, minor and
-# patch versions only. Major versions (breaking changes) are upgraded by hand.
-# Security fixes still come at once (Dependabot security updates).
 version: 2
 
 updates:

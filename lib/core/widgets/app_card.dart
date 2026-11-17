@@ -5,8 +5,6 @@ import '../constants/app_shadows.dart';
 import '../constants/app_spacing.dart';
 import '../utils/context_extensions.dart';
 
-/// The base surface of the app: rounded, a hairline border, and a soft shadow
-/// in light mode so cards lift off the background.
 class AppCard extends StatelessWidget {
   final Widget child;
   final VoidCallback? onTap;
@@ -29,7 +27,6 @@ class AppCard extends StatelessWidget {
     final radius = BorderRadius.circular(AppRadius.lg);
     final isLight = Theme.of(context).brightness == Brightness.light;
 
-    // Tinted cards (custom colour) stay flat; plain cards get the shadow.
     final lifted = isLight && color == null;
 
     return DecoratedBox(

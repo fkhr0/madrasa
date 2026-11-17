@@ -8,12 +8,9 @@ import '../../../core/utils/date_formatter.dart';
 import '../../institution/models/academic_year_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// The school days (Sun – Thu) of one week, usually the current one.
-/// Every day is tappable; only days outside the study year are faded.
 class WeekStrip extends StatelessWidget {
   final AcademicYearModel year;
 
-  /// Any day of the week to show.
   final DateTime week;
   final DateTime selectedDay;
   final ValueChanged<DateTime> onDaySelected;
@@ -78,7 +75,6 @@ class _DayCell extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = context.palette;
 
-    // Pick the cell's colours from its state, most important first.
     final Color background;
     final Color foreground;
     final Color border;

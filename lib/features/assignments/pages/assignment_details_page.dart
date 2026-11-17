@@ -89,7 +89,6 @@ class _Content extends StatelessWidget {
         AppSpacing.xxl,
       ),
       children: [
-        // ---------- Header ----------
         Wrap(
           spacing: AppSpacing.sm,
           runSpacing: AppSpacing.sm,
@@ -112,7 +111,6 @@ class _Content extends StatelessWidget {
         Text(assignment.title, style: context.text.headlineSmall),
         const SizedBox(height: AppSpacing.lg),
 
-        // ---------- Key facts ----------
         AppCard(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
@@ -142,7 +140,6 @@ class _Content extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.lg),
 
-        // ---------- Instructions ----------
         AppCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -159,14 +156,12 @@ class _Content extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.lg),
 
-        // ---------- Grade (when graded) ----------
         if (assignment.status == AssignmentStatus.graded &&
             assignment.grade != null) ...[
           GradeSection(assignment: assignment),
           const SizedBox(height: AppSpacing.lg),
         ],
 
-        // ---------- Submission ----------
         if (assignment.type != AssignmentType.quiz)
           SubmissionSection(assignment: assignment, canSubmit: canSubmit),
       ],

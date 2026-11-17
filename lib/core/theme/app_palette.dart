@@ -2,20 +2,17 @@ import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
 
-/// The colours a screen needs, with readable names.
 @immutable
 class AppPalette extends ThemeExtension<AppPalette> {
   final Color primary;
   final Color onPrimary;
 
-  /// Soft tinted background for highlighted cards and selected items.
   final Color primarySoft;
   final Color onPrimarySoft;
 
   final Color background;
   final Color card;
 
-  /// Slightly darker card, for nested blocks and input areas.
   final Color cardMuted;
 
   final Color textPrimary;
@@ -23,7 +20,6 @@ class AppPalette extends ThemeExtension<AppPalette> {
   final Color textMuted;
   final Color border;
 
-  /// Two colours for the gradient of the dashboard's hero card.
   final List<Color> hero;
 
   const AppPalette({
@@ -102,7 +98,6 @@ class AppPalette extends ThemeExtension<AppPalette> {
     );
   }
 
-  // Used by Flutter to animate between light and dark mode.
   @override
   AppPalette lerp(AppPalette? other, double t) {
     if (other == null) return this;

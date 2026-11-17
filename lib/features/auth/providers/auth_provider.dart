@@ -8,23 +8,18 @@ import '../repo/api_auth_repository.dart';
 import '../repo/auth_repository.dart';
 import '../repo/mock_auth_repository.dart';
 
-/// The server when API_URL is set, otherwise the mock accounts.
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   if (!AppConfig.useApi) return const MockAuthRepository();
 
   final api = ref.watch(apiClientProvider);
-  // The server refused to refresh the session: back to the login page.
   api.onSessionExpired = () => ref.read(authProvider.notifier).sessionExpired();
   return ApiAuthRepository(api, ref.watch(sessionStoreProvider));
 });
 
-/// Where the session is kept between app launches (replaced in tests).
 final sessionStoreProvider = Provider<SessionStore>(
   (ref) => SecureSessionStore(),
 );
 
-/// The signed-in user, or null when signed out.
-/// The router listens to this to show the login page or the app.
 final authProvider = NotifierProvider<AuthController, UserModel?>(
   AuthController.new,
 );
@@ -37,12 +32,8 @@ class AuthController extends Notifier<UserModel?> {
 
   AuthRepository get _repository => ref.read(authRepositoryProvider);
 
-  /// The most recent signed-in user. Kept after sign-out so the screens
-  /// that are still animating away can finish building.
   UserModel? get lastUser => _lastUser;
 
-  /// Opening the app: the person from last time, at once (even offline),
-  /// then their profile as the server has it now.
   Future<void> restore() async {
     final user = await _repository.restoreSession();
     if (user == null) return;
@@ -54,23 +45,20 @@ class AuthController extends Notifier<UserModel?> {
   Future<void> _reloadProfile() async {
     try {
       final user = await _repository.reloadProfile();
-      if (state == null) return; // signed out meanwhile
+      if (state == null) return;
       _lastUser = user;
       state = user;
     } catch (_) {
-      // Offline: the saved profile stays. A refused session is handled by
-      // sessionExpired().
+      // offline: keep the saved profile
     }
   }
 
-  /// "Try the demo" as [role].
   Future<void> signInDemo(UserRole role) async {
     final user = await _repository.signInDemo(role);
     _lastUser = user;
     state = user;
   }
 
-  /// Throws [AuthException] so the login page can show the message.
   Future<void> signIn({
     required String schoolId,
     required String password,
@@ -104,7 +92,6 @@ class AuthController extends Notifier<UserModel?> {
     state = null;
   }
 
-  /// After the user chose their own password.
   Future<void> changePassword({
     required String currentPassword,
     required String newPassword,
@@ -119,15 +106,12 @@ class AuthController extends Notifier<UserModel?> {
     }
   }
 
-  /// The server ended the session (password changed elsewhere, account
-  /// deactivated, 30 days without use). The router shows the login page.
   void sessionExpired() {
     state = null;
     _repository.sessionEnded();
   }
 }
 
-/// Shortcut for screens that only exist while signed in.
 final currentUserProvider = Provider<UserModel>((ref) {
   final user =
       ref.watch(authProvider) ?? ref.read(authProvider.notifier).lastUser;
@@ -136,7 +120,6 @@ final currentUserProvider = Provider<UserModel>((ref) {
   return user;
 });
 
-/// The roles the server's demo offers (empty: no "Try the demo" button).
 final demoRolesProvider = FutureProvider<List<UserRole>>(
   (ref) => ref.read(authRepositoryProvider).demoRoles(),
 );

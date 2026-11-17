@@ -47,7 +47,6 @@ class _Content extends ConsumerWidget {
     final status = ref.watch(dayStatusProvider).valueOrNull;
     final (smartDay, note) = _smartDefault(year, status);
 
-    // A day picked on another day may be in an old week: ignore it then.
     final pickedThisWeek =
         picked != null && _sundayOf(picked) == _sundayOf(smartDay);
     final selectedDay = pickedThisWeek ? picked : smartDay;
@@ -58,8 +57,6 @@ class _Content extends ConsumerWidget {
 
     return Column(
       children: [
-        // The timetable is the same every week, so there is no week to
-        // browse: just the days of this school week.
         Padding(
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.page - 3,
@@ -94,8 +91,6 @@ class _Content extends ConsumerWidget {
 DateTime _sundayOf(DateTime d) =>
     DateTime(d.year, d.month, d.day - d.weekday % 7);
 
-/// The day the Schedule tab opens on, and why (shown as a small note).
-/// After today's last class it jumps to the next school day.
 (DateTime, String?) _smartDefault(AcademicYearModel year, DayStatus? status) {
   final today = year.nextSchoolDay(DateTime.now());
 
@@ -117,7 +112,6 @@ class _DayView extends StatelessWidget {
   final DateTime day;
   final List<LessonModel> lessons;
 
-  /// Why this day was opened automatically, if it was.
   final String? note;
 
   const _DayView({
@@ -127,7 +121,6 @@ class _DayView extends StatelessWidget {
     this.note,
   });
 
-  /// A gap this long between two periods is shown as a break.
   static const _minBreakMinutes = 15;
 
   @override

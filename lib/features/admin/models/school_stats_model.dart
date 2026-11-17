@@ -1,15 +1,12 @@
-/// Numbers for the administrator's home page.
 class SchoolStatsModel {
   final int students;
   final int teachers;
   final int parents;
   final int classes;
 
-  /// Students marked present or late today.
   final int presentToday;
   final int absentToday;
 
-  /// Classes whose teacher has not taken attendance for the current period.
   final List<String> classesMissingAttendance;
 
   const SchoolStatsModel({
@@ -35,10 +32,8 @@ class SchoolStatsModel {
         ],
       );
 
-  /// Has any class taken attendance today?
   bool get attendanceTakenToday => presentToday + absentToday > 0;
 
-  /// 0 until attendance is taken (the card says "not taken yet" then).
   double get attendanceRateToday {
     final total = presentToday + absentToday;
     return total == 0 ? 0 : presentToday / total * 100;

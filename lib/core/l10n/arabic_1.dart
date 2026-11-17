@@ -1,4 +1,3 @@
-// Arabic texts, A–M (see arabic.dart).
 const Map<String, String> arabic1 = {
   '"{0}" is overdue': '"{0}" متأخر',
   '"{0}" will disappear for everyone.': 'سيختفي "{0}" عند الجميع.',

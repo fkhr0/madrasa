@@ -10,12 +10,9 @@ import '../../../core/widgets/status_badge.dart';
 import '../models/lesson_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Timetable row: period number and times on the left, lesson card on the
-/// right. The current lesson is outlined and shows how much time is left.
 class LessonTile extends StatelessWidget {
   final LessonModel lesson;
 
-  /// 1 for the first period of the day.
   final int period;
 
   const LessonTile({super.key, required this.lesson, required this.period});
@@ -66,7 +63,6 @@ class LessonTile extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Teachers see the class, students the subject.
                           Text(
                             lesson.className ?? subject.name,
                             style: context.text.titleSmall,
@@ -102,7 +98,6 @@ class LessonTile extends StatelessWidget {
   }
 }
 
-/// Bar that fills during the lesson, with the minutes left.
 class _Progress extends StatelessWidget {
   final LessonModel lesson;
 

@@ -1,7 +1,6 @@
 import '../models/calendar_event_model.dart';
 import '../models/school_event_model.dart';
 
-/// School events, close to today so the calendar always has something.
 class MockCalendarEvents {
   MockCalendarEvents._();
 

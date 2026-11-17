@@ -16,8 +16,6 @@ import '../models/assignment_model.dart';
 import '../providers/assignment_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// A class's homework for the subject's teacher (every subject for the
-/// office): tap to see hand-ins and grade, pencil to change.
 class ClassAssignmentsPage extends ConsumerWidget {
   final String classId;
 
@@ -53,7 +51,7 @@ class ClassAssignmentsPage extends ConsumerWidget {
                   AppSpacing.page,
                   AppSpacing.sm,
                   AppSpacing.page,
-                  96, // room for the button
+                  96,
                 ),
                 itemCount: items.length,
                 separatorBuilder: (_, _) =>

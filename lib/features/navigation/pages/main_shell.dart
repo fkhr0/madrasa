@@ -14,7 +14,6 @@ import '../widgets/demo_banner.dart';
 import '../widgets/offline_banner.dart';
 import '../../../core/l10n/language.dart';
 
-/// Holds the bottom navigation bar.
 class MainShell extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
 
@@ -23,7 +22,6 @@ class MainShell extends ConsumerWidget {
   void _onTabSelected(int index) {
     navigationShell.goBranch(
       index,
-      // Tapping the active tab again goes back to its first page.
       initialLocation: index == navigationShell.currentIndex,
     );
   }
@@ -32,7 +30,6 @@ class MainShell extends ConsumerWidget {
     for (final i in tabs) all[i],
   ];
 
-  /// Icon, selected icon and label of the second tab for each role.
   static (IconData, IconData, String) _scheduleTab(UserRole role) {
     if (role == UserRole.admin) {
       return (Icons.school_outlined, Icons.school, tr('Academic'));
@@ -48,7 +45,6 @@ class MainShell extends ConsumerWidget {
     );
   }
 
-  /// Icon, selected icon and label of the third tab for each role.
   static (IconData, IconData, String) _workTab(UserRole role) {
     switch (role) {
       case UserRole.teacher:
@@ -58,15 +54,12 @@ class MainShell extends ConsumerWidget {
       case UserRole.admin:
         return (Icons.people_outline, Icons.people, tr('People'));
       case UserRole.driver:
-        // Drivers don't see this tab (see _tabsFor).
         return (Icons.route_outlined, Icons.route, tr('Route'));
       case UserRole.student:
         return (Icons.assignment_outlined, Icons.assignment, tr('Assignments'));
     }
   }
 
-  /// Which of the five tabs a role sees. Drivers only need their trip,
-  /// their line and the menu: no assignments, students or chats.
   static List<int> _tabsFor(UserRole role) =>
       role == UserRole.driver ? const [0, 1, 4] : const [0, 1, 2, 3, 4];
 
@@ -81,8 +74,6 @@ class MainShell extends ConsumerWidget {
     final tabs = _tabsFor(role);
     final selected = tabs.indexOf(navigationShell.currentIndex);
 
-    // Android's back button on any main tab asks before leaving the app
-    // (pages opened on top close normally first).
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) async {

@@ -1,6 +1,3 @@
-// Fee reminders for parents, every morning at 9:00: 3 days before an
-// installment is due (if it isn't paid) every Sunday while money is overdue
-// Each once (sent_reminders); paid-up families never hear from this.
 const { query } = require("../db/database");
 const { notify } = require("../features/notifications/notify");
 const finance = require("../features/finance/finance.repository");
@@ -26,12 +23,10 @@ async function feeReminders({ date = today() } = {}) {
           sent++;
         });
 
-      // An installment due in 3 days that isn't covered yet.
       const installments = fees.installmentsOf(account);
       const paid = fees.paidOf(account);
-      let before = 0; // what the earlier installments add up to
+      let before = 0;
       for (const i of installments) {
-        // Payments fill installments in order, oldest first.
         const covered = Math.min(i.amount, Math.max(0, paid - before));
         const left = i.amount - covered;
         before += i.amount;
@@ -44,7 +39,6 @@ async function feeReminders({ date = today() } = {}) {
         }
       }
 
-      // Overdue: once a week, on Sunday.
       const overdue = fees.overdueOf(account, date);
       if (overdue > 0 && weekdayOf(date) === SUNDAY) {
         await tell(

@@ -2,7 +2,6 @@ import '../data/mock_tasks.dart';
 import '../models/task_model.dart';
 import 'task_repository.dart';
 
-/// Keeps tasks in memory so adding / ticking works during the session.
 class MockTaskRepository implements TaskRepository {
   final List<TaskModel> _items = MockTasks.items;
 

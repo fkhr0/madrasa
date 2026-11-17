@@ -1,21 +1,14 @@
 const { msg } = require("../../i18n");
-// When a bus trip may start.
 
-/** "2026-11-05" for a Date, in local time. */
 function dayText(date) {
   const pad = (n) => String(n).padStart(2, "0");
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
-/** Dart's weekday number: 1 = Monday … 7 = Sunday. */
 function dartWeekday(date) {
   return date.getDay() === 0 ? 7 : date.getDay();
 }
 
-/**
- * Why there is no school on [date] ("Weekend", "Eid al-Fitr"…), or null.
- * [year] is { start, end, workingDays, holidays: [{ name, start, end }] }.
- */
 function dayOffReason(year, date) {
   const day = dayText(date);
   if (!year || day < year.start || day > year.end) return "Outside the study year";
@@ -24,13 +17,8 @@ function dayOffReason(year, date) {
   return holiday ? holiday.name : null;
 }
 
-/** Minutes after midnight, for a Date. */
 const minuteOfDay = (date) => date.getHours() * 60 + date.getMinutes();
 
-/**
- * Checks one trip. Returns null when it may start, else the reason.
- * Test mode skips the clock and the calendar, never the safety rules.
- */
 function tripBlock({ route, direction, now, settings, year, doneToday, running }) {
   if (route.stops.length < 2) return "The line needs at least one stop.";
   if (running) return "The bus is already on a trip.";
@@ -53,7 +41,6 @@ function tripBlock({ route, direction, now, settings, year, doneToday, running }
   return null;
 }
 
-/** Metres between two GPS points. */
 function distanceMetres(lat1, lng1, lat2, lng2) {
   const rad = Math.PI / 180;
   const dLat = (lat2 - lat1) * rad;

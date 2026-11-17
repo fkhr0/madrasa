@@ -1,6 +1,3 @@
-// Demo data: the same school, people and study year as the app's mock data,
-// so the app looks the same whether it runs on mocks or on this server.
-// Runs only on an empty database, and only when SEED_DEMO_DATA=true.
 const bcrypt = require("bcryptjs");
 const config = require("../config");
 const { queryOne, transaction } = require("./database");
@@ -8,10 +5,8 @@ const { queryOne, transaction } = require("./database");
 const NOOR = "inst-001";
 const NOOR_INTERMEDIATE = "inst-002";
 
-/** The demo schools (reset every night with "Try the demo"). */
 const DEMO_SCHOOLS = [NOOR, NOOR_INTERMEDIATE];
 
-/** "Try the demo": the account each role opens. */
 const DEMO_ACCOUNTS = {
   student: "STU-2026-0142",
   parent: "PAR-2026-0142",
@@ -24,7 +19,6 @@ const wantDemo = () => config.seedDemoData || config.demoMode;
 const YEAR = "year-2026";
 
 const users = [
-  // The demo accounts on the login page.
   {
     id: "STU-2026-0142",
     institution: NOOR,
@@ -35,7 +29,6 @@ const users = [
     className: "5th Scientific – A",
   },
   {
-    // Zainab's younger brother, at the intermediate school.
     id: "STU-2026-0388",
     institution: NOOR_INTERMEDIATE,
     role: "student",
@@ -79,7 +72,6 @@ const users = [
   },
 ];
 
-// The rest of the People directory (same IDs as the app's mock data).
 const SCHOOL_STUDENTS = [
   ["STU-2026-0150", "Fatima Ali", "5th Scientific – A"],
   ["STU-2026-0151", "Maryam Hussein", "5th Scientific – A"],
@@ -107,7 +99,6 @@ for (const [id, name, className] of SCHOOL_STUDENTS) {
     email: `${name.toLowerCase().replace(/ /g, ".")}@school.edu`,
     phone: "",
     className,
-    // One account not activated yet, so the screens show that state.
     isActive: id !== "STU-2026-0154",
   });
 }
@@ -148,13 +139,10 @@ for (const [id, name, phone] of [
   users.push({ id, institution: NOOR, role: "driver", name, email: "", phone });
 }
 
-// The school's own breaks. Official holidays come from
-// features/institution/official-holidays.js.
 const holidays = [
   ["Mid-year break", "schoolBreak", "2027-01-24", "2027-02-04"],
 ];
 
-// [title, type, audience, date, time, place, details]
 const events = [
   ["Sports day", "event", "everyone", "2026-10-29", "09:00", "School playground", ""],
   ["Class photo day", "event", "everyone", "2026-11-05", "08:30", "", "Wear the full uniform"],
@@ -164,7 +152,6 @@ const events = [
   ["Trip to the Iraq Natural History Museum", "event", "everyone", "2026-11-24", "08:00", "", "Bring the signed permission slip"],
 ];
 
-// [id, name, icon, color, teacher]
 const SUBJECTS = [
   ["math", "Mathematics", "math", "purple", "TCH-2019-0031"],
   ["physics", "Physics", "physics", "blue", "TCH-2019-0040"],
@@ -176,19 +163,13 @@ const SUBJECTS = [
   ["computer", "Computer Science", "computer", "gray", "TCH-2019-0046"],
 ];
 
-// [id, name, head teacher, subjects still without a teacher]
 const CLASSES = [
   ["cls-4a", "4th Scientific – A", "TCH-2019-0041", []],
   ["cls-5a", "5th Scientific – A", "TCH-2019-0042", []],
-  // A class still being set up.
   ["cls-5b", "5th Scientific – B", "TCH-2019-0044", ["biology", "computer"]],
   ["cls-6c", "6th Scientific – C", "TCH-2019-0040", []],
 ];
 
-/**
- * Subjects and classes for the demo school. Runs whenever the school has
- * none yet, so it also fills databases created before this table existed.
- */
 async function seedAcademics() {
   if (!wantDemo()) return false;
   if (!(await queryOne("SELECT id FROM institutions WHERE id = $1", [NOOR]))) {
@@ -225,7 +206,6 @@ async function seedAcademics() {
   return true;
 }
 
-// [title, body, audience, class id, author id, author name, hours ago, pinned]
 const ANNOUNCEMENTS = [
   [
     "Mid-term exams timetable published",
@@ -254,7 +234,6 @@ const ANNOUNCEMENTS = [
   ],
 ];
 
-/** The demo notice board. Runs whenever the school has no announcements yet. */
 async function seedAnnouncements() {
   if (!wantDemo()) return false;
   if (!(await queryOne("SELECT id FROM classes WHERE id = 'cls-5a'"))) return false;
@@ -277,9 +256,6 @@ async function seedAnnouncements() {
   return true;
 }
 
-// [id, name, bus, plate, driver, supervisor, supervisor phone, school times,
-//  stops: [id, name, landmark, lat, lng, morning, afternoon],
-//  riders: [student, stop]]
 const BUS_LINES = [
   [
     "route-1", "Al-Mansour line", "12", "Baghdad 41582", "DRV-2024-0012",
@@ -312,8 +288,6 @@ const BUS_LINES = [
   ],
 ];
 
-// 5th A's week, the same as the app's mock timetable. Days: 7 = Sunday,
-// 1 = Monday... Each entry is [subject, room] for period 1, 2, 3...
 const WEEK_5A = {
   7: [["islamic", "Room 204"], ["math", "Room 204"], ["physics", "Lab 2"],
       ["arabic", "Room 204"], ["english", "Room 110"], ["biology", "Lab 3"]],
@@ -327,8 +301,6 @@ const WEEK_5A = {
       ["computer", "Computer Lab"]],
 };
 
-// Mr. Ahmed Kareem's maths in the other classes, as in the app's mock
-// teacher timetable: [class, day, period].
 const MATHS_ELSEWHERE = [
   ["cls-5b", 7, 3], ["cls-4a", 7, 5],
   ["cls-6c", 1, 1], ["cls-5b", 1, 4],
@@ -339,18 +311,14 @@ const MATHS_ELSEWHERE = [
 
 const HOME_ROOMS = { "cls-4a": "Room 105", "cls-5b": "Room 206", "cls-6c": "Room 301" };
 
-/**
- * The demo timetable: 5th A as in the app, the other classes filled so that
- * no teacher is in two classes at once. Runs while no class has lessons.
- */
 async function seedTimetable() {
   if (!wantDemo()) return false;
   if (!(await queryOne("SELECT id FROM classes WHERE id = 'cls-5a'"))) return false;
   if (await queryOne("SELECT class_id FROM timetable_slots WHERE class_id = 'cls-5a' LIMIT 1")) return false;
 
   const teacherOf = Object.fromEntries(SUBJECTS.map(([id, , , , t]) => [id, t]));
-  const busy = new Set(); // "teacher/day/period"
-  const lessons = []; // [class, day, period, subject, room]
+  const busy = new Set();
+  const lessons = [];
   const place = (classId, day, period, subject, room) => {
     busy.add(`${teacherOf[subject]}/${day}/${period}`);
     lessons.push([classId, day, period, subject, room]);
@@ -363,8 +331,6 @@ async function seedTimetable() {
     place(classId, day, period, "math", HOME_ROOMS[classId]);
   }
 
-  // Fill the rest of each class's day with a free teacher, at most two
-  // lessons of a subject per day.
   const others = SUBJECTS.map(([id]) => id).filter((id) => id !== "math");
   for (const [c, classId] of Object.keys(HOME_ROOMS).entries()) {
     for (const [day, periods] of Object.entries(WEEK_5A)) {
@@ -396,8 +362,6 @@ async function seedTimetable() {
   return true;
 }
 
-// Zainab's days that weren't a plain "present", as in the app's mock data:
-// days ago → [status, which periods ("all" or a list)] or an excuse note.
 const ZAINAB_DAYS = {
   2: ["late", [1]],
   9: ["absent", "all"],
@@ -405,13 +369,8 @@ const ZAINAB_DAYS = {
   16: { excused: "Medical note received" },
   23: ["late", [1]],
 };
-// Fatima missed one lesson 5 days ago.
 const FATIMA_DAYS = { 5: ["absent", [3]] };
 
-/**
- * Demo attendance for 5th A: every lesson of the last 30 days is marked,
- * almost everyone present. Runs while there are no marks at all.
- */
 async function seedAttendance() {
   if (!wantDemo()) return false;
   const attendance = require("../features/attendance/attendance.repository");
@@ -450,7 +409,6 @@ async function seedAttendance() {
           },
           marks,
         );
-        // Taken 5 minutes into the lesson, on the school's clock.
         await tx.query(
           `UPDATE attendance_marks
            SET marked_at = (($2::date + $3::time) + interval '5 minutes') AT TIME ZONE $5
@@ -472,8 +430,6 @@ async function seedAttendance() {
   return true;
 }
 
-// 5th A's exams, as in the app's mock grades and exams.
-// [subject, type, title, days from today, max, Zainab's score, time, minutes, room, topics]
 const EXAMS_5A = [
   ["math", "quiz", "Algebra quiz", -20, 10, 9],
   ["math", "monthly", "Functions test", -12, 50, 42],
@@ -498,10 +454,6 @@ const EXAMS_5A = [
   ["arabic", "monthly", "November monthly exam", 12, 100, null, "08:00", 90, "Hall A", []],
 ];
 
-/**
- * Demo exams for 5th A: past ones with published scores (Zainab's as in the
- * app, the others varied), upcoming ones without. Runs while there are none.
- */
 async function seedExams() {
   if (!wantDemo()) return false;
   const exams = require("../features/exams/exams.repository");
@@ -515,7 +467,6 @@ async function seedExams() {
 
   const students = await attendance.classStudents("cls-5a");
   const now = today();
-  /** The school day [offset] days away, moving away from today until one is found. */
   const schoolDay = (offset) => {
     const step = offset < 0 ? -1 : 1;
     for (let d = offset; Math.abs(d) < Math.abs(offset) + 10; d += step) {
@@ -536,7 +487,6 @@ async function seedExams() {
                             start_time, duration_minutes, room, topics, max_score,
                             published_at, created_by)
          VALUES ($1, 'cls-5a', $2, $3, $4, $5, $6, $7, $8, $9, $10,
-                 -- Scores published the day after the exam, after school.
                  CASE WHEN $11 THEN ($5::date + interval '1 day 13 hours') AT TIME ZONE 'Asia/Baghdad' END,
                  (SELECT teacher_id FROM class_subjects
                   WHERE class_id = 'cls-5a' AND subject_id = $2))
@@ -547,7 +497,6 @@ async function seedExams() {
       if (zainab === null) continue;
 
       for (const [k, student] of students.entries()) {
-        // Zainab as in the app; the others between 45% and 100%, repeatably.
         const score = student.id === "STU-2026-0142"
           ? zainab
           : Math.round(maxScore * (45 + ((k * 37 + i * 11) % 56)) / 100);
@@ -561,9 +510,6 @@ async function seedExams() {
   return true;
 }
 
-// 5th A's homework, as in the app's mock data.
-// [subject, type, title, description, assigned (days, hour), due (days, hour, min),
-//  allows late, max grade, Zainab: null | "submitted" | [grade, feedback]]
 const ASSIGNMENTS_5A = [
   ["math", "homework", "Quadratic equations – worksheet 4",
     "Solve questions 1 to 12 on the worksheet. Show every step of your work; final answers alone will not get full marks.",
@@ -588,7 +534,6 @@ const ASSIGNMENTS_5A = [
     [-12, 9], [-5, 23, 59], false, 50, [41, "Good understanding of the imagery. Watch your spelling."]],
 ];
 
-/** Demo homework for 5th A. Runs while there is none. */
 async function seedAssignments() {
   if (!wantDemo()) return false;
   const assignments = require("../features/assignments/assignments.repository");
@@ -617,11 +562,9 @@ async function seedAssignments() {
         await tx.query(
           `INSERT INTO submissions (assignment_id, student_id, submitted_at, grade, feedback, graded_at)
            VALUES ($1, 'STU-2026-0142', $2, $3, $4, CASE WHEN $3::numeric IS NULL THEN NULL ELSE $5::timestamptz END)`,
-          // Graded two days after the due date.
           [id, at(due[0] - 1, 20), grade, feedback, at(due[0] + 2, 16)],
         );
       }
-      // Two classmates already handed in the maths worksheet.
       if (subject === "math") {
         for (const student of ["STU-2026-0150", "STU-2026-0151"]) {
           await tx.query(
@@ -635,7 +578,6 @@ async function seedAssignments() {
   return true;
 }
 
-// Demo chats: [between (or a class), [[sender, text, minutes ago]...]]
 const CHATS = [
   [["STU-2026-0142", "TCH-2019-0031"], [
     ["STU-2026-0142", "Sir, is question 7 on the worksheet about the discriminant?", 190],
@@ -653,7 +595,6 @@ const CHATS = [
   ]],
 ];
 
-/** Demo chats. Runs while there are no messages. */
 async function seedMessages() {
   if (!wantDemo()) return false;
   const messages = require("../features/messages/messages.repository");
@@ -685,7 +626,6 @@ async function seedMessages() {
   return true;
 }
 
-/** Demo fees for 2026–2027, as in the app's mock data: tuition by stage, three installments, sibling discounts, and a mix of families who paid in full, paid the first installment, paid part, or nothing yet. */
 async function seedFinance() {
   if (!wantDemo()) return false;
   const finance = require("../features/finance/finance.repository");
@@ -717,7 +657,6 @@ async function seedFinance() {
     const accounts = await finance.accounts(school);
     await transaction(async (tx) => {
       for (const [i, account] of accounts.entries()) {
-        // Zainab paid her first installment; her brother is behind.
         const pattern = account.studentId === "STU-2026-0142" ? 1
           : account.studentId === "STU-2026-0388" ? 3
           : i % 5;
@@ -741,8 +680,6 @@ async function seedFinance() {
   return true;
 }
 
-// 5th A's study material: links (files need a real upload).
-// [subject, title, type, url, days ago]
 const RESOURCES_5A = [
   ["math", "Solving quadratic equations", "video", "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:quadratic-functions-equations", 2],
   ["physics", "Forces simulation (PhET)", "link", "https://phet.colorado.edu/en/simulations/forces-and-motion-basics", 4],
@@ -750,7 +687,6 @@ const RESOURCES_5A = [
   ["english", "Descriptive writing tips", "link", "https://learnenglishteens.britishcouncil.org/skills/writing", 9],
 ];
 
-// Zainab's own tasks, as in the app: [id, title, note, days, hour, minute, priority, reminder, done]
 const ZAINAB_TASKS = [
   ["t1", "Review chapter 3 for the math mid-term", "Focus on functions and inequalities.", 0, 19, 0, "high", false, false],
   ["t2", "Read 20 pages of the English novel", null, 0, 21, 0, "low", true, false],
@@ -760,7 +696,6 @@ const ZAINAB_TASKS = [
   ["t6", "Print Islamic Education summary", null, -2, 20, 0, "medium", false, true],
 ];
 
-/** Demo study material and Zainab's tasks. Runs while there are none. */
 async function seedTasksAndResources() {
   if (!wantDemo()) return false;
   if (await queryOne("SELECT id FROM resources WHERE class_id = 'cls-5a' LIMIT 1")) return false;
@@ -793,18 +728,12 @@ async function seedTasksAndResources() {
   return true;
 }
 
-/**
- * The demo's history in the activity log (it was made before the log
- * existed): attendance taken, absences, scores, homework, notices and
- * payments. Runs while the log is empty.
- */
 async function seedActivityLog() {
   if (!wantDemo()) return false;
   if (await queryOne("SELECT id FROM activity_log WHERE institution_id = $1 LIMIT 1", [NOOR])) return false;
   const tz = config.timeZone;
 
   await transaction(async (tx) => {
-    // A teacher took attendance for a lesson.
     await tx.query(
       `INSERT INTO activity_log (institution_id, at, actor_id, actor_name, actor_role, kind,
                                  action, summary, summary_ar, class_id, route)
@@ -825,7 +754,6 @@ async function seedActivityLog() {
        JOIN users u ON u.id = m.marked_by
        GROUP BY c.institution_id, c.id, c.name, m.date, m.period, m.marked_by, u.name, u.role`,
     );
-    // Each late or absent mark, for that student and their parents.
     await tx.query(
       `INSERT INTO activity_log (institution_id, at, actor_id, actor_name, actor_role, kind,
                                  action, summary, summary_ar, class_id, student_ids, route)
@@ -841,7 +769,6 @@ async function seedActivityLog() {
        JOIN users u ON u.id = m.marked_by JOIN users s ON s.id = m.student_id
        WHERE m.status <> 'present'`,
     );
-    // Scores published.
     await tx.query(
       `INSERT INTO activity_log (institution_id, at, actor_id, actor_name, actor_role, kind,
                                  action, summary, summary_ar, class_id, route)
@@ -853,7 +780,6 @@ async function seedActivityLog() {
        JOIN users u ON u.id = e.created_by
        WHERE e.published_at IS NOT NULL`,
     );
-    // Homework set, handed in and graded.
     await tx.query(
       `INSERT INTO activity_log (institution_id, at, actor_id, actor_name, actor_role, kind,
                                  action, summary, summary_ar, class_id, route)
@@ -888,7 +814,6 @@ async function seedActivityLog() {
        JOIN users st ON st.id = sb.student_id JOIN users u ON u.id = a.created_by
        WHERE sb.grade IS NOT NULL`,
     );
-    // Notices and payments.
     await tx.query(
       `INSERT INTO activity_log (institution_id, at, actor_id, actor_name, actor_role, kind,
                                  action, summary, summary_ar, class_id, route)
@@ -916,7 +841,6 @@ async function seedActivityLog() {
   return true;
 }
 
-/** The demo bus lines. Runs whenever the school has no bus lines yet. */
 async function seedTransport() {
   if (!wantDemo()) return false;
   if (!(await queryOne("SELECT id FROM users WHERE id = 'DRV-2024-0012'"))) return false;
@@ -953,13 +877,10 @@ async function seedTransport() {
   return true;
 }
 
-/** Fills an empty database. Returns true if it did. */
 async function seedDemoData() {
   if (!wantDemo()) return false;
   if (await queryOne("SELECT id FROM institutions WHERE id = $1", [NOOR])) return false;
 
-  // Online, nobody can sign in to the demo with a password: only through
-  // "Try the demo". On this PC, the demo password works.
   const password = config.isProduction
     ? require("crypto").randomBytes(32).toString("hex")
     : config.demoPassword;
@@ -1039,11 +960,6 @@ async function seedDemoData() {
   return true;
 }
 
-/**
- * The whole demo school, step by step (each step only adds what is missing).
- * In Arabic when DEMO_LANGUAGE is ar: translated before the activity history,
- * so its lines are written with the Arabic names. Returns what was added.
- */
 async function seedDemoSchool({ beforeHistory } = {}) {
   const added = [];
   const step = async (name, run) => {
@@ -1055,7 +971,6 @@ async function seedDemoSchool({ beforeHistory } = {}) {
   await step("timetable", seedTimetable);
   await step("bus lines", seedTransport);
   await step("fees", seedFinance);
-  // Platform defaults the demo needs (official holidays, bell times).
   if (beforeHistory?.defaults) await beforeHistory.defaults();
   await step("attendance", seedAttendance);
   await step("exams", seedExams);

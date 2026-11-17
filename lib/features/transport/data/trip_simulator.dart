@@ -2,8 +2,6 @@ import '../models/bus_route_model.dart';
 import '../models/bus_stop_model.dart';
 import '../models/trip_model.dart';
 
-/// MOCK ONLY: builds the trip from the timetable, as if the bus were exactly on
-/// time (used when no driver is reporting).
 TripModel simulateTrip({
   required BusRouteModel route,
   required DateTime now,
@@ -58,8 +56,6 @@ TripModel simulateTrip({
   );
 }
 
-/// Where the bus is [fraction] (0–1) of the way from stops[from] to the next
-/// stop: on the streets when the line's road is known, else in a straight line.
 (double, double) positionOnTrip(
   BusRouteModel route,
   TripDirection direction,
@@ -76,8 +72,6 @@ TripModel simulateTrip({
   return between(stops[from], stops[to], fraction);
 }
 
-/// A point [fraction] (0–1) of the way from [a] to [b], in a straight line.
-/// Good enough for test mode; real positions come from GPS.
 (double, double) between(BusStopModel a, BusStopModel b, double fraction) {
   final f = fraction.clamp(0.0, 1.0);
 

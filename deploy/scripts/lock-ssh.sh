@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# After Tailscale works: SSH only over Tailscale, closed to the internet.
-# Run on the server, from an SSH session that came in over Tailscale
-# (otherwise this cuts your own connection).
 set -euo pipefail
 
 if ! tailscale status >/dev/null 2>&1; then
@@ -15,7 +12,6 @@ if [[ "${SSH_CONNECTION:-}" != 100.* ]]; then
   exit 1
 fi
 
-# Remove "SSH from anywhere"; tailscale0 is already allowed.
 while sudo iptables -C INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT 2>/dev/null; do
   sudo iptables -D INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
 done

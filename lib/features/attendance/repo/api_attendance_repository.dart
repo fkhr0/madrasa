@@ -4,7 +4,6 @@ import '../models/attendance_record_model.dart';
 import '../models/class_lesson_model.dart';
 import 'attendance_repository.dart';
 
-/// Attendance on the school API (server/src/features/attendance).
 class ApiAttendanceRepository implements AttendanceRepository {
   final ApiClient _api;
 

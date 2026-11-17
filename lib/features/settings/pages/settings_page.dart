@@ -13,7 +13,6 @@ import '../../../core/l10n/language.dart';
 import '../../../core/l10n/language_provider.dart';
 
 class SettingsPage extends ConsumerWidget {
-  /// العربية or English. The app rebuilds in the chosen language at once.
   Future<void> _chooseLanguage(BuildContext context, WidgetRef ref) async {
     final current = ref.read(languageProvider);
     final picked = await showModalBottomSheet<AppLanguage>(

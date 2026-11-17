@@ -1,4 +1,3 @@
-# Loki: every container's logs, searchable in Grafana, kept 14 days.
 auth_enabled: false
 
 server:

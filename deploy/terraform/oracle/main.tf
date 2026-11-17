@@ -1,7 +1,3 @@
-# The whole Oracle Cloud setup as code (all inside the Always Free tier):
-# a network, the cloud firewall, one ARM server (Ubuntu 24.04) and the
-# bucket for off-site backups.
-#   terraform init && terraform apply
 terraform {
   required_version = ">= 1.6"
   required_providers {
@@ -24,7 +20,6 @@ data "oci_identity_availability_domains" "all" {
   compartment_id = var.tenancy_ocid
 }
 
-# The newest Ubuntu 24.04 image for ARM servers.
 data "oci_core_images" "ubuntu" {
   compartment_id           = var.tenancy_ocid
   operating_system         = "Canonical Ubuntu"
@@ -34,7 +29,6 @@ data "oci_core_images" "ubuntu" {
   sort_order               = "DESC"
 }
 
-# ── Network ──
 resource "oci_core_vcn" "main" {
   compartment_id = var.tenancy_ocid
   display_name   = "madrasa"
@@ -58,8 +52,6 @@ resource "oci_core_route_table" "main" {
   }
 }
 
-# The cloud firewall: the web, Tailscale's direct connections, and SSH only
-# while ssh_allowed_cidr isn't empty (empty it once Tailscale works).
 resource "oci_core_security_list" "main" {
   compartment_id = var.tenancy_ocid
   vcn_id         = oci_core_vcn.main.id
@@ -73,7 +65,7 @@ resource "oci_core_security_list" "main" {
   dynamic "ingress_security_rules" {
     for_each = [80, 443]
     content {
-      protocol = "6" # TCP
+      protocol = "6"
       source   = "0.0.0.0/0"
       tcp_options {
         min = ingress_security_rules.value
@@ -83,7 +75,7 @@ resource "oci_core_security_list" "main" {
   }
 
   ingress_security_rules {
-    protocol = "17" # UDP: Tailscale's direct path (it works without, slower)
+    protocol = "17"
     source   = "0.0.0.0/0"
     udp_options {
       min = 41641
@@ -114,7 +106,6 @@ resource "oci_core_subnet" "public" {
   security_list_ids = [oci_core_security_list.main.id]
 }
 
-# ── The server ──
 resource "oci_core_instance" "server" {
   compartment_id      = var.tenancy_ocid
   availability_domain = data.oci_identity_availability_domains.all.availability_domains[var.availability_domain_index].name
@@ -142,13 +133,11 @@ resource "oci_core_instance" "server" {
     ssh_authorized_keys = file(var.ssh_public_key_path)
   }
 
-  # A new Ubuntu image later must not rebuild the server.
   lifecycle {
     ignore_changes = [source_details]
   }
 }
 
-# ── Off-site backups (S3-compatible) ──
 data "oci_objectstorage_namespace" "main" {
   compartment_id = var.tenancy_ocid
 }

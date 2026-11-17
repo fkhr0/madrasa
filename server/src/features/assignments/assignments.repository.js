@@ -1,4 +1,3 @@
-// SQL for homework, hand-ins and their files.
 const { query, queryOne } = require("../../db/database");
 
 const ASSIGNMENT = `
@@ -15,7 +14,6 @@ const ASSIGNMENT = `
   LEFT JOIN class_subjects cs ON cs.class_id = a.class_id AND cs.subject_id = a.subject_id
   LEFT JOIN users t ON t.id = cs.teacher_id`;
 
-/** Adds attachments: [file] to each assignment. */
 async function withAttachments(assignments) {
   if (assignments.length === 0) return assignments;
   const rows = await query(
@@ -39,7 +37,6 @@ async function findAssignment(institutionId, id) {
   return a ?? null;
 }
 
-/** A class's homework with how many handed in and how many are graded. */
 async function classAssignments(classId) {
   return withAttachments(
     await query(
@@ -55,7 +52,6 @@ async function classAssignments(classId) {
   );
 }
 
-/** The class's homework for one student, each with their submission (or null). */
 async function studentAssignments(institutionId, className, studentId) {
   const assignments = await withAttachments(
     await query(
@@ -67,10 +63,6 @@ async function studentAssignments(institutionId, className, studentId) {
   return assignments.map((a) => ({ ...a, submission: subs.get(`${a.id}/${studentId}`) ?? null }));
 }
 
-/**
- * Submissions of the given assignments and students, with their files:
- * Map "assignmentId/studentId" → { submittedAt, grade, feedback, gradedAt, files }.
- */
 async function submissionsOf(assignmentIds, studentIds) {
   if (assignmentIds.length === 0 || studentIds.length === 0) return new Map();
   const subs = await query(
@@ -138,7 +130,6 @@ function deleteAssignment(id) {
   return query("DELETE FROM assignments WHERE id = $1", [id]);
 }
 
-/** Hands in (again): replaces the files and the time. */
 async function submit(tx, assignmentId, studentId, fileIds) {
   await tx.query(
     `INSERT INTO submissions (assignment_id, student_id, submitted_at) VALUES ($1, $2, now())
@@ -157,7 +148,6 @@ async function submit(tx, assignmentId, studentId, fileIds) {
   }
 }
 
-/** Grades the student (also work handed in on paper). */
 function grade(assignmentId, studentId, { grade, feedback }) {
   return query(
     `INSERT INTO submissions (assignment_id, student_id, grade, feedback, graded_at)

@@ -1,11 +1,3 @@
-// Uploading and downloading files (homework, worksheets).
-//
-//   POST /files  (body = the bytes, header X-File-Name)  -> { id, name, mime, size }
-//   GET  /files/:id/link                                 -> { url }
-//   GET  /files/:id/download?t=...                         -> the file
-//
-// Downloads use a short-lived link instead of the Authorization header, so
-// the phone's browser can open the file directly.
 const express = require("express");
 const tokens = require("../auth/tokens");
 const config = require("../../config");
@@ -19,7 +11,6 @@ const { uploadLimit } = require("../../common/security");
 
 const router = express.Router();
 
-/** How long a download link works. */
 const LINK_TTL = "10m";
 
 router.post(
@@ -28,7 +19,6 @@ router.post(
   uploadLimit,
   express.raw({ type: () => true, limit: `${Math.max(config.maxUploadMb, config.maxVideoMb)}mb` }),
   async (req, res) => {
-    // express.raw gives bytes; anything else (no body) is an empty upload.
     const bytes = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
     if (bytes.length === 0) {
       throw new HttpError(400, "The file is empty.");
@@ -43,7 +33,6 @@ router.post(
     if (bytes.length > mostMb * 1024 * 1024) {
       throw new HttpError(413, "{0} is too big. The most for this kind of file is {1} MB.", [name, mostMb]);
     }
-    // Our type for it, never the one the uploader sent.
     const mime = type.mime;
     const saved = await shrinkImage(bytes, mime);
 
@@ -72,8 +61,6 @@ router.get("/:id/download", async (req, res) => {
   const file = await repo.findFile(req.params.id);
   if (!file || payload.file !== file.id) throw new HttpError(404, "File not found.");
 
-  // Photos, PDFs and media open in the browser; everything else downloads.
-  // Older files are judged by their name again, not by what was stored.
   const type = typeOf(file.name);
   const inline = type?.inline === true;
   res.setHeader("Content-Type", type?.mime ?? "application/octet-stream");
@@ -82,14 +69,12 @@ router.get("/:id/download", async (req, res) => {
     `${inline ? "inline" : "attachment"}; filename*=UTF-8''${encodeURIComponent(file.name)}`,
   );
   res.setHeader("X-Content-Type-Options", "nosniff");
-  // The app (another origin while developing) may show the photo.
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
   if (!inline) res.setHeader("Content-Security-Policy", "sandbox; default-src 'none'");
   res.setHeader("Cache-Control", "private, max-age=600");
   await storage.send(file.id, res, req.get("Range"));
 });
 
-/** Keeps the name readable but safe in a header: no paths, no control chars. */
 function cleanName(name) {
   const base = name.split(/[\\/]/).pop().replace(/[\u0000-\u001f"]/g, "").trim();
   return base.slice(0, 120) || "file";

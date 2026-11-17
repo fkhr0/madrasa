@@ -4,7 +4,6 @@ import '../constants/app_radius.dart';
 import '../utils/context_extensions.dart';
 import '../utils/date_formatter.dart';
 
-/// Small tinted square with the day number and short month ("12 / NOV").
 class DateBlock extends StatelessWidget {
   final DateTime date;
   final Color color;
@@ -26,7 +25,6 @@ class DateBlock extends StatelessWidget {
             '${date.day}',
             style: context.text.titleLarge?.copyWith(color: color, height: 1.1),
           ),
-          // Centred: Arabic months like "تشرين الثاني" take two lines.
           Text(
             DateFormatter.monthShort(date).toUpperCase(),
             textAlign: TextAlign.center,

@@ -1,4 +1,3 @@
-// School fees.
 const express = require("express");
 const { HttpError, validate, isoDate, z } = require("../../common/http");
 const { requireAuth, requireRole } = require("../../common/auth-middleware");
@@ -18,14 +17,10 @@ router.use(requireAuth);
 const admin = requireRole("admin");
 const dinars = z.number().int().min(0).max(1_000_000_000);
 
-// ---------- Settings (office) ----------
-
-// GET /finance/settings -> { tuition, busFee, dueDates, classTuition: [{ classId, className, tuition | null }] }
 router.get("/settings", admin, async (req, res) => {
   res.json(await repo.settings(req.user.institutionId));
 });
 
-// PUT /finance/settings { tuition, busFee, dueDates, classTuition: { classId: amount | null } }
 router.put("/settings", admin, async (req, res) => {
   const body = validate(
     z.object({
@@ -58,19 +53,14 @@ router.put("/settings", admin, async (req, res) => {
   res.json(await repo.settings(req.user.institutionId));
 });
 
-// ---------- Accounts ----------
-
-// GET /finance/accounts -> [account]  (office)
 router.get("/accounts", admin, async (req, res) => {
   res.json(await repo.accounts(req.user.institutionId));
 });
 
-// GET /finance/accounts/:studentId -> account  (office, the student, their parents)
 router.get("/accounts/:studentId", async (req, res) => {
   res.json(await accountOr404(req));
 });
 
-// PUT /finance/accounts/:studentId/discount { percent, reason } -> account  (office)
 router.put("/accounts/:studentId/discount", admin, async (req, res) => {
   const account = await accountOr404(req);
   const body = validate(
@@ -96,7 +86,6 @@ router.put("/accounts/:studentId/discount", admin, async (req, res) => {
   res.json(await accountOr404(req));
 });
 
-// POST /finance/accounts/:studentId/payments { amount, method, note } -> payment  (office)
 router.post("/accounts/:studentId/payments", admin, async (req, res) => {
   const account = await accountOr404(req);
   const body = validate(
@@ -135,8 +124,6 @@ router.post("/accounts/:studentId/payments", admin, async (req, res) => {
   res.status(201).json(payment);
 });
 
-// POST /finance/payments/:id/void { reason } -> 204  (office)
-// The payment stays in the records but no longer counts.
 router.post("/payments/:id/void", admin, async (req, res) => {
   const { reason } = validate(
     z.object({ reason: z.string().trim().min(3, "say why").max(200) }),
@@ -156,7 +143,6 @@ router.post("/payments/:id/void", admin, async (req, res) => {
   res.status(204).end();
 });
 
-// POST /finance/accounts/:studentId/remind -> 204  (office)
 router.post("/accounts/:studentId/remind", admin, async (req, res) => {
   const account = await accountOr404(req);
   if (!account.parentId) throw new HttpError(400, "This student has no parent account.");

@@ -13,8 +13,6 @@ import '../../../core/utils/context_extensions.dart';
 import '../../../core/widgets/app_card.dart';
 import '../widgets/login_form.dart';
 
-/// Gradient welcome header with the app's name, and the sign-in form
-/// in a card that overlaps it.
 class LoginPage extends ConsumerWidget {
   const LoginPage({super.key});
 
@@ -22,12 +20,9 @@ class LoginPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final palette = context.palette;
     final language = ref.watch(languageProvider);
-    // The other language, offered at the top (before sign-in, Settings
-    // can't be reached).
     final other = language == AppLanguage.ar ? AppLanguage.en : AppLanguage.ar;
 
     return Scaffold(
-      // The gradient header goes behind the language button.
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -42,7 +37,6 @@ class LoginPage extends ConsumerWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // ---------- Header ----------
             Container(
               width: double.infinity,
               padding: EdgeInsets.fromLTRB(
@@ -95,7 +89,6 @@ class LoginPage extends ConsumerWidget {
               ),
             ),
 
-            // ---------- Form card, pulled up over the header ----------
             Transform.translate(
               offset: const Offset(0, -AppSpacing.xxxl),
               child: Center(

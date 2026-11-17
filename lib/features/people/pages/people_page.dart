@@ -11,7 +11,6 @@ import '../widgets/person_tile.dart';
 import '../widgets/role_chips.dart';
 import '../../../core/l10n/language.dart';
 
-/// Administrator's directory of students, teachers and parents.
 class PeoplePage extends ConsumerWidget {
   const PeoplePage({super.key});
 
@@ -67,7 +66,6 @@ class PeoplePage extends ConsumerWidget {
                 }
 
                 return ListView.separated(
-                  // Room for the floating button.
                   padding: const EdgeInsets.only(bottom: 96),
                   itemCount: items.length,
                   separatorBuilder: (_, _) => const Divider(

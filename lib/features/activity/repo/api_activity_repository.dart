@@ -2,7 +2,6 @@ import '../../../core/network/api_client.dart';
 import '../models/activity_item_model.dart';
 import 'activity_repository.dart';
 
-/// The activity log on the school API (server/src/features/activity).
 class ApiActivityRepository implements ActivityRepository {
   final ApiClient _api;
 

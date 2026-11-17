@@ -15,8 +15,6 @@ class MockAttendance {
     20: (AttendanceStatus.absent, null),
   };
 
-  /// School days ago → a record that is not "present". Every other school
-  /// day is present. Counted in school days so they never fall on a weekend.
   static const _zainab = {
     2: (AttendanceStatus.late, 'Arrived 08:20'),
     9: (AttendanceStatus.absent, null),
@@ -25,7 +23,6 @@ class MockAttendance {
     23: (AttendanceStatus.late, 'Arrived 08:10'),
   };
 
-  /// The last 40 calendar days, skipping Friday and Saturday.
   static List<AttendanceRecordModel> _records(
     Map<int, (AttendanceStatus, String?)> exceptions,
   ) {

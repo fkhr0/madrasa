@@ -1,6 +1,5 @@
 import '../../../core/l10n/language.dart';
 
-/// Who is using the app. Each role sees a different set of screens.
 enum UserRole {
   student,
   teacher,
@@ -23,7 +22,6 @@ enum UserRole {
     }
   }
 
-  /// "Students", "Teachers"... (Arabic plurals aren't label + "s").
   String get pluralLabel => switch (this) {
     UserRole.student => tr('Students'),
     UserRole.teacher => tr('Teachers'),
@@ -32,11 +30,9 @@ enum UserRole {
     UserRole.driver => tr('Bus drivers'),
   };
 
-  /// "student" → UserRole.student (the server's spelling).
   static UserRole fromName(String name) =>
       values.firstWhere((r) => r.name == name, orElse: () => student);
 
-  /// Start of the IDs the school generates for this role.
   String get idPrefix {
     switch (this) {
       case UserRole.student:
@@ -61,22 +57,16 @@ class UserModel {
   final String phone;
   final String schoolName;
 
-  /// Students only, e.g. "5th Scientific – A".
   final String? className;
 
-  /// Teachers only, e.g. "Mathematics".
   final String? subjectName;
 
-  /// Parents only: the students linked to this account.
   final List<UserModel> children;
 
-  /// Deactivated accounts cannot sign in (set by the administrator).
   final bool isActive;
 
-  /// Signed in with a temporary password: must choose their own first.
   final bool mustChangePassword;
 
-  /// Opened with "Try the demo": a demo school, made again every night.
   final bool isDemo;
 
   const UserModel({
@@ -94,7 +84,6 @@ class UserModel {
     this.isDemo = false,
   });
 
-  /// Reads the user the server sends (server/src/features/users/users.mapper.js).
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'] as String,
@@ -117,7 +106,6 @@ class UserModel {
 
   String get firstName => name.split(' ').first;
 
-  /// One short line under the name: class, subject or children.
   String get roleDetail {
     switch (role) {
       case UserRole.student:
@@ -135,7 +123,6 @@ class UserModel {
     }
   }
 
-  /// "STU", "TCH", "PAR" or "ADM": the start of every generated ID.
   String get idPrefix => role.idPrefix;
 
   UserModel copyWith({

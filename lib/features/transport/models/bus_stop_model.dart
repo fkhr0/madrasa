@@ -1,16 +1,12 @@
-/// One stop on a bus route.
 class BusStopModel {
   final String id;
   final String name;
 
-  /// Something easy to recognise, e.g. "Al-Yarmouk hospital".
   final String landmark;
 
-  /// Position for the live map (GPS stage).
   final double latitude;
   final double longitude;
 
-  /// Planned times, in minutes after midnight (07:22 → 442).
   final int morningMinute;
   final int afternoonMinute;
 
@@ -36,7 +32,6 @@ class BusStopModel {
     );
   }
 
-  /// A stop made in the app has no server ID yet: it is sent empty.
   Map<String, dynamic> toJson() => {
     'id': id.startsWith(newIdPrefix) ? '' : id,
     'name': name,
@@ -47,15 +42,12 @@ class BusStopModel {
     'afternoonMinute': afternoonMinute,
   };
 
-  /// IDs of stops added in the app and not saved yet start with this.
   static const newIdPrefix = 'new-';
 
-  /// The school is always the last stop of the morning order.
   static const schoolId = 'school';
 
   bool get isSchool => id == schoolId;
 
-  /// A door-to-door stop made from one family's home ("Zainab's home").
   static const homeSuffix = "'s home";
 
   bool get isHome => name.endsWith(homeSuffix);

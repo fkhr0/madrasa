@@ -150,8 +150,8 @@ void main() {
       });
 
       expect(year.holidayOn(DateTime(2026, 10, 3))?.name, 'Iraqi National Day');
-      expect(year.isWorkingDay(DateTime(2026, 11, 8)), isTrue); // Sunday
-      expect(year.isWorkingDay(DateTime(2026, 11, 6)), isFalse); // Friday
+      expect(year.isWorkingDay(DateTime(2026, 11, 8)), isTrue);
+      expect(year.isWorkingDay(DateTime(2026, 11, 6)), isFalse);
     });
 
     test('a new holiday is sent as plain days', () {
@@ -237,11 +237,9 @@ void main() {
       )..cacheOwner = 'STU-1';
 
       expect((await api.get('/me'))['name'], 'Zainab');
-      // Shown from the device at once; the server is asked in the background.
       expect((await api.get('/me'))['name'], 'Zainab');
       await pumpEventQueue();
       expect(sent, [null, 'v1']);
-      // Later asks go to the server, and an unchanged answer is a 304.
       expect((await api.get('/me'))['name'], 'Zainab');
       expect(sent, [null, 'v1', 'v1']);
     });
@@ -264,13 +262,12 @@ void main() {
                   ),
           ),
         )..cacheOwner = 'STU-1';
-        await open().get('/timetable'); // saved on the device
+        await open().get('/timetable');
 
-        // The app opens again; meanwhile the timetable changed.
         version = 'v2';
         var outdated = 0;
         final api = open()..onSavedAnswersOutdated = () => outdated++;
-        expect(await api.get('/timetable'), {'room': 'v1'}); // at once
+        expect(await api.get('/timetable'), {'room': 'v1'});
         await Future<void>.delayed(const Duration(milliseconds: 400));
         expect(outdated, 1);
         expect(await api.get('/timetable'), {'room': 'v2'});
@@ -294,11 +291,10 @@ void main() {
 
       await api.get('/timetable');
       online = false;
-      expect(await api.get('/timetable'), ['Maths']); // the saved one at once
-      expect(await api.get('/timetable'), ['Maths']); // the server: no signal
+      expect(await api.get('/timetable'), ['Maths']);
+      expect(await api.get('/timetable'), ['Maths']);
       expect(api.offline.value, isTrue);
 
-      // Never seen before: nothing to show.
       await expectLater(api.get('/grades'), throwsA(isA<ApiException>()));
 
       online = true;
@@ -329,7 +325,6 @@ void main() {
   });
 }
 
-/// Saved answers in memory, for tests.
 class MemoryResponseCache implements ResponseCache {
   final saved = <String, CachedResponse>{};
 

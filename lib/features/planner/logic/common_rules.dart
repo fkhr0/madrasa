@@ -5,7 +5,6 @@ import '../../institution/models/academic_year_model.dart';
 import '../models/plan_tip_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Whole days from [now]'s date to [date]'s date (0 = same day).
 int daysUntil(DateTime now, DateTime date) {
   final a = DateTime(now.year, now.month, now.day);
   final b = DateTime(date.year, date.month, date.day);
@@ -13,7 +12,6 @@ int daysUntil(DateTime now, DateTime date) {
   return b.difference(a).inDays;
 }
 
-/// "on Thursday" within a week, otherwise "on 12 Jan".
 String onDay(DateTime now, DateTime date) {
   final days = daysUntil(now, date);
   if (days == 0) return 'today';
@@ -23,14 +21,12 @@ String onDay(DateTime now, DateTime date) {
   return tr('on {0}', [DateFormatter.dayMonth(date)]);
 }
 
-/// Rules every role shares.
 List<PlanTipModel> commonTips({
   required DateTime now,
   required AcademicYearModel year,
 }) {
   final tips = <PlanTipModel>[];
 
-  // A holiday in the coming week (helps plan around it).
   for (final holiday in year.holidays) {
     final days = daysUntil(now, holiday.start);
     if (days < 1 || days > 7) continue;

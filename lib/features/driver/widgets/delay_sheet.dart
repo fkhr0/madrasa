@@ -6,7 +6,6 @@ import '../../../core/utils/context_extensions.dart';
 import '../../transport/providers/transport_provider.dart';
 import '../../../core/l10n/language.dart';
 
-/// Driver tells everyone on the route the bus is late, and why.
 Future<void> showDelaySheet(BuildContext context, String routeId) {
   return showModalBottomSheet(
     context: context,
@@ -25,7 +24,6 @@ class _DelaySheet extends ConsumerStatefulWidget {
 
 class _DelaySheetState extends ConsumerState<_DelaySheet> {
   static const _minutes = [5, 10, 20, 30];
-  // Sent in English: the server tells each family in their app's language.
   static const _reasons = [
     'Traffic',
     'Checkpoint',

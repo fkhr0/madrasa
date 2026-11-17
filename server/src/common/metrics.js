@@ -1,6 +1,3 @@
-// Numbers for Prometheus and Grafana: how many requests, how fast, how many
-// failed, live connections, cache hits, plus Node's own (memory, CPU, event-
-// loop delay).
 const client = require("prom-client");
 
 const registry = new client.Registry();
@@ -41,10 +38,6 @@ const signIns = new client.Counter({
   registers: [registry],
 });
 
-/**
- * Middleware: times every request. The route is the pattern
- * ("/people/:id"), not the address, so there are few distinct labels.
- */
 function measureRequests(req, res, next) {
   const stop = duration.startTimer();
   res.on("finish", () => {
@@ -56,7 +49,6 @@ function measureRequests(req, res, next) {
   next();
 }
 
-/** GET /metrics (Prometheus' text format). */
 async function metricsPage(_req, res) {
   res.setHeader("Content-Type", registry.contentType);
   res.send(await registry.metrics());

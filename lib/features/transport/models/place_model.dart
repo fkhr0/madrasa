@@ -1,8 +1,6 @@
-/// A place found by name on the map (OpenStreetMap), to put a stop there.
 class PlaceModel {
   final String name;
 
-  /// The full address, e.g. "Al-Yarmouk Hospital, Al-Yarmouk, Baghdad".
   final String address;
   final double latitude;
   final double longitude;

@@ -8,7 +8,7 @@ before(async () => {
   app = await startTestApp();
   for (const [role, id] of [
     ["admin", "ADM-2020-0001"],
-    ["student", "STU-2026-0142"], // rides bus 12 from Al-Yarmouk (s4)
+    ["student", "STU-2026-0142"],
     ["parent", "PAR-2026-0142"],
     ["teacher", "TCH-2019-0031"],
     ["driver", "DRV-2024-0012"],
@@ -29,22 +29,20 @@ test("bus trips tell the families, the driver and the office", async () => {
   assert.ok((await titles(as.parent)).includes("Bus 12 started the morning trip"));
   assert.ok((await titles(as.admin)).includes("Bus 12 started the morning trip"));
 
-  // Close to Al-Yarmouk (Zainab's stop), driving there from Hay Al-Jamia.
-  await trip("location", { latitude: 33.3381, longitude: 44.2701 }); // s1
-  await trip("location", { latitude: 33.33, longitude: 44.29 }); // left s1
-  await trip("location", { latitude: 33.3301, longitude: 44.3001 }); // s2
-  await trip("location", { latitude: 33.32, longitude: 44.31 }); // left s2
-  await trip("location", { latitude: 33.3171, longitude: 44.3181 }); // s3
-  await trip("location", { latitude: 33.31, longitude: 44.325 }); // left s3, ~1.5 km from s4
+  await trip("location", { latitude: 33.3381, longitude: 44.2701 });
+  await trip("location", { latitude: 33.33, longitude: 44.29 });
+  await trip("location", { latitude: 33.3301, longitude: 44.3001 });
+  await trip("location", { latitude: 33.32, longitude: 44.31 });
+  await trip("location", { latitude: 33.3171, longitude: 44.3181 });
+  await trip("location", { latitude: 33.31, longitude: 44.325 });
   const near = await titles(as.parent);
   assert.ok(near.some((t) => /^Bus 12 is about \d min away$/.test(t)), near.join(" | "));
 
-  // Told once, not on every GPS point.
   await trip("location", { latitude: 33.305, longitude: 44.33 });
   const count = (await titles(as.parent)).filter((t) => t.includes("min away")).length;
   assert.equal(count, 1);
 
-  await trip("location", { latitude: 33.3001, longitude: 44.3351 }); // at s4
+  await trip("location", { latitude: 33.3001, longitude: 44.3351 });
   assert.ok((await titles(as.student)).includes("Bus 12 is at Al-Yarmouk"));
 
   await trip("boarding", { studentId: "STU-2026-0142", status: "onBoard" });
@@ -64,7 +62,6 @@ test("a parent's 'won't ride today' reaches the driver", async () => {
     .send({ notRiding: true })
     .expect(204);
   assert.ok((await titles(as.driver)).includes("Zainab Haider won't ride today"));
-  // Drivers only hear about their bus.
   assert.ok((await titles(as.driver)).every((t) => !t.startsWith("New event")));
 });
 
@@ -76,10 +73,9 @@ test("announcements and events reach the people they are for", async () => {
     .expect(201);
   assert.ok((await titles(as.student)).includes("Quiz on Sunday"));
   assert.ok((await titles(as.parent)).includes("Quiz on Sunday"));
-  assert.ok(!(await titles(as.teacher)).includes("Quiz on Sunday")); // its author
+  assert.ok(!(await titles(as.teacher)).includes("Quiz on Sunday"));
   assert.ok(!(await titles(as.driver)).includes("Quiz on Sunday"));
 
-  // Scheduled: nobody is told until its time.
   await request(app)
     .post("/announcements")
     .set(as.admin)
@@ -107,7 +103,6 @@ test("marking read", async () => {
   await request(app).post("/notifications/read-all").set(as.parent).expect(204);
   const all = (await request(app).get("/notifications").set(as.parent)).body;
   assert.ok(all.every((n) => n.isRead));
-  // Someone else's: nothing happens.
   const mine = (await request(app).get("/notifications").set(as.student)).body;
   await request(app).post(`/notifications/${mine[0].id}/read`).set(as.parent).expect(204);
   const still = (await request(app).get("/notifications").set(as.student)).body;
@@ -134,7 +129,6 @@ test("Android phones get notifications through Firebase; dead tokens are forgott
   fcm.useMessaging({
     async sendEachForMulticast(message) {
       sent.push(message);
-      // The student's app was uninstalled.
       return {
         responses: message.fids.map((t) =>
           t.startsWith("student") ? { error: { code: "messaging/registration-token-not-registered" } } : {},
@@ -161,7 +155,6 @@ test("Android phones get notifications through Firebase; dead tokens are forgott
   assert.equal(sent[0].android.notification.channelId, "school");
   assert.deepEqual(await query("SELECT token FROM device_tokens"), [{ token: parentPhone }]);
 
-  // Signed out on that phone.
   await request(app).delete("/notifications/devices").set(as.parent).send({ token: parentPhone }).expect(204);
   assert.deepEqual(await query("SELECT token FROM device_tokens"), []);
   fcm.useMessaging(null);

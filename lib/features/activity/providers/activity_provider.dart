@@ -8,14 +8,12 @@ import '../repo/activity_repository.dart';
 import '../repo/api_activity_repository.dart';
 import '../repo/mock_activity_repository.dart';
 
-/// The server when API_URL is set, otherwise a few mock lines.
 final activityRepositoryProvider = Provider<ActivityRepository>(
   (ref) => AppConfig.useApi
       ? ApiActivityRepository(watchApi(ref))
       : const MockActivityRepository(),
 );
 
-/// The latest few lines (the office's home page).
 final recentActivityProvider = FutureProvider<List<ActivityItemModel>>((
   ref,
 ) async {
@@ -26,7 +24,6 @@ final recentActivityProvider = FutureProvider<List<ActivityItemModel>>((
   return page.items;
 });
 
-/// The lines matching a filter, a page at a time ([ActivityFeed.loadMore]).
 final activityFeedProvider =
     AsyncNotifierProvider.family<
       ActivityFeed,
@@ -37,7 +34,6 @@ final activityFeedProvider =
 class ActivityFeedState {
   final List<ActivityItemModel> items;
 
-  /// Older lines exist (pass to loadMore).
   final DateTime? next;
   final bool loadingMore;
 
@@ -57,7 +53,6 @@ class ActivityFeed
     return ActivityFeedState(items: page.items, next: page.next);
   }
 
-  /// Appends the next older page (nothing if there is none).
   Future<void> loadMore() async {
     final current = state.valueOrNull;
     if (current == null || current.next == null || current.loadingMore) return;

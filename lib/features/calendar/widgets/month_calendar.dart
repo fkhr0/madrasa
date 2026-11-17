@@ -9,7 +9,6 @@ import '../../institution/models/academic_year_model.dart';
 import '../models/calendar_event_model.dart';
 import '../../../core/l10n/language.dart';
 
-/// Month grid (table_calendar) limited to the study year.
 class MonthCalendar extends StatefulWidget {
   final AcademicYearModel year;
   final List<CalendarEventModel> events;
@@ -31,7 +30,6 @@ class MonthCalendar extends StatefulWidget {
 class _MonthCalendarState extends State<MonthCalendar> {
   late DateTime _focusedDay = widget.selectedDay;
 
-  /// Holidays are shown by the cell colour, so they get no dot.
   List<CalendarEventModel> _dotsFor(DateTime day) => widget.events
       .where((e) => e.type != CalendarEventType.holiday && e.occursOn(day))
       .toList();

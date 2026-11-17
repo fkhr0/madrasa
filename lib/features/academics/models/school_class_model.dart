@@ -1,9 +1,7 @@
-/// One subject a class studies, and who teaches it there.
 class ClassSubjectModel {
   final String subjectId;
   final String subjectName;
 
-  /// Null while no teacher is assigned.
   final String? teacherId;
   final String? teacherName;
 
@@ -25,15 +23,11 @@ class ClassSubjectModel {
       );
 }
 
-/// A class as the administrator manages it: e.g. "5th Scientific – A".
 class SchoolClassModel {
-  /// Empty for a class not saved yet.
   final String id;
 
-  /// Full name, e.g. "5th Scientific – A".
   final String name;
 
-  /// The head of the class (homeroom teacher), if chosen.
   final String? homeroomTeacherId;
   final String? homeroomTeacherName;
   final int studentCount;

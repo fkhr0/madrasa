@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/l10n/language.dart';
 
-/// When a tip matters. The planner page groups tips by this.
 enum PlanWhen {
   today,
   tomorrow,
@@ -19,7 +18,6 @@ enum PlanWhen {
   }
 }
 
-/// One suggestion from the planner, e.g. "Exam tomorrow: Physics".
 class PlanTipModel {
   final String id;
   final PlanWhen when;
@@ -28,10 +26,8 @@ class PlanTipModel {
   final String title;
   final String? detail;
 
-  /// Higher shows first (0–100).
   final int priority;
 
-  /// Where tapping the tip leads.
   final String? route;
 
   const PlanTipModel({
@@ -46,7 +42,6 @@ class PlanTipModel {
   });
 }
 
-/// Today first, then by priority.
 List<PlanTipModel> sortTips(Iterable<PlanTipModel> tips) {
   return tips.toList()..sort((a, b) {
     final byWhen = a.when.index.compareTo(b.when.index);

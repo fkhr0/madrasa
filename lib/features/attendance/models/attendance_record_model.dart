@@ -50,7 +50,6 @@ enum AttendanceStatus {
   }
 }
 
-/// A day the office excused ahead (a planned absence).
 class PlannedExcuseModel {
   final DateTime date;
   final String note;
@@ -64,7 +63,6 @@ class PlannedExcuseModel {
       );
 }
 
-/// How a student was marked in one lesson of a day.
 class LessonMarkModel {
   final int period;
   final String subjectName;
@@ -84,15 +82,12 @@ class LessonMarkModel {
       );
 }
 
-/// Attendance for one school day.
 class AttendanceRecordModel {
   final DateTime date;
   final AttendanceStatus status;
 
-  /// e.g. "Late to Mathematics" or "Medical note received".
   final String? note;
 
-  /// Each lesson's mark (empty in mock data).
   final List<LessonMarkModel> lessons;
 
   const AttendanceRecordModel({

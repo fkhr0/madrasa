@@ -1,6 +1,3 @@
-// Nightly upkeep at 2:00: back up the database (PGlite: its folder; PostgreSQL:
-// pg_dump) remove sign-ins that expired, files nobody attached, old
-// notifications and the record of reminders already sent.
 const fs = require("fs");
 const { execFile } = require("child_process");
 const path = require("path");
@@ -8,7 +5,6 @@ const config = require("../config");
 const { db, query } = require("../db/database");
 const storage = require("../features/files/storage");
 
-/** How many nightly backups to keep. */
 const KEEP_BACKUPS = 7;
 
 async function cleanUp() {
@@ -24,8 +20,6 @@ async function cleanUp() {
     "DELETE FROM sent_reminders WHERE sent_at < now() - interval '60 days' RETURNING key",
   );
 
-  // Files uploaded but never handed in, attached or shared (after a day,
-  // so someone halfway through a form doesn't lose theirs).
   const orphans = await query(
     `DELETE FROM files f
      WHERE f.created_at < now() - interval '1 day'
@@ -35,7 +29,6 @@ async function cleanUp() {
      RETURNING f.id`,
   );
   for (const { id } of orphans) {
-    // Already gone from the list either way; a leftover file only takes space.
     await storage.remove(id).catch(() => {});
   }
 
@@ -47,10 +40,6 @@ async function cleanUp() {
   };
 }
 
-/**
- * .data/backups/school-2026-11-08.tar.gz (PGlite) or .dump (PostgreSQL),
- * keeping the last [KEEP_BACKUPS].
- */
 async function backUp(folder = config.backupsDir) {
   const engine = db();
   await fs.promises.mkdir(folder, { recursive: true });
@@ -74,7 +63,6 @@ async function backUp(folder = config.backupsDir) {
   return file;
 }
 
-/** The whole PostgreSQL database into one compressed file, with pg_dump (comes with PostgreSQL). */
 function pgDump(file) {
   const url = new URL(config.databaseUrl);
   const env = {
@@ -98,7 +86,6 @@ async function nightly() {
     console.warn(`Backup failed: ${e.message}`);
     return null;
   });
-  // Copies away from this server (BACKUP_S3_BUCKET).
   const offsite = require("./offsite");
   const sentDump = await offsite.sendDump(backup).catch((e) => {
     console.warn(`Off-site backup failed: ${e.message}`);

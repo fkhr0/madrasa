@@ -3,7 +3,6 @@ import '../models/school_class_model.dart';
 import '../models/school_subject_model.dart';
 import 'academics_repository.dart';
 
-/// Academics on the school API (server/src/features/academics).
 class ApiAcademicsRepository implements AcademicsRepository {
   final ApiClient _api;
 

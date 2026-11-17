@@ -7,8 +7,6 @@ import '../../../core/utils/context_extensions.dart';
 import '../../files/providers/file_provider.dart';
 import '../models/attachment_model.dart';
 
-/// A file row. Shows a remove button when [onRemove] is given
-/// (files about to be handed in or attached); otherwise a tap opens it.
 class AttachmentTile extends ConsumerWidget {
   final AttachmentModel attachment;
   final VoidCallback? onRemove;
